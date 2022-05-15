@@ -6,6 +6,10 @@
 /* eslint-disable vars-on-top */
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
+// TODO: - include settings system: https://github.com/snapcrunch/electron-preferences
+//       - integrate the available webservices in settings structure
+//       - fix problem with icon selection
+
 import path from 'path';
 import { app, BrowserWindow, shell, Notification, ipcMain, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
