@@ -15,6 +15,7 @@ import { app, BrowserWindow, shell, Notification, ipcMain, Menu } from 'electron
 import { autoUpdater } from 'electron-updater';
 import log from 'electron-log';
 import { resolveHtmlPath } from './util';
+const ElectronPreferences = require('electron-preferences');
 
 var fs = require('fs');
 var https = require('https');
@@ -79,6 +80,47 @@ const createWindow = async () => {
       webviewTag: true,
     },
   });
+
+  const preferences = new ElectronPreferences({
+    
+    // Preference file path
+    dataStore: '~/preferences.json', // defaults to <userData>/preferences.json
+  
+    // Preference default values
+    defaults: { 
+      about: {
+        name: 'Dennis'
+      }
+     },
+  
+    // Preference sections visible to the UI
+    sections: [
+      {
+        id: 'about',
+        label: 'About You',
+        icon: 'single-01', // See the list of available icons below
+        form: {
+          groups: [
+            {
+              'label': 'About You', // optional
+              'fields': [
+                {
+                  label: 'Name',
+                  key: 'name',
+                  type: 'text',
+                  help: 'What is your name?'
+                },
+                // ...
+              ]
+            },
+            // ...
+          ]
+        }
+      },
+      // ...
+    ]
+  })
+
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
