@@ -127,7 +127,8 @@ export default class Main extends React.Component {
           if (e.enabled) {
             if (e.teacher === true && isTeacher === true) {
               $('#appchecks').append(
-                `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+                `<p><li id="check-${key}" class="draggable" draggable="true" onClick="toggleApp('${key}')"> ${key}</li></p>`
+                // `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
               );
               if (localStorage.getItem(`checked-${key}`) === null) {
                 localStorage.setItem(`checked-${key}`, 'true');
@@ -152,7 +153,8 @@ export default class Main extends React.Component {
             }
             if (e.teacher === false) {
               $('#appchecks').append(
-                `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+                `<p><li id="check-${key}" class="draggable" draggable="true" onClick="toggleApp('${key}')"> ${key}</li></p>`
+                // `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
               );
               if (localStorage.getItem(`checked-${key}`) === null) {
                 localStorage.setItem(`checked-${key}`, 'true');
