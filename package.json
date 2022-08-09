@@ -1,6 +1,6 @@
 {
   "name": "bbzcloud",
-  "version": "1.3.0",
+  "version": "1.3.2",
   "description": "Die Desktop-App für die BBZ Cloud - eine All-in-One-Plattform für Unterricht und Zusammenarbeit",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
