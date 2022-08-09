@@ -51,8 +51,7 @@
     "linux": {
       "target": [
         "snap",
-        "deb",
-        "pacman"
+        "AppImage"
       ],
       "category": "Office",
       "desktop": {
