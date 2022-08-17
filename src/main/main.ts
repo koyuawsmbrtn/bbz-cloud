@@ -133,6 +133,15 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
+    if (process.platform !== 'darwin') {
+      dialog.showMessageBox(mainWindow, {
+        message:
+          'Ein Update ist verfügbar! Download über kurzelinks.de/bbz-cloud',
+        type: 'info',
+        buttons: ['Ok'],
+        title: 'Updater',
+      });
+    }
   });
   autoUpdater.on('update-not-available', (ev, info) => {
     sendStatusToWindow('Update not available.');
