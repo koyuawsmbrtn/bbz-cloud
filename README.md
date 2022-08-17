@@ -17,7 +17,8 @@ yarn dist
 ## Binaries
 
 Snap: `sudo snap install bbzcloud`
-apt: `curl -s https://packagecloud.io/install/repositories/bubblineyuri/koyuspace/script.deb.sh | sudo os=ubuntu dist=jammy bash && sudo apt install bbzcloud`
+
+AppImage & Windows: https://github.com/koyuawsmbrtn/bbz-cloud/releases
 
 ## License
 
