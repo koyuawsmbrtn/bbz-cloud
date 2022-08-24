@@ -14,6 +14,7 @@ import u1 from '../../assets/uebersicht.png';
 import u2 from '../../assets/doge.png';
 import sb from '../../assets/settings.png';
 import links from '../../assets/object.json';
+import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
 
@@ -253,7 +254,7 @@ export default class Main extends React.Component {
       $('.wvbb').hide();
       $('.wvbf').hide();
       $('.wvbc').hide();
-    }, 3000);
+    }, 2000);
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
@@ -285,7 +286,7 @@ export default class Main extends React.Component {
               <div id="headnote">
                 <p>
                   <img
-                    src="https://www.bbz-rd-eck.de/wp-content/uploads/2018/09/BBZ-Logo-Master.png"
+                    src={logo}
                     alt="BBZ Logo"
                     height="28"
                     id="logo"
