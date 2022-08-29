@@ -17,6 +17,7 @@ import links from '../../assets/object.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
+import getDisplayMedia from '../main/browser-mediadevices';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
@@ -32,6 +33,9 @@ if (
 //        https://stackoverflow.com/questions/7961568/fill-fields-in-webview-automatically
 
 window.api.send('zoom', zoomFaktor);
+
+window.navigator.mediaDevices.getDisplayMedia = () =>
+  new Promise(getDisplayMedia);
 
 var doge;
 const isTeacher = isTeacherVar.value;
@@ -285,12 +289,7 @@ export default class Main extends React.Component {
             <div id="container">
               <div id="headnote">
                 <p>
-                  <img
-                    src={logo}
-                    alt="BBZ Logo"
-                    height="28"
-                    id="logo"
-                  />
+                  <img src={logo} alt="BBZ Logo" height="28" id="logo" />
                   <h1>BBZ Cloud</h1>
                 </p>
                 <p>
@@ -373,7 +372,8 @@ export default class Main extends React.Component {
               />
               <label htmlFor="icon_website">Icon der Website</label>
               <p>
-                <b>BBZ Cloud App Version:</b> {versionApp} | <b>Entwicklerin:</b> Leonie
+                <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
+                <b>Entwicklerin:</b> Leonie
               </p>
               <button onClick={saveSettings} id="sbb">
                 Speichern

@@ -7,7 +7,15 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  dialog,
+  desktopCapturer,
+  ipcMain,
+  Menu,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import { resolveHtmlPath } from './util';
 
@@ -66,6 +74,12 @@ const installExtensions = async () => {
     .catch(console.log);
 };
 
+const initDesktopCapturerHandler = () => {
+  ipcMain.handle('desktopCapturerGetSources', (_event, opts) =>
+    desktopCapturer.getSources(opts)
+  );
+};
+
 const createWindow = async () => {
   if (isDevelopment) {
     await installExtensions();
@@ -81,7 +95,7 @@ const createWindow = async () => {
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webviewTag: true,
-      nodeIntegration: false, // is default value after Electron v5
+      nodeIntegration: true, // is default value after Electron v5 --> true
       contextIsolation: true, // protect against prototype pollution
     },
   });
@@ -297,6 +311,7 @@ app
   .whenReady()
   .then(() => {
     createWindow();
+    initDesktopCapturerHandler();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
