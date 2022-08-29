@@ -139,6 +139,7 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
+                  preload="file:wv-${key}.js"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -255,6 +256,13 @@ export default class Main extends React.Component {
       $('.wvbf').hide();
       $('.wvbc').hide();
     }, 2000);
+
+    document.querySelectorAll('webview').forEach((wv) => {
+      wv.addEventListener('did-start-loading'),
+        () => document
+          .querySelectorAll('webview')
+            .forEach(windows.api.send('loadingStartorStop', currentURL));
+    });
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
