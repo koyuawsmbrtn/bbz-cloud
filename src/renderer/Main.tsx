@@ -30,37 +30,45 @@ if (
 }
 
 // Hierin werden die Credentials des Users gespeichert - momentan noch unser über localStorage
-let outlookUsername = 'dennis.clausen@juchu.de';
-let outlookPassword = 'test';
-let moodleUsername = 'dennis.clausen@juchu.de';
-let moodlePassword = 'test';
+let outlookUsername;
+let outlookPassword;
+let moodleUsername;
+let moodlePassword;
+let untisUsername;
+let untisPassword;
+let bbbUsername;
+let bbbPassword;
+
 // Outlook
 let pw = keytar.getPassword('bbzcloud', 'outlookUsername');
+// eslint-disable-next-line promise/always-return
 pw.then((result) => {
-  // eslint-disable-next-line no-return-assign
-  return (outlookUsername = result);
+  outlookUsername = result;
 }).catch(() => {
   outlookUsername = '';
 });
 pw = keytar.getPassword('bbzcloud', 'moodlePassword');
+// eslint-disable-next-line promise/always-return
 pw.then((result) => {
   // eslint-disable-next-line no-return-assign
-  return (moodlePassword = result);
+  moodlePassword = result;
 }).catch(() => {
   moodlePassword = '';
 });
 // Moodle
 pw = keytar.getPassword('bbzcloud', 'moodleUsername');
+// eslint-disable-next-line promise/always-return
 pw.then((result) => {
   // eslint-disable-next-line no-return-assign
-  return (moodleUsername = result);
+  moodleUsername = result;
 }).catch(() => {
   moodleUsername = '';
 });
 pw = keytar.getPassword('bbzcloud', 'moodlePassword');
+// eslint-disable-next-line promise/always-return
 pw.then((result) => {
   // eslint-disable-next-line no-return-assign
-  return (moodlePassword = result);
+  moodlePassword = result;
 }).catch(() => {
   moodlePassword = '';
 });
@@ -72,9 +80,6 @@ secret.then((result) => {
   console.log('result: ' + result); // result will be 'secret'
 });
 */
-
-// get Credentials from Keyrings (Windows, Max, Linux)
-// Outlook
 
 window.api.send('zoom', zoomFaktor);
 
@@ -111,6 +116,12 @@ function saveSettings() {
   const custom2_icon = document.getElementById('custom2_icon').value;
   localStorage.setItem('custom2_url', custom2_url);
   localStorage.setItem('custom2_icon', custom2_icon);
+  // Save credentials
+  outlookUsername = document.getElementById('emailAdress').value;
+  outlookPassword = document.getElementById('outlookPW').value;
+  keytar.setPassword('bbzcloud', 'outlookUsername', outlookUsername);
+  keytar.setPassword('bbzcloud', 'outlookPassword', outlookPassword);
+  // reload App
   window.location.reload();
 }
 
@@ -398,6 +409,12 @@ export default class Main extends React.Component {
                 <i className="fa fa-lightbulb-o" aria-hidden="true" /> Nicht
                 vergessen zu speichern!
               </p>
+              <button onClick={saveSettings} id="sbb">
+                Speichern
+              </button>
+              <button onClick={window.location.reload} id="abb">
+                Abbrechen
+              </button>
               <h2>Autostart</h2>
               <input type="checkbox" id="autostart" name="autostart_onoff" />
               <label htmlFor="autostart_onoff">
@@ -442,13 +459,63 @@ export default class Main extends React.Component {
                 placeholder="https://example.com/icon.png"
               />
               <label htmlFor="icon_website">Icon der Website</label>
+              <h2>Anmeldedaten speichern</h2>
+              <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
+              <input
+                type="text"
+                id="emailAdress"
+                size="50"
+                name="emailAdress"
+                placeholder="vorname.nachname@bbz-rd-eck.de"
+              />
+              <label htmlFor="emailAdress">E-Mail-Adresse</label>
+              <p />
+              <h3>Lehrerkürzel (für Moodle und UNTIS)</h3>
+              <input
+                type="text"
+                id="teacherID"
+                size="50"
+                name="teacherID"
+                placeholder="NachV"
+              />
+              <label htmlFor="teacherID">Lehrerkürzel</label>
+              <p />
+              <h3>Passworte</h3>
+              <input
+                type="password"
+                id="outlookPW"
+                size="50"
+                name="outlookPW"
+              />
+              <label htmlFor="outlookPW">Outlook</label>
+              <input
+                type="text"
+                id="moodlePW"
+                size="50"
+                name="moodlePW"
+                placeholder=""
+              />
+              <label htmlFor="moodlePW">Moodle</label>
+              <input
+                type="text"
+                id="untisPW"
+                size="50"
+                name="untisPW"
+                placeholder=""
+              />
+              <label htmlFor="untisPW">UNTIS</label>
+              <input
+                type="text"
+                id="bbbPW"
+                size="50"
+                name="bbbPW"
+                placeholder=""
+              />
+              <label htmlFor="bbbPW">BigBlueButton</label>
               <p>
                 <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
                 <b>Entwicklerin:</b> Leonie
               </p>
-              <button onClick={saveSettings} id="sbb">
-                Speichern
-              </button>
             </div>
           </div>
         </div>
