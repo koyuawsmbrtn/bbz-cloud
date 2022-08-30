@@ -28,8 +28,26 @@ if (
   zoomFaktor = parseFloat(localStorage.getItem('zoomFaktor'));
 }
 
-// TODO: Single-Sign On via injections (Bsp.: $("#userNameInput" ).attr( "value", "dennis.clausen@bbz-rd-eck.de" ); für Outlook)
-//        https://stackoverflow.com/questions/7961568/fill-fields-in-webview-automatically
+// Hierin werden die Credentials des Users gespeichert - momentan noch unser über localStorage
+let outlookUsername = 'dennis.clausen@juchu.de';
+let outlookPassword = 'test';
+let moodleUsername = 'dennis.clausen@juchu.de';
+let moodlePassword = 'test';
+// get Credentials from localStorage
+// Outlook
+if (localStorage.getItem('outlookUsername') !== null) {
+  outlookUsername = localStorage.getItem('outlookUsername');
+}
+if (localStorage.getItem('outlookPassword') !== null) {
+  outlookPassword = localStorage.getItem('outlookPassword');
+}
+// Moodle
+if (localStorage.getItem('moodleUsername') !== null) {
+  moodleUsername = localStorage.getItem('moodleUsername');
+}
+if (localStorage.getItem('moodlePassword') !== null) {
+  moodlePassword = localStorage.getItem('moodlePassword');
+}
 
 window.api.send('zoom', zoomFaktor);
 
@@ -139,7 +157,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  preload="file:wv-${key}.js"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -250,6 +267,28 @@ export default class Main extends React.Component {
       if (localStorage.getItem('autostart') === 'true') {
         $('#autostart').attr('checked', 'true');
       }
+      // Credentials in die einzelnen WebViews einfügen
+      document.querySelectorAll('webview').forEach((wv) => {
+        wv.addEventListener('did-finish-load', (event) => {
+          if (wv.id === 'wv-Outlook') {
+            console.log('Outlook!');
+            wv.executeJavaScript(
+              `document.querySelector('#userNameInput').value = "${outlookUsername}"`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#passwordInput').value = "${outlookPassword}"`
+            );
+          }
+          if (wv.id === 'wv-BBZPortal') {
+            wv.executeJavaScript(
+              `document.querySelector('#username').value = "${moodleUsername}"`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#password').value = "${moodlePassword}"`
+            );
+          }
+        });
+      });
       $('.wv').hide();
       $('.wvbr').hide();
       $('.wvbb').hide();
@@ -257,12 +296,13 @@ export default class Main extends React.Component {
       $('.wvbc').hide();
     }, 2000);
 
-    document.querySelectorAll('webview').forEach((wv) => {
+    /* document.querySelectorAll('webview').forEach((wv) => {
       wv.addEventListener('did-start-loading'),
-        () => document
-          .querySelectorAll('webview')
+        () =>
+          document
+            .querySelectorAll('webview')
             .forEach(windows.api.send('loadingStartorStop', currentURL));
-    });
+    }); */
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
@@ -293,12 +333,7 @@ export default class Main extends React.Component {
             <div id="container">
               <div id="headnote">
                 <p>
-                  <img
-                    src={logo}
-                    alt="BBZ Logo"
-                    height="28"
-                    id="logo"
-                  />
+                  <img src={logo} alt="BBZ Logo" height="28" id="logo" />
                   <h1>BBZ Cloud</h1>
                 </p>
                 <p>
@@ -381,7 +416,8 @@ export default class Main extends React.Component {
               />
               <label htmlFor="icon_website">Icon der Website</label>
               <p>
-                <b>BBZ Cloud App Version:</b> {versionApp} | <b>Entwicklerin:</b> Leonie
+                <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
+                <b>Entwicklerin:</b> Leonie
               </p>
               <button onClick={saveSettings} id="sbb">
                 Speichern
