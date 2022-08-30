@@ -9,6 +9,7 @@
 /* eslint-disable func-names */
 import React from 'react';
 import $ from 'jquery';
+import keytar from 'keytar';
 import monkey from '../../assets/monkey.png';
 import u1 from '../../assets/uebersicht.png';
 import u2 from '../../assets/doge.png';
@@ -33,21 +34,47 @@ let outlookUsername = 'dennis.clausen@juchu.de';
 let outlookPassword = 'test';
 let moodleUsername = 'dennis.clausen@juchu.de';
 let moodlePassword = 'test';
-// get Credentials from localStorage
 // Outlook
-if (localStorage.getItem('outlookUsername') !== null) {
-  outlookUsername = localStorage.getItem('outlookUsername');
-}
-if (localStorage.getItem('outlookPassword') !== null) {
-  outlookPassword = localStorage.getItem('outlookPassword');
-}
+let pw = keytar.getPassword('bbzcloud', 'outlookUsername');
+pw.then((result) => {
+  // eslint-disable-next-line no-return-assign
+  return (outlookUsername = result);
+}).catch(() => {
+  outlookUsername = '';
+});
+pw = keytar.getPassword('bbzcloud', 'moodlePassword');
+pw.then((result) => {
+  // eslint-disable-next-line no-return-assign
+  return (moodlePassword = result);
+}).catch(() => {
+  moodlePassword = '';
+});
 // Moodle
-if (localStorage.getItem('moodleUsername') !== null) {
-  moodleUsername = localStorage.getItem('moodleUsername');
-}
-if (localStorage.getItem('moodlePassword') !== null) {
-  moodlePassword = localStorage.getItem('moodlePassword');
-}
+pw = keytar.getPassword('bbzcloud', 'moodleUsername');
+pw.then((result) => {
+  // eslint-disable-next-line no-return-assign
+  return (moodleUsername = result);
+}).catch(() => {
+  moodleUsername = '';
+});
+pw = keytar.getPassword('bbzcloud', 'moodlePassword');
+pw.then((result) => {
+  // eslint-disable-next-line no-return-assign
+  return (moodlePassword = result);
+}).catch(() => {
+  moodlePassword = '';
+});
+
+/* How to operate Keytar
+keytar.setPassword('KeytarTest', 'AccountName', 'secret');
+const secret = keytar.getPassword('KeytarTest', 'AccountName');
+secret.then((result) => {
+  console.log('result: ' + result); // result will be 'secret'
+});
+*/
+
+// get Credentials from Keyrings (Windows, Max, Linux)
+// Outlook
 
 window.api.send('zoom', zoomFaktor);
 
