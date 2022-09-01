@@ -1,3 +1,5 @@
+/* eslint-disable promise/always-return */
+/* eslint-disable promise/catch-or-return */
 /* eslint-disable vars-on-top */
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -9,7 +11,6 @@
 /* eslint-disable func-names */
 import React from 'react';
 import $ from 'jquery';
-import keytar from 'keytar';
 import monkey from '../../assets/monkey.png';
 import u1 from '../../assets/uebersicht.png';
 import u2 from '../../assets/doge.png';
@@ -18,18 +19,12 @@ import links from '../../assets/object.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
+import { windowsStore } from 'process';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 
-if (
-  localStorage.getItem('zoomFaktor') !== null &&
-  parseFloat(localStorage.getItem('zoomFaktor')) > 0
-) {
-  zoomFaktor = parseFloat(localStorage.getItem('zoomFaktor'));
-}
-
-// Hierin werden die Credentials des Users gespeichert - momentan noch unser über localStorage
+// PW- und Username-Variablen
 let outlookUsername;
 let outlookPassword;
 let moodleUsername;
@@ -39,47 +34,15 @@ let untisPassword;
 let bbbUsername;
 let bbbPassword;
 
-// Outlook
-let pw = keytar.getPassword('bbzcloud', 'outlookUsername');
-// eslint-disable-next-line promise/always-return
-pw.then((result) => {
-  outlookUsername = result;
-}).catch(() => {
-  outlookUsername = '';
-});
-pw = keytar.getPassword('bbzcloud', 'moodlePassword');
-// eslint-disable-next-line promise/always-return
-pw.then((result) => {
-  // eslint-disable-next-line no-return-assign
-  moodlePassword = result;
-}).catch(() => {
-  moodlePassword = '';
-});
-// Moodle
-pw = keytar.getPassword('bbzcloud', 'moodleUsername');
-// eslint-disable-next-line promise/always-return
-pw.then((result) => {
-  // eslint-disable-next-line no-return-assign
-  moodleUsername = result;
-}).catch(() => {
-  moodleUsername = '';
-});
-pw = keytar.getPassword('bbzcloud', 'moodlePassword');
-// eslint-disable-next-line promise/always-return
-pw.then((result) => {
-  // eslint-disable-next-line no-return-assign
-  moodlePassword = result;
-}).catch(() => {
-  moodlePassword = '';
-});
+// wiederholtes Neuladen der Seiten beim Einfügen verhindern
+let outlookIsSet = false;
 
-/* How to operate Keytar
-keytar.setPassword('KeytarTest', 'AccountName', 'secret');
-const secret = keytar.getPassword('KeytarTest', 'AccountName');
-secret.then((result) => {
-  console.log('result: ' + result); // result will be 'secret'
-});
-*/
+if (
+  localStorage.getItem('zoomFaktor') !== null &&
+  parseFloat(localStorage.getItem('zoomFaktor')) > 0
+) {
+  zoomFaktor = parseFloat(localStorage.getItem('zoomFaktor'));
+}
 
 window.api.send('zoom', zoomFaktor);
 
@@ -117,11 +80,23 @@ function saveSettings() {
   localStorage.setItem('custom2_url', custom2_url);
   localStorage.setItem('custom2_icon', custom2_icon);
   // Save credentials
-  outlookUsername = document.getElementById('emailAdress').value;
-  outlookPassword = document.getElementById('outlookPW').value;
-  keytar.setPassword('bbzcloud', 'outlookUsername', outlookUsername);
-  keytar.setPassword('bbzcloud', 'outlookPassword', outlookPassword);
+  let creds;
+
+  window.api.send('savePassword', {
+    name: 'outlookUsername',
+    value: document.getElementById('emailAdress').value,
+  });
+  window.api.send('savePassword', {
+    name: 'outlookPassword',
+    value: document.getElementById('outlookPW').value,
+  });
   // reload App
+  outlookIsSet = false;
+  window.location.reload();
+}
+
+function cancel() {
+  outlookIsSet = false;
   window.location.reload();
 }
 
@@ -305,16 +280,31 @@ export default class Main extends React.Component {
       if (localStorage.getItem('autostart') === 'true') {
         $('#autostart').attr('checked', 'true');
       }
+
+      // Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
+      // Idee: Ein Sammelobjekt übertragen statt einzelner ipc-Anfragen
+      window.api.receive('getPassword', (result) => {
+        outlookUsername = result;
+      });
+      window.api.send('getPassword', 'outlookUsername');
+      window.api.receive('getPassword', (result) => {
+        outlookUsername = result;
+      });
+      window.api.send('getPassword', 'outlookUsername');
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', (event) => {
-          if (wv.id === 'wv-Outlook') {
-            console.log('Outlook!');
+          if (wv.id === 'wv-Outlook' && !outlookIsSet) {
+            outlookIsSet = true;
             wv.executeJavaScript(
               `document.querySelector('#userNameInput').value = "${outlookUsername}"`
             );
             wv.executeJavaScript(
               `document.querySelector('#passwordInput').value = "${outlookPassword}"`
+            );
+            wv.executeJavaScript(
+              // Hier soll der Button geklickt werden
+              `document.querySelector('#submitButton').click();`
             );
           }
           if (wv.id === 'wv-BBZPortal') {
@@ -412,7 +402,7 @@ export default class Main extends React.Component {
               <button onClick={saveSettings} id="sbb">
                 Speichern
               </button>
-              <button onClick={window.location.reload} id="abb">
+              <button onClick={cancel} id="abb">
                 Abbrechen
               </button>
               <h2>Autostart</h2>
