@@ -19,23 +19,29 @@ import links from '../../assets/object.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
-import { windowsStore } from 'process';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 
 // PW- und Username-Variablen
-let outlookUsername;
-let outlookPassword;
-let moodleUsername;
-let moodlePassword;
-let untisUsername;
-let untisPassword;
-let bbbUsername;
-let bbbPassword;
+let creds = {
+  outlookUsername: '',
+  outlookPassword: '',
+  moodleUsername: '',
+  moodlePassword: '',
+  untisUsername: '',
+  untisPassword: '',
+  bbbUsername: '',
+  bbbPassword: '',
+};
 
 // wiederholtes Neuladen der Seiten beim Einfügen verhindern
-let outlookIsSet = false;
+const credsAreSet = {
+  outlook: false,
+  moodle: false,
+  untis: false,
+  bbb: false,
+};
 
 if (
   localStorage.getItem('zoomFaktor') !== null &&
@@ -55,6 +61,10 @@ if (isTeacher) {
 }
 
 function reloadPage() {
+  $.each(credsAreSet, (i, val) => {
+    // eslint-disable-next-line no-param-reassign
+    val = false;
+  });
   window.location.reload();
 }
 
@@ -80,23 +90,33 @@ function saveSettings() {
   localStorage.setItem('custom2_url', custom2_url);
   localStorage.setItem('custom2_icon', custom2_icon);
   // Save credentials
-  let creds;
-
-  window.api.send('savePassword', {
-    name: 'outlookUsername',
-    value: document.getElementById('emailAdress').value,
-  });
-  window.api.send('savePassword', {
-    name: 'outlookPassword',
-    value: document.getElementById('outlookPW').value,
-  });
+  creds = {
+    outlookUsername: document.getElementById('emailAdress').value,
+    outlookPassword: document.getElementById('outlookPW').value,
+    moodleUsername: document
+      .getElementById('teacherID')
+      .value.toString()
+      .toLowerCase(),
+    moodlePassword: document.getElementById('moodlePW').value,
+    untisUsername: document.getElementById('teacherID').value,
+    untisPassword: document.getElementById('moodlePW').value,
+    bbbUsername: document.getElementById('emailAdress').value,
+    bbbPassword: document.getElementById('bbbPW').value,
+  };
+  window.api.send('savePassword', creds);
   // reload App
-  outlookIsSet = false;
+  $.each(credsAreSet, (i, val) => {
+    // eslint-disable-next-line no-param-reassign
+    val = false;
+  });
   window.location.reload();
 }
 
 function cancel() {
-  outlookIsSet = false;
+  $.each(credsAreSet, (i, val) => {
+    // eslint-disable-next-line no-param-reassign
+    val = false;
+  });
   window.location.reload();
 }
 
@@ -282,37 +302,56 @@ export default class Main extends React.Component {
       }
 
       // Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
-      // Idee: Ein Sammelobjekt übertragen statt einzelner ipc-Anfragen
+      // Ein Sammelobjekt wird übertragen statt einzelner ipc-Anfragen
       window.api.receive('getPassword', (result) => {
-        outlookUsername = result;
+        creds = result;
       });
-      window.api.send('getPassword', 'outlookUsername');
-      window.api.receive('getPassword', (result) => {
-        outlookUsername = result;
-      });
-      window.api.send('getPassword', 'outlookUsername');
+      window.api.send('getPassword');
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', (event) => {
-          if (wv.id === 'wv-Outlook' && !outlookIsSet) {
-            outlookIsSet = true;
+          // Autofill Outlook
+          if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
+            credsAreSet.outlook = true;
             wv.executeJavaScript(
-              `document.querySelector('#userNameInput').value = "${outlookUsername}"`
+              `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"`
             );
             wv.executeJavaScript(
-              `document.querySelector('#passwordInput').value = "${outlookPassword}"`
+              `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"`
             );
             wv.executeJavaScript(
               // Hier soll der Button geklickt werden
               `document.querySelector('#submitButton').click();`
             );
           }
-          if (wv.id === 'wv-BBZPortal') {
+          // Autofill Moodle
+          if (wv.id === 'wv-BBZPortal' && credsAreSet.moodle === false) {
+            credsAreSet.moodle = true;
             wv.executeJavaScript(
-              `document.querySelector('#username').value = "${moodleUsername}"`
+              `document.querySelector('#username').value = "${creds.moodleUsername}"`
             );
             wv.executeJavaScript(
-              `document.querySelector('#password').value = "${moodlePassword}"`
+              `document.querySelector('#password').value = "${creds.moodlePassword}"`
+            );
+          }
+          // Autofill BBB
+          if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
+            credsAreSet.bbb = true;
+            wv.executeJavaScript(
+              `document.querySelector('#session_email').value = "${creds.bbbUsername}"`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#session_password').value = "${creds.bbbPassword}"`
+            );
+          }
+          // Autofill UNTIS
+          if (wv.id === 'wv-WebUntis' && credsAreSet.untis === false) {
+            credsAreSet.untis = true;
+            wv.executeJavaScript(
+              `document.querySelector('#a088028d-2f1f-4d1d-923b-92e0cb4fbc9a').value = "${creds.untisUsername}"`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#de444b24-70d1-49ea-8355-429e3f403460').value = "${creds.untisPassword}"`
             );
           }
         });
@@ -457,6 +496,7 @@ export default class Main extends React.Component {
                 size="50"
                 name="emailAdress"
                 placeholder="vorname.nachname@bbz-rd-eck.de"
+                defaultValue=""
               />
               <label htmlFor="emailAdress">E-Mail-Adresse</label>
               <p />
@@ -467,6 +507,7 @@ export default class Main extends React.Component {
                 size="50"
                 name="teacherID"
                 placeholder="NachV"
+                defaultValue=""
               />
               <label htmlFor="teacherID">Lehrerkürzel</label>
               <p />
@@ -476,22 +517,25 @@ export default class Main extends React.Component {
                 id="outlookPW"
                 size="50"
                 name="outlookPW"
+                defaultValue=""
               />
               <label htmlFor="outlookPW">Outlook</label>
               <input
-                type="text"
+                type="password"
                 id="moodlePW"
                 size="50"
                 name="moodlePW"
                 placeholder=""
+                defaultValue=""
               />
               <label htmlFor="moodlePW">Moodle</label>
               <input
-                type="text"
+                type="password"
                 id="untisPW"
                 size="50"
                 name="untisPW"
                 placeholder=""
+                defaultValue=""
               />
               <label htmlFor="untisPW">UNTIS</label>
               <input
@@ -500,6 +544,7 @@ export default class Main extends React.Component {
                 size="50"
                 name="bbbPW"
                 placeholder=""
+                defaultValue=""
               />
               <label htmlFor="bbbPW">BigBlueButton</label>
               <p>
