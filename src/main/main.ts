@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable no-empty */
 /* eslint-disable no-inner-declarations */
 /* eslint-disable promise/catch-or-return */
@@ -9,6 +10,7 @@
 import path from 'path';
 import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
+import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
@@ -28,8 +30,38 @@ ipcMain.on('zoom', (event, args) => {
   mainWindow.webContents.setZoomFactor(zoomFaktor);
 });
 
-// var fs = require('fs');
-// var https = require('https');
+/* How to operate Keytar
+keytar.setPassword('KeytarTest', 'AccountName', 'secret');
+const secret = keytar.getPassword('KeytarTest', 'AccountName');
+secret.then((result) => {
+  console.log('result: ' + result); // result will be 'secret'
+});
+*/
+
+ipcMain.on('savePassword', (event, cred) => {
+  keytar.setPassword('bbzcloud', 'credentials', JSON.stringify(cred));
+});
+
+ipcMain.on('getPassword', (event) => {
+  // Idee: Ein Sammelobjekt übertragen statt einzelner ipc-Anfragen
+  const emptyCreds = {
+    outlookUsername: '',
+    outlookPassword: '',
+    moodleUsername: '',
+    moodlePassword: '',
+    bbbUsername: '',
+    bbbPassword: '',
+  };
+  const pw = keytar.getPassword('bbzcloud', 'credentials');
+  // eslint-disable-next-line promise/always-return
+  pw.then((result) => {
+    if (result === null) {
+      mainWindow.webContents.send('getPassword', emptyCreds);
+    } else mainWindow.webContents.send('getPassword', JSON.parse(result));
+  }).catch(() => {
+    mainWindow.webContents.send('getPassword', emptyCreds);
+  });
+});
 
 const RESOURCES_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'assets')
@@ -197,7 +229,7 @@ const downloadtypes = [
   '.fls',
 ];
 
-const microshaftWords = ['onedrive', 'onenote', 'download.aspx'];
+const keywordsMicrosoft = ['onedrive', 'onenote', 'download.aspx'];
 
 function isDownloadType(url: string) {
   var isdt = false;
@@ -209,9 +241,9 @@ function isDownloadType(url: string) {
   return isdt;
 }
 
-function isWinzigWeich(url: string) {
+function isMicrosoft(url: string) {
   var isww = false;
-  microshaftWords.forEach((s) => {
+  keywordsMicrosoft.forEach((s) => {
     if (url.includes(s)) {
       isww = true;
     }
@@ -223,7 +255,7 @@ function isWinzigWeich(url: string) {
 app.on('web-contents-created', (event, contents) => {
   // eslint-disable-next-line no-var
   var handleNewWindow = (e, url) => {
-    if (isWinzigWeich(url) || url.includes('download.aspx')) {
+    if (isMicrosoft(url) || url.includes('download.aspx')) {
       if (
         url.includes('about:blank') ||
         url.includes('download') ||

@@ -29,8 +29,6 @@ let creds = {
   outlookPassword: '',
   moodleUsername: '',
   moodlePassword: '',
-  untisUsername: '',
-  untisPassword: '',
   bbbUsername: '',
   bbbPassword: '',
 };
@@ -39,7 +37,6 @@ let creds = {
 const credsAreSet = {
   outlook: false,
   moodle: false,
-  untis: false,
   bbb: false,
 };
 
@@ -98,8 +95,6 @@ function saveSettings() {
       .value.toString()
       .toLowerCase(),
     moodlePassword: document.getElementById('moodlePW').value,
-    untisUsername: document.getElementById('teacherID').value,
-    untisPassword: document.getElementById('moodlePW').value,
     bbbUsername: document.getElementById('emailAdress').value,
     bbbPassword: document.getElementById('bbbPW').value,
   };
@@ -314,10 +309,10 @@ export default class Main extends React.Component {
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;
             wv.executeJavaScript(
-              `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"`
+              `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
             );
             wv.executeJavaScript(
-              `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"`
+              `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
             );
             wv.executeJavaScript(
               // Hier soll der Button geklickt werden
@@ -327,31 +322,22 @@ export default class Main extends React.Component {
           // Autofill Moodle
           if (wv.id === 'wv-BBZPortal' && credsAreSet.moodle === false) {
             credsAreSet.moodle = true;
+
             wv.executeJavaScript(
-              `document.querySelector('#username').value = "${creds.moodleUsername}"`
+              `document.querySelector('#username').value = "${creds.moodleUsername}"; void(0);`
             );
             wv.executeJavaScript(
-              `document.querySelector('#password').value = "${creds.moodlePassword}"`
+              `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
             );
           }
           // Autofill BBB
           if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
             credsAreSet.bbb = true;
             wv.executeJavaScript(
-              `document.querySelector('#session_email').value = "${creds.bbbUsername}"`
+              `document.querySelector('#session_email').value = "${creds.bbbUsername}"; void(0);`
             );
             wv.executeJavaScript(
-              `document.querySelector('#session_password').value = "${creds.bbbPassword}"`
-            );
-          }
-          // Autofill UNTIS
-          if (wv.id === 'wv-WebUntis' && credsAreSet.untis === false) {
-            credsAreSet.untis = true;
-            wv.executeJavaScript(
-              `document.querySelector('#a088028d-2f1f-4d1d-923b-92e0cb4fbc9a').value = "${creds.untisUsername}"`
-            );
-            wv.executeJavaScript(
-              `document.querySelector('#de444b24-70d1-49ea-8355-429e3f403460').value = "${creds.untisPassword}"`
+              `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
             );
           }
         });
@@ -500,7 +486,7 @@ export default class Main extends React.Component {
               />
               <label htmlFor="emailAdress">E-Mail-Adresse</label>
               <p />
-              <h3>Lehrerkürzel (für Moodle und UNTIS)</h3>
+              <h3>Lehrerkürzel (für Moodle)</h3>
               <input
                 type="text"
                 id="teacherID"
@@ -529,15 +515,6 @@ export default class Main extends React.Component {
                 defaultValue=""
               />
               <label htmlFor="moodlePW">Moodle</label>
-              <input
-                type="password"
-                id="untisPW"
-                size="50"
-                name="untisPW"
-                placeholder=""
-                defaultValue=""
-              />
-              <label htmlFor="untisPW">UNTIS</label>
               <input
                 type="text"
                 id="bbbPW"
