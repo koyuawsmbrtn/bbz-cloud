@@ -107,12 +107,8 @@ function saveSettings() {
   window.location.reload();
 }
 
-function cancel() {
-  $.each(credsAreSet, (i, val) => {
-    // eslint-disable-next-line no-param-reassign
-    val = false;
-  });
-  window.location.reload();
+function clickable(b: boolean) {
+  localStorage.setItem('isClickable', String(b));
 }
 
 export default class Main extends React.Component {
@@ -126,7 +122,9 @@ export default class Main extends React.Component {
       $('#content').hide();
       $('#buttons').css('visibility', 'hidden');
       $('body').css('overflow', 'overlay');
-      localStorage.setItem('isClickable', 'false');
+    });
+    $('.clickable-modifier input').click(function () {
+      clickable(false);
     });
     $('body').css('background', '#173a64');
     // let isOnline = true;
@@ -360,7 +358,7 @@ export default class Main extends React.Component {
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         $('#doge').html(
-          '<video src="https://f001.backblazeb2.com/file/koyuspace-media/cache/media_attachments/files/108/216/721/989/948/797/original/4523bd1f0de68193.mp4" width="640" height="480" autoplay></video>'
+          '<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
         );
       } else if (event.ctrlKey && event.keyCode === 187) {
         zoomFaktor += 0.1; // Zoom in um 10%
@@ -425,105 +423,106 @@ export default class Main extends React.Component {
                 vergessen zu speichern!
               </p>
               <h2>Autostart</h2>
-              <input type="checkbox" id="autostart" name="autostart_onoff" />
-              <label htmlFor="autostart_onoff">
-                App beim Login am Computer automatisch starten
-              </label>
-              <h2>Apps aktivieren/deaktivieren</h2>
-              <div id="appchecks" className="twoColumn" />
-              <h2>Benutzerdefinierte Webapp hinzufügen</h2>
-              <h3>Erste benutzerdefinierte App</h3>
-              <input
-                type="text"
-                id="custom1_url"
-                size="50"
-                name="url_website"
-                placeholder="https://example.com"
-              />
-              <label htmlFor="url_website">URL der Website</label>
-              <p />
-              <input
-                type="text"
-                id="custom1_icon"
-                size="50"
-                name="icon_website"
-                placeholder="https://example.com/icon.png"
-              />
-              <label htmlFor="icon_website">Icon der Website</label>
-              <h3>Zweite benutzerdefinierte App</h3>
-              <input
-                type="text"
-                id="custom2_url"
-                size="50"
-                name="url_website"
-                placeholder="https://example.com"
-              />
-              <label htmlFor="url_website">URL der Website</label>
-              <p />
-              <input
-                type="text"
-                id="custom2_icon"
-                size="50"
-                name="icon_website"
-                placeholder="https://example.com/icon.png"
-              />
-              <label htmlFor="icon_website">Icon der Website</label>
-              <h2>Anmeldedaten speichern</h2>
-              <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
-              <input
-                type="text"
-                id="emailAdress"
-                size="50"
-                name="emailAdress"
-                placeholder="vorname.nachname@bbz-rd-eck.de"
-                defaultValue=""
-              />
-              <label htmlFor="emailAdress">E-Mail-Adresse</label>
-              <p />
-              <h3>Lehrerkürzel (für Moodle)</h3>
-              <input
-                type="text"
-                id="teacherID"
-                size="50"
-                name="teacherID"
-                placeholder="NachV"
-                defaultValue=""
-              />
-              <label htmlFor="teacherID">Lehrerkürzel</label>
-              <p />
-              <h3>Passworte</h3>
-              <input
-                type="password"
-                id="outlookPW"
-                size="50"
-                name="outlookPW"
-                defaultValue=""
-              />
-              <label htmlFor="outlookPW">Outlook</label>
-              <input
-                type="password"
-                id="moodlePW"
-                size="50"
-                name="moodlePW"
-                placeholder=""
-                defaultValue=""
-              />
-              <label htmlFor="moodlePW">Moodle</label>
-              <input
-                type="password"
-                id="bbbPW"
-                size="50"
-                name="bbbPW"
-                placeholder=""
-                defaultValue=""
-              />
-              <label htmlFor="bbbPW">BigBlueButton</label>
-              <button onClick={saveSettings} id="sbb">
-                Speichern
-              </button>
-              <button onClick={cancel} id="abb">
-                Abbrechen
-              </button>
+              <div className="clickable-modifier">
+                <input type="checkbox" id="autostart" name="autostart_onoff" />
+                <label htmlFor="autostart_onoff">
+                  App beim Login am Computer automatisch starten
+                </label>
+                <h2>Apps aktivieren/deaktivieren</h2>
+              </div>
+              <div className="clickable-modifier">
+                <div id="appchecks" className="twoColumn" />
+                <h2>Benutzerdefinierte Webapp hinzufügen</h2>
+                <h3>Erste benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom1_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom1_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+                <label htmlFor="icon_website">Icon der Website</label>
+                <h3>Zweite benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom2_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom2_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+                <label htmlFor="icon_website">Icon der Website</label>
+                <h2>Anmeldedaten speichern</h2>
+                <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
+                <input
+                  type="text"
+                  id="emailAdress"
+                  size="50"
+                  name="emailAdress"
+                  placeholder="vorname.nachname@bbz-rd-eck.de"
+                  defaultValue=""
+                />
+                <label htmlFor="emailAdress">E-Mail-Adresse</label>
+                <p />
+                <h3>Lehrerkürzel (für Moodle)</h3>
+                <input
+                  type="text"
+                  id="teacherID"
+                  size="50"
+                  name="teacherID"
+                  placeholder="NachV"
+                  defaultValue=""
+                />
+                <label htmlFor="teacherID">Lehrerkürzel</label>
+                <p />
+                <h3>Passworte</h3>
+                <input
+                  type="password"
+                  id="outlookPW"
+                  size="50"
+                  name="outlookPW"
+                  defaultValue=""
+                />
+                <label htmlFor="outlookPW">Outlook</label>
+                <input
+                  type="password"
+                  id="moodlePW"
+                  size="50"
+                  name="moodlePW"
+                  placeholder=""
+                  defaultValue=""
+                />
+                <label htmlFor="moodlePW">Moodle</label>
+                <input
+                  type="password"
+                  id="bbbPW"
+                  size="50"
+                  name="bbbPW"
+                  placeholder=""
+                  defaultValue=""
+                />
+                <label htmlFor="bbbPW">BigBlueButton</label>
+                <button onClick={saveSettings} id="sbb">
+                  Speichern
+                </button>
+              </div>
               <p>
                 <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
                 <b>Entwicklerin:</b> Leonie
