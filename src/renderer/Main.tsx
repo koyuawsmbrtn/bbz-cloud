@@ -424,12 +424,6 @@ export default class Main extends React.Component {
                 <i className="fa fa-lightbulb-o" aria-hidden="true" /> Nicht
                 vergessen zu speichern!
               </p>
-              <button onClick={saveSettings} id="sbb">
-                Speichern
-              </button>
-              <button onClick={cancel} id="abb">
-                Abbrechen
-              </button>
               <h2>Autostart</h2>
               <input type="checkbox" id="autostart" name="autostart_onoff" />
               <label htmlFor="autostart_onoff">
@@ -516,7 +510,7 @@ export default class Main extends React.Component {
               />
               <label htmlFor="moodlePW">Moodle</label>
               <input
-                type="text"
+                type="password"
                 id="bbbPW"
                 size="50"
                 name="bbbPW"
@@ -524,6 +518,12 @@ export default class Main extends React.Component {
                 defaultValue=""
               />
               <label htmlFor="bbbPW">BigBlueButton</label>
+              <button onClick={saveSettings} id="sbb">
+                Speichern
+              </button>
+              <button onClick={cancel} id="abb">
+                Abbrechen
+              </button>
               <p>
                 <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
                 <b>Entwicklerin:</b> Leonie
