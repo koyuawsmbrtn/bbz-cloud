@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable no-empty */
 /* eslint-disable no-inner-declarations */
@@ -117,6 +118,16 @@ const createWindow = async () => {
       contextIsolation: true, // protect against prototype pollution
     },
   });
+  mainWindow.webContents.session.setPermissionCheckHandler(
+    (webContents, permission, details) => {
+      return true;
+    }
+  );
+  mainWindow.webContents.session.setPermissionRequestHandler(
+    (webContents, permission, callback, details) => {
+      callback(true);
+    }
+  );
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
@@ -151,6 +162,17 @@ const createWindow = async () => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
+  });
+
+  // Get Videosources for Screensharing
+  const { desktopCapturer } = require('electron');
+
+  ipcMain.on('getDisplaySources', (event) => {
+    desktopCapturer
+      .getSources({ types: ['window', 'screen'] })
+      .then(async (sources) => {
+        mainWindow.webContents.send('getDisplaySources', sources);
+      });
   });
 
   // AutoUpdater - including debug loggin in %USERPROFILE%\AppData\Roaming\bbzcloud\logs\
@@ -306,7 +328,7 @@ app.on('web-contents-created', (event, contents) => {
         };
         const options = {
           type: 'info',
-          buttons: ['Ok'],
+          buttons: ['Ok', 'Downloads öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };

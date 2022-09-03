@@ -19,9 +19,11 @@ import links from '../../assets/object.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
+import { desktopPicker } from 'main/preload';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
+let displaySources;
 
 // PW- und Username-Variablen
 let creds = {
@@ -56,6 +58,11 @@ if (isTeacher) {
 } else {
   doge = u2;
 }
+
+window.api.receive('getDisplaySources', (result) => {
+  displaySources = result;
+});
+window.api.send('getDisplaySources');
 
 function reloadPage() {
   $.each(credsAreSet, (i, val) => {
@@ -111,6 +118,62 @@ function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
 
+window.navigator.mediaDevices.getDisplayMedia = () => {
+  return new Promise((resolve, reject) => {
+    const selectionElem = document.createElement('div');
+    selectionElem.classList = 'desktop-capturer-selection';
+    selectionElem.innerHTML = `
+        <div class="desktop-capturer-selection__scroller">
+          <ul class="desktop-capturer-selection__list">
+            ${displaySources
+              .map(
+                ({ id, name, thumbnail, display_id, appIcon }) => `
+              <li class="desktop-capturer-selection__item">
+                <button class="desktop-capturer-selection__btn" data-id="${id}" title="${name}">
+                  <img class="desktop-capturer-selection__thumbnail" src="${thumbnail.toDataURL()}" />
+                  <span class="desktop-capturer-selection__name">${name}</span>
+                </button>
+              </li>
+            `
+              )
+              .join('')}
+          </ul>
+        </div>
+      `;
+    document.body.appendChild(selectionElem);
+
+    document
+      .querySelectorAll('.desktop-capturer-selection__btn')
+      .forEach((button) => {
+        button.addEventListener('click', async () => {
+          try {
+            const id = button.getAttribute('data-id');
+            const source = displaySources.find((source) => source.id === id);
+            if (!source) {
+              throw new Error(`Source with id ${id} does not exist`);
+            }
+
+            const stream = await window.navigator.mediaDevices.getUserMedia({
+              audio: false,
+              video: {
+                mandatory: {
+                  chromeMediaSource: 'desktop',
+                  chromeMediaSourceId: source.id,
+                },
+              },
+            });
+            resolve(stream);
+
+            selectionElem.remove();
+          } catch (err) {
+            console.error('Error selecting desktop capture source:', err);
+            reject(err);
+          }
+        });
+      });
+  });
+};
+
 export default class Main extends React.Component {
   componentDidMount() {
     localStorage.setItem('isClickable', 'true');
@@ -156,6 +219,7 @@ export default class Main extends React.Component {
         console.log(e);
       }
     });
+
     window.setTimeout(() => {
       $('#loading').hide();
       $('#main').show();
