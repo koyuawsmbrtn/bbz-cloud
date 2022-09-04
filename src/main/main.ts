@@ -9,13 +9,24 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  dialog,
+  ipcMain,
+  desktopCapturer,
+  Menu,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
+/*
+ *** ipcCommunication
+ */
 
 // Communication with renderer for Autostart func (Mac/Windows)
 ipcMain.on('autostart', (event, args) => {
@@ -30,14 +41,6 @@ ipcMain.on('zoom', (event, args) => {
   zoomFaktor = args;
   mainWindow.webContents.setZoomFactor(zoomFaktor);
 });
-
-/* How to operate Keytar
-keytar.setPassword('KeytarTest', 'AccountName', 'secret');
-const secret = keytar.getPassword('KeytarTest', 'AccountName');
-secret.then((result) => {
-  console.log('result: ' + result); // result will be 'secret'
-});
-*/
 
 ipcMain.on('savePassword', (event, cred) => {
   keytar.setPassword('bbzcloud', 'credentials', JSON.stringify(cred));
@@ -63,6 +66,20 @@ ipcMain.on('getPassword', (event) => {
     mainWindow.webContents.send('getPassword', emptyCreds);
   });
 });
+
+ipcMain.on('getDisplaySources', (event, args) => {
+  desktopCapturer
+    .getSources({ types: ['window', 'screen'] })
+    .then((sources) => {
+      mainWindow.webContents.send('getDisplaySources', sources);
+      // eslint-disable-next-line no-useless-return
+      return;
+    });
+});
+
+/*
+ ***
+ */
 
 const RESOURCES_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'assets')
@@ -114,10 +131,12 @@ const createWindow = async () => {
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webviewTag: true,
+      partition: 'persist:bbzcloud',
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
     },
   });
+  /*
   mainWindow.webContents.session.setPermissionCheckHandler(
     (webContents, permission, details) => {
       return true;
@@ -128,7 +147,7 @@ const createWindow = async () => {
       callback(true);
     }
   );
-
+*/
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   Menu.setApplicationMenu(null);
@@ -162,17 +181,6 @@ const createWindow = async () => {
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
-  });
-
-  // Get Videosources for Screensharing
-  const { desktopCapturer } = require('electron');
-
-  ipcMain.on('getDisplaySources', (event) => {
-    desktopCapturer
-      .getSources({ types: ['window', 'screen'] })
-      .then(async (sources) => {
-        mainWindow.webContents.send('getDisplaySources', sources);
-      });
   });
 
   // AutoUpdater - including debug loggin in %USERPROFILE%\AppData\Roaming\bbzcloud\logs\
@@ -264,13 +272,13 @@ function isDownloadType(url: string) {
 }
 
 function isMicrosoft(url: string) {
-  var isww = false;
+  var isms = false;
   keywordsMicrosoft.forEach((s) => {
     if (url.includes(s)) {
-      isww = true;
+      isms = true;
     }
   });
-  return isww;
+  return isms;
 }
 
 // Open third-party links in browser

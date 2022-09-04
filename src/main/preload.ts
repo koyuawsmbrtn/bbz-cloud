@@ -1,3 +1,4 @@
+/* eslint-disable promise/catch-or-return */
 /* eslint-disable import/prefer-default-export */
 const { contextBridge, ipcRenderer } = require('electron');
 
@@ -30,3 +31,15 @@ contextBridge.exposeInMainWorld('api', {
     }
   },
 });
+
+/* contextBridge.exposeInMainWorld('CustomGetDisplayMedia', async () => {
+  const sources = await desktopCapturer.getSources({
+    types: ['window', 'screen'],
+  });
+  // you should create some kind of UI to prompt the user
+  // to select the correct source like Google Chrome does
+  const selectedSource = sources[0]; // this is just for testing purposes
+
+  return selectedSource;
+});
+*/
