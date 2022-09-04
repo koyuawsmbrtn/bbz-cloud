@@ -280,9 +280,34 @@ function isMicrosoft(url: string) {
   });
   return isms;
 }
-
 // Open third-party links in browser
 app.on('web-contents-created', (event, contents) => {
+  var handleClickLink = (e, url) => {
+    console.log('Fired: ', url);
+    if (
+      (url.includes('bbb.bbz-rd-eck.de/b/') && url.includes('start')) ||
+      url.includes('stash.cat/l')
+    ) {
+      e.preventDefault();
+      const videoWin = new BrowserWindow({
+        width: 1024,
+        height: 728,
+        minWidth: 600,
+        minHeight: 300,
+        show: true,
+        webPreferences: {
+          preload: app.isPackaged
+            ? path.join(__dirname, 'mediaPreload.js')
+            : path.join(__dirname, '../../.erb/dll/mediaPreload.js'),
+          nodeIntegration: false, // is default value after Electron v5
+          contextIsolation: true, // protect against prototype pollution
+        },
+      });
+      videoWin.loadURL(url);
+    }
+  };
+  contents.on('will-navigate', handleClickLink);
+
   // eslint-disable-next-line no-var
   var handleNewWindow = (e, url) => {
     if (isMicrosoft(url) || url.includes('download.aspx')) {

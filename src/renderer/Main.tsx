@@ -22,10 +22,9 @@ import isTeacherVar from '../../assets/isTeacher.json';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
-let mediaSources;
 
 // PW- und Username-Variablen
-let creds = {
+const defaultCreds = {
   outlookUsername: '',
   outlookPassword: '',
   moodleUsername: '',
@@ -33,6 +32,7 @@ let creds = {
   bbbUsername: '',
   bbbPassword: '',
 };
+let creds = defaultCreds;
 
 // wiederholtes Neuladen der Seiten beim Einfügen verhindern
 const credsAreSet = {
@@ -58,10 +58,12 @@ if (isTeacher) {
   doge = u2;
 }
 
-window.api.receive('getDisplaySources', (result) => {
-  mediaSources = result;
+// Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
+// Ein Sammelobjekt wird übertragen statt einzelner ipc-Anfragen
+window.api.receive('getPassword', (result) => {
+  creds = result;
 });
-window.api.send('getDisplaySources');
+window.api.send('getPassword');
 
 function resetCredsAreSet() {
   credsAreSet.bbb = false;
@@ -75,7 +77,7 @@ function reloadPage() {
 }
 
 function saveSettings() {
-  // Autostart Settings
+  // Save Autostart Settings
   const autostart = document.querySelector('input');
   autostart.addEventListener(
     'click',
@@ -86,7 +88,8 @@ function saveSettings() {
   } else {
     localStorage.setItem('autostart', 'false');
   }
-  // Custom WebApps Settings
+
+  // Save Custom WebApps Settings
   const custom1_url = document.getElementById('custom1_url').value;
   const custom1_icon = document.getElementById('custom1_icon').value;
   localStorage.setItem('custom1_url', custom1_url);
@@ -109,6 +112,7 @@ function saveSettings() {
     bbbPassword: document.getElementById('bbbPW').value,
   };
   window.api.send('savePassword', creds);
+
   // reload App
   resetCredsAreSet();
   window.location.reload();
@@ -191,7 +195,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  partition="persist:webview"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -217,7 +220,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  partition="persist:webview"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -244,6 +246,11 @@ export default class Main extends React.Component {
         const custom1_icon = localStorage.getItem(`custom1_icon`);
         $('#custom1_url').attr('value', custom1_url);
         $('#custom1_icon').attr('value', custom1_icon);
+        $('#emailAdress').attr('value', creds.outlookUsername);
+        $('#teacherID').attr('value', creds.moodleUsername);
+        $('#outlookPW').attr('value', creds.outlookPassword);
+        $('#moodlePW').attr('value', creds.moodlePassword);
+        $('#bbbPW').attr('value', creds.bbbPassword);
         $('#apps').append(
           `<a onClick="changeUrl('custom1')" target="_blank" class="link-custom1 app" style="cursor:pointer;"><img src="${custom1_icon}" height="20" title="Benutzerapp1"></a>`
         );
@@ -251,7 +258,6 @@ export default class Main extends React.Component {
           `<webview
               id="wv-custom1"
               class="wv web-custom1"
-              partition="persist:webview"
               src="${custom1_url}"
               style="display:inline-flex; width:100%; height:91.5vh;"
               allowpopups></webview>`
@@ -284,7 +290,6 @@ export default class Main extends React.Component {
           `<webview
               id="wv-custom2"
               class="wv web-custom2"
-              partition="persist:webview"
               src="${custom2_url}"
               style="display:inline-flex; width:100%; height:91.5vh;"
               allowpopups></webview>`
@@ -306,12 +311,9 @@ export default class Main extends React.Component {
         $('#autostart').attr('checked', 'true');
       }
 
-      // Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
-      // Ein Sammelobjekt wird übertragen statt einzelner ipc-Anfragen
-      window.api.receive('getPassword', (result) => {
-        creds = result;
-      });
-      window.api.send('getPassword');
+      /* Credentials in die settings schreiben (UX)
+      console.log(document.getElementById('emailAdress')?.value);
+      document.getElementById('emailAdress').value = creds.outlookUsername; */
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
@@ -348,29 +350,6 @@ export default class Main extends React.Component {
             );
             wv.executeJavaScript(
               `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
-            );
-            // Load custom getDisplayMedia Func into Node-Obj
-            const getDisplayMediaScript = document.createElement('script');
-            getDisplayMediaScript.text = `navigator.mediaDevices.getDisplayMedia = async () => {
-                const stream = await navigator.mediaDevices.getUserMedia({
-                  audio: false,
-                  video: {
-                    mandatory: {
-                      chromeMediaSource: 'desktop',
-                      chromeMediaSourceId: "${mediaSources[0].id}",
-                      minWidth: 1280,
-                      maxWidth: 1280,
-                      minHeight: 720,
-                      maxHeight: 720,
-                    },
-                  },
-                });
-
-                return stream;
-              };`;
-            // inject new getDisplayMedia script into WebView
-            wv.executeJavaScript(
-              `document.body.appendChild(${getDisplayMediaScript});`
             );
           }
         });
@@ -504,7 +483,7 @@ export default class Main extends React.Component {
                   size="50"
                   name="emailAdress"
                   placeholder="vorname.nachname@bbz-rd-eck.de"
-                  defaultValue=""
+                  defaultValue={creds.outlookUsername}
                 />
                 <label htmlFor="emailAdress">E-Mail-Adresse</label>
                 <p />
