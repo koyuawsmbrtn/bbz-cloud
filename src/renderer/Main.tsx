@@ -498,54 +498,56 @@ export default class Main extends React.Component {
                 <label htmlFor="icon_website">Icon der Website</label>
                 <h2>Anmeldedaten speichern</h2>
                 <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
-                <input
-                  type="text"
-                  id="emailAdress"
-                  size="50"
-                  name="emailAdress"
-                  placeholder="vorname.nachname@bbz-rd-eck.de"
-                  defaultValue=""
-                />
-                <label htmlFor="emailAdress">E-Mail-Adresse</label>
-                <p />
-                <h3>Lehrerkürzel (für Moodle)</h3>
-                <input
-                  type="text"
-                  id="teacherID"
-                  size="50"
-                  name="teacherID"
-                  placeholder="NachV"
-                  defaultValue=""
-                />
-                <label htmlFor="teacherID">Lehrerkürzel</label>
-                <p />
-                <h3>Passworte</h3>
-                <input
-                  type="password"
-                  id="outlookPW"
-                  size="50"
-                  name="outlookPW"
-                  defaultValue=""
-                />
-                <label htmlFor="outlookPW">Outlook</label>
-                <input
-                  type="password"
-                  id="moodlePW"
-                  size="50"
-                  name="moodlePW"
-                  placeholder=""
-                  defaultValue=""
-                />
-                <label htmlFor="moodlePW">Moodle</label>
-                <input
-                  type="password"
-                  id="bbbPW"
-                  size="50"
-                  name="bbbPW"
-                  placeholder=""
-                  defaultValue=""
-                />
-                <label htmlFor="bbbPW">BigBlueButton</label>
+                <div id="views" className="twoColumn">
+                  <input
+                    type="text"
+                    id="emailAdress"
+                    size="50"
+                    name="emailAdress"
+                    placeholder="vorname.nachname@bbz-rd-eck.de"
+                    defaultValue=""
+                  />
+                  <label htmlFor="emailAdress">E-Mail-Adresse</label>
+                  <p />
+                  <h3>Lehrerkürzel (für Moodle)</h3>
+                  <input
+                    type="text"
+                    id="teacherID"
+                    size="50"
+                    name="teacherID"
+                    placeholder="NachV"
+                    defaultValue=""
+                  />
+                  <label htmlFor="teacherID">Lehrerkürzel</label>
+                  <p />
+                  <h3>Passworte</h3>
+                  <input
+                    type="password"
+                    id="outlookPW"
+                    size="30"
+                    name="outlookPW"
+                    defaultValue=""
+                  />
+                  <label htmlFor="outlookPW">Outlook</label>
+                  <input
+                    type="password"
+                    id="moodlePW"
+                    size="30"
+                    name="moodlePW"
+                    placeholder=""
+                    defaultValue=""
+                  />
+                  <label htmlFor="moodlePW">Moodle</label>
+                  <input
+                    type="password"
+                    id="bbbPW"
+                    size="30"
+                    name="bbbPW"
+                    placeholder=""
+                    defaultValue=""
+                  />
+                  <label htmlFor="bbbPW">BigBlueButton</label>
+                </div>
                 <button onClick={saveSettings} id="sbb">
                   Speichern
                 </button>
