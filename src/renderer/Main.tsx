@@ -19,11 +19,10 @@ import links from '../../assets/object.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
-import { desktopPicker } from 'main/preload';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
-let displaySources;
+let mediaSources;
 
 // PW- und Username-Variablen
 let creds = {
@@ -60,15 +59,18 @@ if (isTeacher) {
 }
 
 window.api.receive('getDisplaySources', (result) => {
-  displaySources = result;
+  mediaSources = result;
 });
 window.api.send('getDisplaySources');
 
+function resetCredsAreSet() {
+  credsAreSet.bbb = false;
+  credsAreSet.moodle = false;
+  credsAreSet.outlook = false;
+}
+
 function reloadPage() {
-  $.each(credsAreSet, (i, val) => {
-    // eslint-disable-next-line no-param-reassign
-    val = false;
-  });
+  resetCredsAreSet();
   window.location.reload();
 }
 
@@ -93,6 +95,7 @@ function saveSettings() {
   const custom2_icon = document.getElementById('custom2_icon').value;
   localStorage.setItem('custom2_url', custom2_url);
   localStorage.setItem('custom2_icon', custom2_icon);
+
   // Save credentials
   creds = {
     outlookUsername: document.getElementById('emailAdress').value,
@@ -107,10 +110,7 @@ function saveSettings() {
   };
   window.api.send('savePassword', creds);
   // reload App
-  $.each(credsAreSet, (i, val) => {
-    // eslint-disable-next-line no-param-reassign
-    val = false;
-  });
+  resetCredsAreSet();
   window.location.reload();
 }
 
@@ -118,64 +118,8 @@ function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
 
-window.navigator.mediaDevices.getDisplayMedia = () => {
-  return new Promise((resolve, reject) => {
-    const selectionElem = document.createElement('div');
-    selectionElem.classList = 'desktop-capturer-selection';
-    selectionElem.innerHTML = `
-        <div class="desktop-capturer-selection__scroller">
-          <ul class="desktop-capturer-selection__list">
-            ${displaySources
-              .map(
-                ({ id, name, thumbnail, display_id, appIcon }) => `
-              <li class="desktop-capturer-selection__item">
-                <button class="desktop-capturer-selection__btn" data-id="${id}" title="${name}">
-                  <img class="desktop-capturer-selection__thumbnail" src="${thumbnail.toDataURL()}" />
-                  <span class="desktop-capturer-selection__name">${name}</span>
-                </button>
-              </li>
-            `
-              )
-              .join('')}
-          </ul>
-        </div>
-      `;
-    document.body.appendChild(selectionElem);
-
-    document
-      .querySelectorAll('.desktop-capturer-selection__btn')
-      .forEach((button) => {
-        button.addEventListener('click', async () => {
-          try {
-            const id = button.getAttribute('data-id');
-            const source = displaySources.find((source) => source.id === id);
-            if (!source) {
-              throw new Error(`Source with id ${id} does not exist`);
-            }
-
-            const stream = await window.navigator.mediaDevices.getUserMedia({
-              audio: false,
-              video: {
-                mandatory: {
-                  chromeMediaSource: 'desktop',
-                  chromeMediaSourceId: source.id,
-                },
-              },
-            });
-            resolve(stream);
-
-            selectionElem.remove();
-          } catch (err) {
-            console.error('Error selecting desktop capture source:', err);
-            reject(err);
-          }
-        });
-      });
-  });
-};
-
 export default class Main extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     localStorage.setItem('isClickable', 'true');
     $('#main').hide();
     $('#error').hide();
@@ -247,6 +191,7 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
+                  partition="persist:webview"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -272,6 +217,7 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
+                  partition="persist:webview"
                   style="display:inline-flex; width:100%; height:91.5vh;"
                   allowpopups></webview>`
             );
@@ -305,6 +251,7 @@ export default class Main extends React.Component {
           `<webview
               id="wv-custom1"
               class="wv web-custom1"
+              partition="persist:webview"
               src="${custom1_url}"
               style="display:inline-flex; width:100%; height:91.5vh;"
               allowpopups></webview>`
@@ -337,6 +284,7 @@ export default class Main extends React.Component {
           `<webview
               id="wv-custom2"
               class="wv web-custom2"
+              partition="persist:webview"
               src="${custom2_url}"
               style="display:inline-flex; width:100%; height:91.5vh;"
               allowpopups></webview>`
@@ -366,7 +314,7 @@ export default class Main extends React.Component {
       window.api.send('getPassword');
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
-        wv.addEventListener('did-finish-load', (event) => {
+        wv.addEventListener('did-finish-load', async (event) => {
           // Autofill Outlook
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;
@@ -392,7 +340,7 @@ export default class Main extends React.Component {
               `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
             );
           }
-          // Autofill BBB
+          // Autofill
           if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
             credsAreSet.bbb = true;
             wv.executeJavaScript(
@@ -400,6 +348,29 @@ export default class Main extends React.Component {
             );
             wv.executeJavaScript(
               `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
+            );
+            // Load custom getDisplayMedia Func into Node-Obj
+            const getDisplayMediaScript = document.createElement('script');
+            getDisplayMediaScript.text = `navigator.mediaDevices.getDisplayMedia = async () => {
+                const stream = await navigator.mediaDevices.getUserMedia({
+                  audio: false,
+                  video: {
+                    mandatory: {
+                      chromeMediaSource: 'desktop',
+                      chromeMediaSourceId: "${mediaSources[0].id}",
+                      minWidth: 1280,
+                      maxWidth: 1280,
+                      minHeight: 720,
+                      maxHeight: 720,
+                    },
+                  },
+                });
+
+                return stream;
+              };`;
+            // inject new getDisplayMedia script into WebView
+            wv.executeJavaScript(
+              `document.body.appendChild(${getDisplayMediaScript});`
             );
           }
         });
@@ -410,14 +381,6 @@ export default class Main extends React.Component {
       $('.wvbf').hide();
       $('.wvbc').hide();
     }, 2000);
-
-    /* document.querySelectorAll('webview').forEach((wv) => {
-      wv.addEventListener('did-start-loading'),
-        () =>
-          document
-            .querySelectorAll('webview')
-            .forEach(windows.api.send('loadingStartorStop', currentURL));
-    }); */
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
