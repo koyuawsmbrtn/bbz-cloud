@@ -15,7 +15,7 @@ import {
   shell,
   dialog,
   ipcMain,
-  desktopCapturer,
+  // desktopCapturer,
   Menu,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -67,6 +67,7 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
+/*
 ipcMain.handle('getDisplaySources', async (event) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })

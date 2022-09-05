@@ -1,7 +1,7 @@
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable import/prefer-default-export */
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, desktopCapturer } = require('electron');
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
@@ -115,9 +115,11 @@ window.addEventListener('DOMContentLoaded', () => {
 
 contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
   // ipcRenderer.on('getDisplaySources', (result) => {
-  ipcRenderer.invoke('getDisplaySources').then((result) => {
-    console.log('Renderer: ', result);
-    const sources = JSON.parse(result);
+  // ipcRenderer.invoke('getDisplaySources').then((result) => {
+    const sources = await desktopCapturer.getSources({
+      types: ["window", "screen"],
+    });
+    console.log('Renderer: ', sources);
     const selectionElem = document.createElement('div');
     selectionElem.classList = 'desktop-capturer-selection';
     selectionElem.innerHTML = `
