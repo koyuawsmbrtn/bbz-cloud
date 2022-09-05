@@ -1,23 +1,20 @@
 // All of the Node.js APIs are available in the preload process.
 // It has the same sandbox as a Chrome extension.
 
-const { desktopCapturer, contextBridge } = require('electron');
-const { readFileSync } = require('fs');
-const { join } = require('path');
+const { desktopCapturer, contextBridge } = require("electron");
+const { readFileSync } = require("fs");
+const { join } = require("path");
 
 // inject renderer.js into the web page
-window.addEventListener('DOMContentLoaded', () => {
-  const rendererScript = document.createElement('script');
-  rendererScript.text = readFileSync(
-    join(__dirname, 'mediaSources.js'),
-    'utf8'
-  );
+window.addEventListener("DOMContentLoaded", () => {
+  const rendererScript = document.createElement("script");
+  rendererScript.text = readFileSync(join(__dirname, "renderer.js"), "utf8");
   document.body.appendChild(rendererScript);
 });
 
-contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
+contextBridge.exposeInMainWorld("myCustomGetDisplayMedia", async () => {
   const sources = await desktopCapturer.getSources({
-    types: ['window', 'screen'],
+    types: ["window", "screen"],
   });
 
   // you should create some kind of UI to prompt the user

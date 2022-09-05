@@ -282,23 +282,22 @@ function isMicrosoft(url: string) {
 }
 // Open third-party links in browser
 app.on('web-contents-created', (event, contents) => {
-  var handleClickLink = (e, url) => {
-    console.log('Fired: ', url);
+  var handleRedirect = (e, url) => {
     if (
-      (url.includes('bbb.bbz-rd-eck.de/b/') && url.includes('start')) ||
-      url.includes('stash.cat/l')
+      url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken') ||
+      url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
       const videoWin = new BrowserWindow({
-        width: 1024,
+        width: 1240,
         height: 728,
-        minWidth: 600,
-        minHeight: 300,
+        minWidth: 700,
+        minHeight: 400,
         show: true,
         webPreferences: {
           preload: app.isPackaged
-            ? path.join(__dirname, 'mediaPreload.js')
-            : path.join(__dirname, '../../.erb/dll/mediaPreload.js'),
+            ? path.join(__dirname, 'preload.js')
+            : path.join(__dirname, '../../.erb/dll/preload.js'),
           nodeIntegration: false, // is default value after Electron v5
           contextIsolation: true, // protect against prototype pollution
         },
@@ -306,11 +305,14 @@ app.on('web-contents-created', (event, contents) => {
       videoWin.loadURL(url);
     }
   };
-  contents.on('will-navigate', handleClickLink);
+  contents.on('will-redirect', handleRedirect);
 
   // eslint-disable-next-line no-var
   var handleNewWindow = (e, url) => {
-    if (isMicrosoft(url) || url.includes('download.aspx')) {
+    if (
+      (isMicrosoft(url) || url.includes('download.aspx')) &&
+      !url.includes('stashcat')
+    ) {
       if (
         url.includes('about:blank') ||
         url.includes('download') ||
@@ -361,14 +363,17 @@ app.on('web-contents-created', (event, contents) => {
         };
         const options = {
           type: 'info',
-          buttons: ['Ok', 'Downloads öffnen'],
+          buttons: ['Ok', 'Downloads-Ordner öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };
         if (!messageBoxIsDisplayed) {
           messageBoxIsDisplayed = true;
-          const response = dialog.showMessageBox(mainWindow, options);
-          response.then(() => {
+          dialog.showMessageBox(mainWindow, options).then((response) => {
+            console.log(response);
+            if (response.response === 1) {
+              shell.openPath(app.getPath('downloads'));
+            }
             messageBoxIsDisplayed = false;
           });
         }
