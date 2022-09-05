@@ -1,10 +1,9 @@
+/* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable import/prefer-default-export */
 const { contextBridge, ipcRenderer } = require('electron');
 const { readFileSync } = require('fs');
 const { join } = require('path');
-
-let sources;
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -32,6 +31,13 @@ contextBridge.exposeInMainWorld('api', {
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
       ipcRenderer.on(channel, (event, ...args) => func(...args));
+    }
+  },
+  invoke: (channel: string, data: any) => {
+    // whitelist channels
+    const validChannels = ['getDisplaySources'];
+    if (validChannels.includes(channel)) {
+      return ipcRenderer.invoke(channel, data);
     }
   },
 });
@@ -108,48 +114,47 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
+  // ipcRenderer.on('getDisplaySources', (result) => {
   ipcRenderer.invoke('getDisplaySources').then((result) => {
-    console.log('Preload: ', result);
-    sources = result;
-    // eslint-disable-next-line no-useless-return
-    return sources;
-  });
-  const selectionElem = document.createElement('div');
-  selectionElem.classList = 'desktop-capturer-selection';
-  selectionElem.innerHTML = `
-        <div class="desktop-capturer-selection__scroller">
-          <ul class="desktop-capturer-selection__list">
-            ${sources
-              .map(
-                ({ id, name, thumbnail, display_id, appIcon }) => `
-              <li class="desktop-capturer-selection__item">
-                <button class="desktop-capturer-selection__btn" data-id="${id}" title="${name}">
-                  <img class="desktop-capturer-selection__thumbnail" src="${thumbnail.toDataURL()}" />
-                  <span class="desktop-capturer-selection__name">${name}</span>
-                </button>
-              </li>
-            `
-              )
-              .join('')}
-          </ul>
-        </div>
-      `;
-  document.body.appendChild(selectionElem);
-  document
-    .querySelectorAll('.desktop-capturer-selection__btn')
-    .forEach((button) => {
-      button.addEventListener('click', async () => {
-        try {
-          const id = button.getAttribute('data-id');
-          const source = sources.find((source) => source.id === id);
-          if (!source) {
-            throw new Error(`Source with id ${id} does not exist`);
-          } else {
-            return source;
+    console.log('Renderer: ', result);
+    const sources = JSON.parse(result);
+    const selectionElem = document.createElement('div');
+    selectionElem.classList = 'desktop-capturer-selection';
+    selectionElem.innerHTML = `
+          <div class="desktop-capturer-selection__scroller">
+            <ul class="desktop-capturer-selection__list">
+              ${sources
+                .map(
+                  ({ id, name, thumbnail, display_id, appIcon }) => `
+                <li class="desktop-capturer-selection__item">
+                  <button class="desktop-capturer-selection__btn" data-id="${id}" title="${name}">
+                    <img class="desktop-capturer-selection__thumbnail" src="${thumbnail.toDataURL()}" />
+                    <span class="desktop-capturer-selection__name">${name}</span>
+                  </button>
+                </li>
+              `
+                )
+                .join('')}
+            </ul>
+          </div>
+        `;
+    document.body.appendChild(selectionElem);
+    document
+      .querySelectorAll('.desktop-capturer-selection__btn')
+      .forEach((button) => {
+        button.addEventListener('click', async () => {
+          try {
+            const id = button.getAttribute('data-id');
+            const source = sources.find((source) => source.id === id);
+            if (!source) {
+              throw new Error(`Source with id ${id} does not exist`);
+            } else {
+              return source;
+            }
+          } catch (error) {
+            console.error(error);
           }
-        } catch (error) {
-          console.error(error);
-        }
+        });
       });
-    });
+  });
 });

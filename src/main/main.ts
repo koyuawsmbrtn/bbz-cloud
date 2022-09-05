@@ -67,15 +67,13 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
-let mediaSources;
 ipcMain.handle('getDisplaySources', async (event) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })
     .then((sources) => {
-      mediaSources = sources;
-      console.log('Main: ', sources);
+      console.log('Main: ', JSON.stringify(sources));
+      return JSON.stringify(sources);
     });
-  return mediaSources;
 });
 
 /*
@@ -369,7 +367,6 @@ app.on('web-contents-created', (event, contents) => {
         if (!messageBoxIsDisplayed) {
           messageBoxIsDisplayed = true;
           dialog.showMessageBox(mainWindow, options).then((response) => {
-            console.log(response);
             if (response.response === 1) {
               shell.openPath(app.getPath('downloads'));
             }
