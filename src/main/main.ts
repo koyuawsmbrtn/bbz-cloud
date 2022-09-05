@@ -15,7 +15,7 @@ import {
   shell,
   dialog,
   ipcMain,
-  desktopCapturer,
+  // desktopCapturer,
   Menu,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -67,7 +67,7 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
-ipcMain.on('getDisplaySources', (event, args) => {
+/* ipcMain.on('getDisplaySources', (event, args) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })
     .then((sources) => {
@@ -75,7 +75,7 @@ ipcMain.on('getDisplaySources', (event, args) => {
       // eslint-disable-next-line no-useless-return
       return;
     });
-});
+}); */
 
 /*
  ***
@@ -136,18 +136,7 @@ const createWindow = async () => {
       contextIsolation: true, // protect against prototype pollution
     },
   });
-  /*
-  mainWindow.webContents.session.setPermissionCheckHandler(
-    (webContents, permission, details) => {
-      return true;
-    }
-  );
-  mainWindow.webContents.session.setPermissionRequestHandler(
-    (webContents, permission, callback, details) => {
-      callback(true);
-    }
-  );
-*/
+
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   Menu.setApplicationMenu(null);
@@ -293,15 +282,24 @@ app.on('web-contents-created', (event, contents) => {
         height: 728,
         minWidth: 700,
         minHeight: 400,
-        show: true,
         webPreferences: {
           preload: app.isPackaged
             ? path.join(__dirname, 'preload.js')
             : path.join(__dirname, '../../.erb/dll/preload.js'),
-          nodeIntegration: false, // is default value after Electron v5
-          contextIsolation: true, // protect against prototype pollution
+          // nodeIntegration: false, // is default value after Electron v5
+          // contextIsolation: true, // protect against prototype pollution
         },
       });
+      videoWin.webContents.session.setPermissionCheckHandler(
+        (webContents, permission, details) => {
+          return true;
+        }
+      );
+      videoWin.webContents.session.setPermissionRequestHandler(
+        (webContents, permission, callback, details) => {
+          callback(true);
+        }
+      );
       videoWin.loadURL(url);
     }
   };
