@@ -15,7 +15,7 @@ import {
   shell,
   dialog,
   ipcMain,
-  // desktopCapturer,
+  desktopCapturer,
   Menu,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -67,15 +67,16 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
-/* ipcMain.on('getDisplaySources', (event, args) => {
+let mediaSources;
+ipcMain.handle('getDisplaySources', async (event) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })
     .then((sources) => {
-      mainWindow.webContents.send('getDisplaySources', sources);
-      // eslint-disable-next-line no-useless-return
-      return;
+      mediaSources = sources;
+      console.log('Main: ', sources);
     });
-}); */
+  return mediaSources;
+});
 
 /*
  ***
