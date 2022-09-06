@@ -116,13 +116,13 @@ window.addEventListener('DOMContentLoaded', () => {
 contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
   // ipcRenderer.on('getDisplaySources', (result) => {
   // ipcRenderer.invoke('getDisplaySources').then((result) => {
-    const sources = await desktopCapturer.getSources({
-      types: ["window", "screen"],
-    });
-    console.log('Renderer: ', sources);
-    const selectionElem = document.createElement('div');
-    selectionElem.classList = 'desktop-capturer-selection';
-    selectionElem.innerHTML = `
+  const sources = await desktopCapturer.getSources({
+    types: ['window', 'screen'],
+  });
+  console.log('Renderer: ', sources);
+  const selectionElem = document.createElement('div');
+  selectionElem.classList = 'desktop-capturer-selection';
+  selectionElem.innerHTML = `
           <div class="desktop-capturer-selection__scroller">
             <ul class="desktop-capturer-selection__list">
               ${sources
@@ -140,23 +140,22 @@ contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
             </ul>
           </div>
         `;
-    document.body.appendChild(selectionElem);
-    document
-      .querySelectorAll('.desktop-capturer-selection__btn')
-      .forEach((button) => {
-        button.addEventListener('click', async () => {
-          try {
-            const id = button.getAttribute('data-id');
-            const source = sources.find((source) => source.id === id);
-            if (!source) {
-              throw new Error(`Source with id ${id} does not exist`);
-            } else {
-              return source;
-            }
-          } catch (error) {
-            console.error(error);
-          }
-        });
+  document.body.appendChild(selectionElem);
+  document
+    .querySelectorAll('.desktop-capturer-selection__btn')
+    .forEach((button) => {
+      button.addEventListener('click', async () => {
+        // try {
+        const id = button.getAttribute('data-id');
+        const source = sources.find((source) => source.id === id);
+        /* if (!source) {
+            throw new Error(`Source with id ${id} does not exist`);
+          } else { */
+        return source;
+        /* }
+        } catch (error) {
+          console.error(error);
+        } */
       });
-  });
+    });
 });
