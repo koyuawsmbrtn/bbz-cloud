@@ -508,6 +508,7 @@ export default class Main extends React.Component {
                     defaultValue=""
                   />
                   <label htmlFor="outlookPW">Outlook</label>
+                  <p />
                   <input
                     type="password"
                     id="moodlePW"
@@ -517,6 +518,7 @@ export default class Main extends React.Component {
                     defaultValue=""
                   />
                   <label htmlFor="moodlePW">Moodle</label>
+                  <p />
                   <input
                     type="password"
                     id="bbbPW"
@@ -526,6 +528,7 @@ export default class Main extends React.Component {
                     defaultValue=""
                   />
                   <label htmlFor="bbbPW">BigBlueButton</label>
+                  <p />
                 </div>
                 <button onClick={saveSettings} id="sbb">
                   Speichern
