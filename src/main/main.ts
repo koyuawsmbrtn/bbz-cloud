@@ -273,8 +273,8 @@ function isMicrosoft(url: string) {
 app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
-      url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken') ||
-      url.includes('meet.stashcat.com')
+      url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken')
+      // || url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
       const videoWin = new BrowserWindow({

@@ -33,16 +33,9 @@ contextBridge.exposeInMainWorld('api', {
       ipcRenderer.on(channel, (event, ...args) => func(...args));
     }
   },
-  invoke: (channel: string, data: any) => {
-    // whitelist channels
-    const validChannels = ['getDisplaySources'];
-    if (validChannels.includes(channel)) {
-      return ipcRenderer.invoke(channel, data);
-    }
-  },
 });
 
-// inject renderer.js into the web page
+/* inject renderer.js into the web page
 window.addEventListener('DOMContentLoaded', () => {
   // Get getDisplayMedia() into renderer process
   const rendererScript = document.createElement('script');
@@ -119,7 +112,6 @@ contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
   const sources = await desktopCapturer.getSources({
     types: ['window', 'screen'],
   });
-  console.log('Renderer: ', sources);
   const selectionElem = document.createElement('div');
   selectionElem.classList = 'desktop-capturer-selection';
   selectionElem.innerHTML = `
@@ -148,14 +140,16 @@ contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
         // try {
         const id = button.getAttribute('data-id');
         const source = sources.find((source) => source.id === id);
-        /* if (!source) {
+        if (!source) {
             throw new Error(`Source with id ${id} does not exist`);
-          } else { */
+          } else {
         return source;
-        /* }
+         }
         } catch (error) {
           console.error(error);
-        } */
+        }
       });
     });
 });
+
+*/
