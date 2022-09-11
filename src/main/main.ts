@@ -1,3 +1,5 @@
+/* eslint-disable no-restricted-syntax */
+/* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable no-empty */
 /* eslint-disable no-inner-declarations */
 /* eslint-disable promise/catch-or-return */
@@ -7,12 +9,24 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  dialog,
+  ipcMain,
+  // desktopCapturer,
+  Menu,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
+import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
+/*
+ *** ipcCommunication
+ */
 
 // Communication with renderer for Autostart func (Mac/Windows)
 ipcMain.on('autostart', (event, args) => {
@@ -28,8 +42,44 @@ ipcMain.on('zoom', (event, args) => {
   mainWindow.webContents.setZoomFactor(zoomFaktor);
 });
 
-// var fs = require('fs');
-// var https = require('https');
+ipcMain.on('savePassword', (event, cred) => {
+  keytar.setPassword('bbzcloud', 'credentials', JSON.stringify(cred));
+});
+
+ipcMain.on('getPassword', (event) => {
+  // Idee: Ein Sammelobjekt übertragen statt einzelner ipc-Anfragen
+  const emptyCreds = {
+    outlookUsername: '',
+    outlookPassword: '',
+    moodleUsername: '',
+    moodlePassword: '',
+    bbbUsername: '',
+    bbbPassword: '',
+  };
+  const pw = keytar.getPassword('bbzcloud', 'credentials');
+  // eslint-disable-next-line promise/always-return
+  pw.then((result) => {
+    if (result === null) {
+      mainWindow.webContents.send('getPassword', emptyCreds);
+    } else mainWindow.webContents.send('getPassword', JSON.parse(result));
+  }).catch(() => {
+    mainWindow.webContents.send('getPassword', emptyCreds);
+  });
+});
+
+/*
+ipcMain.handle('getDisplaySources', async (event) => {
+  desktopCapturer
+    .getSources({ types: ['window', 'screen'] })
+    .then((sources) => {
+      console.log('Main: ', JSON.stringify(sources));
+      return JSON.stringify(sources);
+    });
+});
+
+/*
+ ***
+ */
 
 const RESOURCES_PATH = app.isPackaged
   ? path.join(process.resourcesPath, 'assets')
@@ -81,6 +131,7 @@ const createWindow = async () => {
         ? path.join(__dirname, 'preload.js')
         : path.join(__dirname, '../../.erb/dll/preload.js'),
       webviewTag: true,
+      partition: 'persist:bbzcloud',
       nodeIntegration: false, // is default value after Electron v5
       contextIsolation: true, // protect against prototype pollution
     },
@@ -133,7 +184,7 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
-    if (process.platform !== 'darwin') {
+    if (process.platform === 'darwin') {
       dialog.showMessageBox(mainWindow, {
         message:
           'Ein Update ist verfügbar! Download über kurzelinks.de/bbz-cloud',
@@ -197,7 +248,7 @@ const downloadtypes = [
   '.fls',
 ];
 
-const microshaftWords = ['onedrive', 'onenote', 'download.aspx'];
+const keywordsMicrosoft = ['onedrive', 'onenote', 'download.aspx'];
 
 function isDownloadType(url: string) {
   var isdt = false;
@@ -209,21 +260,57 @@ function isDownloadType(url: string) {
   return isdt;
 }
 
-function isWinzigWeich(url: string) {
-  var isww = false;
-  microshaftWords.forEach((s) => {
+function isMicrosoft(url: string) {
+  var isms = false;
+  keywordsMicrosoft.forEach((s) => {
     if (url.includes(s)) {
-      isww = true;
+      isms = true;
     }
   });
-  return isww;
+  return isms;
 }
-
 // Open third-party links in browser
 app.on('web-contents-created', (event, contents) => {
+  var handleRedirect = (e, url) => {
+    if (
+      url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken')
+      // || url.includes('meet.stashcat.com')
+    ) {
+      e.preventDefault();
+      const videoWin = new BrowserWindow({
+        width: 1240,
+        height: 728,
+        minWidth: 700,
+        minHeight: 400,
+        webPreferences: {
+          preload: app.isPackaged
+            ? path.join(__dirname, 'preload.js')
+            : path.join(__dirname, '../../.erb/dll/preload.js'),
+          // nodeIntegration: false, // is default value after Electron v5
+          // contextIsolation: true, // protect against prototype pollution
+        },
+      });
+      videoWin.webContents.session.setPermissionCheckHandler(
+        (webContents, permission, details) => {
+          return true;
+        }
+      );
+      videoWin.webContents.session.setPermissionRequestHandler(
+        (webContents, permission, callback, details) => {
+          callback(true);
+        }
+      );
+      videoWin.loadURL(url);
+    }
+  };
+  contents.on('will-redirect', handleRedirect);
+
   // eslint-disable-next-line no-var
   var handleNewWindow = (e, url) => {
-    if (isWinzigWeich(url) || url.includes('download.aspx')) {
+    if (
+      (isMicrosoft(url) || url.includes('download.aspx')) &&
+      !url.includes('stashcat')
+    ) {
       if (
         url.includes('about:blank') ||
         url.includes('download') ||
@@ -274,14 +361,16 @@ app.on('web-contents-created', (event, contents) => {
         };
         const options = {
           type: 'info',
-          buttons: ['Ok'],
+          buttons: ['Ok', 'Downloads-Ordner öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };
         if (!messageBoxIsDisplayed) {
           messageBoxIsDisplayed = true;
-          const response = dialog.showMessageBox(mainWindow, options);
-          response.then(() => {
+          dialog.showMessageBox(mainWindow, options).then((response) => {
+            if (response.response === 1) {
+              shell.openPath(app.getPath('downloads'));
+            }
             messageBoxIsDisplayed = false;
           });
         }

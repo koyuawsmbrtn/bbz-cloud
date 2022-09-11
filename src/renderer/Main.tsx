@@ -1,3 +1,5 @@
+/* eslint-disable promise/always-return */
+/* eslint-disable promise/catch-or-return */
 /* eslint-disable vars-on-top */
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/label-has-associated-control */
@@ -21,15 +23,30 @@ import isTeacherVar from '../../assets/isTeacher.json';
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 
+// PW- und Username-Variablen
+const defaultCreds = {
+  outlookUsername: '',
+  outlookPassword: '',
+  moodleUsername: '',
+  moodlePassword: '',
+  bbbUsername: '',
+  bbbPassword: '',
+};
+let creds = defaultCreds;
+
+// wiederholtes Neuladen der Seiten beim Einfügen verhindern
+const credsAreSet = {
+  outlook: false,
+  moodle: false,
+  bbb: false,
+};
+
 if (
   localStorage.getItem('zoomFaktor') !== null &&
   parseFloat(localStorage.getItem('zoomFaktor')) > 0
 ) {
   zoomFaktor = parseFloat(localStorage.getItem('zoomFaktor'));
 }
-
-// TODO: Single-Sign On via injections (Bsp.: $("#userNameInput" ).attr( "value", "dennis.clausen@bbz-rd-eck.de" ); für Outlook)
-//        https://stackoverflow.com/questions/7961568/fill-fields-in-webview-automatically
 
 window.api.send('zoom', zoomFaktor);
 
@@ -41,12 +58,26 @@ if (isTeacher) {
   doge = u2;
 }
 
+// Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
+// Ein Sammelobjekt wird übertragen statt einzelner ipc-Anfragen
+window.api.receive('getPassword', (result) => {
+  creds = result;
+});
+window.api.send('getPassword');
+
+function resetCredsAreSet() {
+  credsAreSet.bbb = false;
+  credsAreSet.moodle = false;
+  credsAreSet.outlook = false;
+}
+
 function reloadPage() {
+  resetCredsAreSet();
   window.location.reload();
 }
 
 function saveSettings() {
-  // Autostart Settings
+  // Save Autostart Settings
   const autostart = document.querySelector('input');
   autostart.addEventListener(
     'click',
@@ -57,7 +88,8 @@ function saveSettings() {
   } else {
     localStorage.setItem('autostart', 'false');
   }
-  // Custom WebApps Settings
+
+  // Save Custom WebApps Settings
   const custom1_url = document.getElementById('custom1_url').value;
   const custom1_icon = document.getElementById('custom1_icon').value;
   localStorage.setItem('custom1_url', custom1_url);
@@ -66,11 +98,32 @@ function saveSettings() {
   const custom2_icon = document.getElementById('custom2_icon').value;
   localStorage.setItem('custom2_url', custom2_url);
   localStorage.setItem('custom2_icon', custom2_icon);
+
+  // Save credentials
+  creds = {
+    outlookUsername: document.getElementById('emailAdress').value,
+    outlookPassword: document.getElementById('outlookPW').value,
+    moodleUsername: document
+      .getElementById('teacherID')
+      .value.toString()
+      .toLowerCase(),
+    moodlePassword: document.getElementById('moodlePW').value,
+    bbbUsername: document.getElementById('emailAdress').value,
+    bbbPassword: document.getElementById('bbbPW').value,
+  };
+  window.api.send('savePassword', creds);
+
+  // reload App
+  resetCredsAreSet();
   window.location.reload();
 }
 
+function clickable(b: boolean) {
+  localStorage.setItem('isClickable', String(b));
+}
+
 export default class Main extends React.Component {
-  componentDidMount() {
+  async componentDidMount() {
     localStorage.setItem('isClickable', 'true');
     $('#main').hide();
     $('#error').hide();
@@ -80,7 +133,9 @@ export default class Main extends React.Component {
       $('#content').hide();
       $('#buttons').css('visibility', 'hidden');
       $('body').css('overflow', 'overlay');
-      localStorage.setItem('isClickable', 'false');
+    });
+    $('.clickable-modifier input').click(function () {
+      clickable(false);
     });
     $('body').css('background', '#173a64');
     // let isOnline = true;
@@ -112,6 +167,7 @@ export default class Main extends React.Component {
         console.log(e);
       }
     });
+
     window.setTimeout(() => {
       $('#loading').hide();
       $('#main').show();
@@ -190,6 +246,11 @@ export default class Main extends React.Component {
         const custom1_icon = localStorage.getItem(`custom1_icon`);
         $('#custom1_url').attr('value', custom1_url);
         $('#custom1_icon').attr('value', custom1_icon);
+        $('#emailAdress').attr('value', creds.outlookUsername);
+        $('#teacherID').attr('value', creds.moodleUsername);
+        $('#outlookPW').attr('value', creds.outlookPassword);
+        $('#moodlePW').attr('value', creds.moodlePassword);
+        $('#bbbPW').attr('value', creds.bbbPassword);
         $('#apps').append(
           `<a onClick="changeUrl('custom1')" target="_blank" class="link-custom1 app" style="cursor:pointer;"><img src="${custom1_icon}" height="20" title="Benutzerapp1"></a>`
         );
@@ -249,6 +310,50 @@ export default class Main extends React.Component {
       if (localStorage.getItem('autostart') === 'true') {
         $('#autostart').attr('checked', 'true');
       }
+
+      /* Credentials in die settings schreiben (UX)
+      console.log(document.getElementById('emailAdress')?.value);
+      document.getElementById('emailAdress').value = creds.outlookUsername; */
+      // Credentials in die einzelnen WebViews einfügen
+      document.querySelectorAll('webview').forEach((wv) => {
+        wv.addEventListener('did-finish-load', async (event) => {
+          // Autofill Outlook
+          if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
+            credsAreSet.outlook = true;
+            wv.executeJavaScript(
+              `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
+            );
+            wv.executeJavaScript(
+              // Hier soll der Button geklickt werden
+              `document.querySelector('#submitButton').click();`
+            );
+          }
+          // Autofill Moodle
+          if (wv.id === 'wv-BBZPortal' && credsAreSet.moodle === false) {
+            credsAreSet.moodle = true;
+
+            wv.executeJavaScript(
+              `document.querySelector('#username').value = "${creds.moodleUsername}"; void(0);`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
+            );
+          }
+          // Autofill
+          if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
+            credsAreSet.bbb = true;
+            wv.executeJavaScript(
+              `document.querySelector('#session_email').value = "${creds.bbbUsername}"; void(0);`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
+            );
+          }
+        });
+      });
       $('.wv').hide();
       $('.wvbr').hide();
       $('.wvbb').hide();
@@ -259,7 +364,7 @@ export default class Main extends React.Component {
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         $('#doge').html(
-          '<video src="https://f001.backblazeb2.com/file/koyuspace-media/cache/media_attachments/files/108/216/721/989/948/797/original/4523bd1f0de68193.mp4" width="640" height="480" autoplay></video>'
+          '<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
         );
       } else if (event.ctrlKey && event.keyCode === 187) {
         zoomFaktor += 0.1; // Zoom in um 10%
@@ -285,12 +390,7 @@ export default class Main extends React.Component {
             <div id="container">
               <div id="headnote">
                 <p>
-                  <img
-                    src={logo}
-                    alt="BBZ Logo"
-                    height="28"
-                    id="logo"
-                  />
+                  <img src={logo} alt="BBZ Logo" height="28" id="logo" />
                   <h1>BBZ Cloud</h1>
                 </p>
                 <p>
@@ -329,55 +429,115 @@ export default class Main extends React.Component {
                 vergessen zu speichern!
               </p>
               <h2>Autostart</h2>
-              <input type="checkbox" id="autostart" name="autostart_onoff" />
-              <label htmlFor="autostart_onoff">
-                App beim Login am Computer automatisch starten
-              </label>
-              <h2>Apps aktivieren/deaktivieren</h2>
-              <div id="appchecks" className="twoColumn" />
-              <h2>Benutzerdefinierte Webapp hinzufügen</h2>
-              <h3>Erste benutzerdefinierte App</h3>
-              <input
-                type="text"
-                id="custom1_url"
-                size="50"
-                name="url_website"
-                placeholder="https://example.com"
-              />
-              <label htmlFor="url_website">URL der Website</label>
-              <p />
-              <input
-                type="text"
-                id="custom1_icon"
-                size="50"
-                name="icon_website"
-                placeholder="https://example.com/icon.png"
-              />
-              <label htmlFor="icon_website">Icon der Website</label>
-              <h3>Zweite benutzerdefinierte App</h3>
-              <input
-                type="text"
-                id="custom2_url"
-                size="50"
-                name="url_website"
-                placeholder="https://example.com"
-              />
-              <label htmlFor="url_website">URL der Website</label>
-              <p />
-              <input
-                type="text"
-                id="custom2_icon"
-                size="50"
-                name="icon_website"
-                placeholder="https://example.com/icon.png"
-              />
-              <label htmlFor="icon_website">Icon der Website</label>
+              <div className="clickable-modifier">
+                <input type="checkbox" id="autostart" name="autostart_onoff" />
+                <label htmlFor="autostart_onoff">
+                  App beim Login am Computer automatisch starten
+                </label>
+                <h2>Apps aktivieren/deaktivieren</h2>
+              </div>
+              <div className="clickable-modifier">
+                <div id="appchecks" className="twoColumn" />
+                <h2>Benutzerdefinierte Webapp hinzufügen</h2>
+                <h3>Erste benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom1_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom1_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+                <label htmlFor="icon_website">Icon der Website</label>
+                <h3>Zweite benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom2_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom2_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+                <label htmlFor="icon_website">Icon der Website</label>
+                <h2>Anmeldedaten speichern</h2>
+                <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
+                <div id="views" className="twoColumn">
+                  <input
+                    type="text"
+                    id="emailAdress"
+                    size="50"
+                    name="emailAdress"
+                    placeholder="vorname.nachname@bbz-rd-eck.de"
+                    defaultValue=""
+                  />
+                  <label htmlFor="emailAdress">E-Mail-Adresse</label>
+                  <p />
+                  <h3>Lehrerkürzel (für Moodle)</h3>
+                  <input
+                    type="text"
+                    id="teacherID"
+                    size="50"
+                    name="teacherID"
+                    placeholder="NachV"
+                    defaultValue=""
+                  />
+                  <label htmlFor="teacherID">Lehrerkürzel</label>
+                  <p />
+                  <h3>Passworte</h3>
+                  <input
+                    type="password"
+                    id="outlookPW"
+                    size="30"
+                    name="outlookPW"
+                    defaultValue=""
+                  />
+                  <label htmlFor="outlookPW">Outlook</label>
+                  <p />
+                  <input
+                    type="password"
+                    id="moodlePW"
+                    size="30"
+                    name="moodlePW"
+                    placeholder=""
+                    defaultValue=""
+                  />
+                  <label htmlFor="moodlePW">Moodle</label>
+                  <p />
+                  <input
+                    type="password"
+                    id="bbbPW"
+                    size="30"
+                    name="bbbPW"
+                    placeholder=""
+                    defaultValue=""
+                  />
+                  <label htmlFor="bbbPW">BigBlueButton</label>
+                  <p />
+                </div>
+                <button onClick={saveSettings} id="sbb">
+                  Speichern
+                </button>
+              </div>
               <p>
-                <b>BBZ Cloud App Version:</b> {versionApp} | <b>Entwicklerin:</b> Leonie
+                <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
+                <b>Entwicklerin:</b> Leonie
               </p>
-              <button onClick={saveSettings} id="sbb">
-                Speichern
-              </button>
             </div>
           </div>
         </div>
