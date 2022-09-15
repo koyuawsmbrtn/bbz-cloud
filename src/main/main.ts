@@ -15,7 +15,7 @@ import {
   shell,
   dialog,
   ipcMain,
-  // desktopCapturer,
+  desktopCapturer,
   Menu,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -67,13 +67,27 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
-/*
-ipcMain.handle('getDisplaySources', async (event) => {
+ipcMain.on('getDisplaySources', (event) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })
     .then((sources) => {
-      console.log('Main: ', JSON.stringify(sources));
-      return JSON.stringify(sources);
+      const btnStrings: string[] = [];
+      const arrayOfSourceIds: string[] = [];
+      for (const source of sources) {
+        btnStrings.push(source.name);
+        arrayOfSourceIds.push(source.id);
+      }
+      const msgOptions = {
+        type: 'info',
+        message: 'Bitte wählen Sie ein Fenster / Bildschirm aus:',
+        buttons: btnStrings,
+      };
+      const choice = dialog.showMessageBox(msgOptions);
+      // eslint-disable-next-line promise/no-nesting
+      choice.then((index) => {
+        // eslint-disable-next-line @typescript-eslint/no-use-before-define
+        mainWindow.webContents.send(arrayOfSourceIds[index.response]);
+      });
     });
 });
 
@@ -274,20 +288,19 @@ app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
       url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken')
-      // || url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
       const videoWin = new BrowserWindow({
-        width: 1240,
-        height: 728,
+        width: 1400,
+        height: 800,
         minWidth: 700,
         minHeight: 400,
         webPreferences: {
           preload: app.isPackaged
             ? path.join(__dirname, 'preload.js')
             : path.join(__dirname, '../../.erb/dll/preload.js'),
-          // nodeIntegration: false, // is default value after Electron v5
-          // contextIsolation: true, // protect against prototype pollution
+          nodeIntegration: true, // is NOT default value after Electron v5
+          contextIsolation: true, // protect against prototype pollution
         },
       });
       videoWin.webContents.session.setPermissionCheckHandler(
@@ -301,6 +314,7 @@ app.on('web-contents-created', (event, contents) => {
         }
       );
       videoWin.loadURL(url);
+      // shell.openExternal(url);
     }
   };
   contents.on('will-redirect', handleRedirect);

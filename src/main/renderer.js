@@ -8,11 +8,11 @@ navigator.mediaDevices.getDisplayMedia = async () => {
     video: {
       mandatory: {
         chromeMediaSource: 'desktop',
-        chromeMediaSourceId: selectedSource.id,
-        minWidth: 1280,
+        chromeMediaSourceId: selectedSource,
+        /* minWidth: 1280,
         maxWidth: 1280,
         minHeight: 720,
-        maxHeight: 720,
+        maxHeight: 720, */
       },
     },
   });

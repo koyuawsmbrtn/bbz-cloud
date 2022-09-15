@@ -1,7 +1,7 @@
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable import/prefer-default-export */
-const { contextBridge, ipcRenderer, desktopCapturer } = require('electron');
+const { contextBridge, ipcRenderer } = require('electron');
 const { readFileSync } = require('fs');
 const { join } = require('path');
 
@@ -35,7 +35,7 @@ contextBridge.exposeInMainWorld('api', {
   },
 });
 
-/* inject renderer.js into the web page
+// inject renderer.js into the web page
 window.addEventListener('DOMContentLoaded', () => {
   // Get getDisplayMedia() into renderer process
   const rendererScript = document.createElement('script');
@@ -106,15 +106,14 @@ window.addEventListener('DOMContentLoaded', () => {
   document.head.appendChild(screenShareStyles);
 });
 
-contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
+contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', () => {
   // ipcRenderer.on('getDisplaySources', (result) => {
-  // ipcRenderer.invoke('getDisplaySources').then((result) => {
-  const sources = await desktopCapturer.getSources({
-    types: ['window', 'screen'],
-  });
-  const selectionElem = document.createElement('div');
-  selectionElem.classList = 'desktop-capturer-selection';
-  selectionElem.innerHTML = `
+  ipcRenderer.on('getDisplaySources', (result) => {
+    const sourceId = result;
+    return sourceId;
+    /* const selectionElem = document.createElement('div');
+    selectionElem.classList = 'desktop-capturer-selection';
+    selectionElem.innerHTML = `
           <div class="desktop-capturer-selection__scroller">
             <ul class="desktop-capturer-selection__list">
               ${sources
@@ -132,24 +131,25 @@ contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
             </ul>
           </div>
         `;
-  document.body.appendChild(selectionElem);
-  document
-    .querySelectorAll('.desktop-capturer-selection__btn')
-    .forEach((button) => {
-      button.addEventListener('click', async () => {
-        // try {
-        const id = button.getAttribute('data-id');
-        const source = sources.find((source) => source.id === id);
-        if (!source) {
-            throw new Error(`Source with id ${id} does not exist`);
-          } else {
-        return source;
-         }
-        } catch (error) {
-          console.error(error);
-        }
+    document.body.appendChild(selectionElem);
+    document
+      .querySelectorAll('.desktop-capturer-selection__btn')
+      .forEach((button) => {
+        button.addEventListener('click', async () => {
+          try {
+            const id = button.getAttribute('data-id');
+            const source = sources.find((source) => source.id === id);
+            if (!source) {
+              throw new Error(`Source with id ${id} does not exist`);
+            } else {
+              return source;
+            }
+          } catch (error) {
+            console.error(error);
+          }
+        });
       });
-    });
+  }); */
+  });
+  ipcRenderer.send('getDisplaySources');
 });
-
-*/
