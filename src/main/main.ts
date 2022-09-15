@@ -1,3 +1,4 @@
+/* eslint-disable promise/no-nesting */
 /* eslint-disable no-restricted-syntax */
 /* eslint-disable @typescript-eslint/dot-notation */
 /* eslint-disable no-empty */
@@ -67,7 +68,8 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
-ipcMain.on('getDisplaySources', (event) => {
+/*
+ipcMain.on('getDisplaySources', async (event) => {
   desktopCapturer
     .getSources({ types: ['window', 'screen'] })
     .then((sources) => {
@@ -82,11 +84,8 @@ ipcMain.on('getDisplaySources', (event) => {
         message: 'Bitte wählen Sie ein Fenster / Bildschirm aus:',
         buttons: btnStrings,
       };
-      const choice = dialog.showMessageBox(msgOptions);
-      // eslint-disable-next-line promise/no-nesting
-      choice.then((index) => {
-        // eslint-disable-next-line @typescript-eslint/no-use-before-define
-        mainWindow.webContents.send(arrayOfSourceIds[index.response]);
+      dialog.showMessageBox(msgOptions).then((index) => {
+        event.reply(arrayOfSourceIds[index.response]);
       });
     });
 });
@@ -313,6 +312,27 @@ app.on('web-contents-created', (event, contents) => {
           callback(true);
         }
       );
+      ipcMain.on('getDisplaySources', async (event) => {
+        desktopCapturer
+          .getSources({ types: ['window', 'screen'] })
+          .then((sources) => {
+            const btnStrings: string[] = [];
+            const arrayOfSourceIds: string[] = [];
+            for (const source of sources) {
+              btnStrings.push(source.name);
+              arrayOfSourceIds.push(source.id);
+            }
+            const msgOptions = {
+              type: 'info',
+              message: 'Bitte wählen Sie ein Fenster / Bildschirm aus:',
+              buttons: btnStrings,
+            };
+            dialog.showMessageBox(msgOptions).then((index) => {
+              event.reply(arrayOfSourceIds[index.response]);
+              // videoWin.webContents.send(arrayOfSourceIds[index.response]);
+            });
+          });
+      });
       videoWin.loadURL(url);
       // shell.openExternal(url);
     }
