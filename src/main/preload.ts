@@ -43,12 +43,15 @@ window.addEventListener('DOMContentLoaded', () => {
   document.body.appendChild(rendererScript);
 });
 
-contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', () => {
+contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
   // ipcRenderer.on('getDisplaySources', (result) => {
-  let sourceId;
+  let sourceId = '';
   ipcRenderer.on('getDisplaySources', async (result) => {
-    sourceId = result;
-    return sourceId;
+    sourceId = result.toString(); // is the String delivered correctly?
   });
   ipcRenderer.send('getDisplaySources');
+  while (sourceId === '') {
+    window.setTimeout(() => {});
+  }
+  return sourceId;
 });
