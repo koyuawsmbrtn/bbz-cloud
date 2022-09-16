@@ -286,10 +286,17 @@ function isMicrosoft(url: string) {
 app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
-      url.includes('https://bbb.bbz-rd-eck.de/bigbluebutton/api/join?') || // https://bbb.bbz-rd-eck.de/html5client/join?sessionToken
+      url.includes('bbb.bbz-rd-eck.de/bigbluebutton/api/join?') || // https://bbb.bbz-rd-eck.de/html5client/join?sessionToken
       url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
+      // bad style, but necessary to close empty BrwoserWindow
+      BrowserWindow.getAllWindows().forEach((w) => {
+        if (w.getTitle() === 'Electron') {
+          w.close();
+        }
+      });
+      shell.openExternal(url);
       /* const videoWin = new BrowserWindow({
         width: 1400,
         height: 800,
@@ -335,7 +342,6 @@ app.on('web-contents-created', (event, contents) => {
           });
       });
       videoWin.loadURL(url); */
-      shell.openExternal(url);
     }
   };
   contents.on('will-redirect', handleRedirect);
