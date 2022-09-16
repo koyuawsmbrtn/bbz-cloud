@@ -286,10 +286,11 @@ function isMicrosoft(url: string) {
 app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
-      url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken')
+      url.includes('https://bbb.bbz-rd-eck.de/bigbluebutton/api/join?') || // https://bbb.bbz-rd-eck.de/html5client/join?sessionToken
+      url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
-      const videoWin = new BrowserWindow({
+      /* const videoWin = new BrowserWindow({
         width: 1400,
         height: 800,
         minWidth: 700,
@@ -333,8 +334,8 @@ app.on('web-contents-created', (event, contents) => {
             });
           });
       });
-      videoWin.loadURL(url);
-      // shell.openExternal(url);
+      videoWin.loadURL(url); */
+      shell.openExternal(url);
     }
   };
   contents.on('will-redirect', handleRedirect);

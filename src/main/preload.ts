@@ -2,8 +2,10 @@
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable import/prefer-default-export */
 const { contextBridge, ipcRenderer } = require('electron');
+/*
 const { readFileSync } = require('fs');
 const { join } = require('path');
+*/
 
 // Expose protected methods that allow the renderer process to use
 // the ipcRenderer without exposing the entire object
@@ -35,6 +37,7 @@ contextBridge.exposeInMainWorld('api', {
   },
 });
 
+/*
 // inject renderer.js into the web page
 window.addEventListener('DOMContentLoaded', () => {
   // Get getDisplayMedia() into renderer process
@@ -55,3 +58,5 @@ contextBridge.exposeInMainWorld('myCustomGetDisplayMedia', async () => {
   }
   return sourceId;
 });
+
+*/
