@@ -272,6 +272,10 @@ function isMicrosoft(url: string) {
 // Open third-party links in browser
 app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
+    if (url.includes('meet.stashcat.com')) {
+      e.preventDefault();
+      shell.openExternal(url);
+    }
     if (
       url.includes('https://bbb.bbz-rd-eck.de/html5client/join?sessionToken')
       // || url.includes('meet.stashcat.com')
