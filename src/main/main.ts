@@ -282,66 +282,21 @@ function isMicrosoft(url: string) {
   });
   return isms;
 }
-// Open third-party links in browser
+// Open third-party links in browser - used for BBB and Jitsi conferences
 app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
-      url.includes('bbb.bbz-rd-eck.de/bigbluebutton/api/join?') || // https://bbb.bbz-rd-eck.de/html5client/join?sessionToken
+      url.includes('bbb.bbz-rd-eck.de/bigbluebutton/api/join?') ||
       url.includes('meet.stashcat.com')
     ) {
       e.preventDefault();
-      // bad style, but necessary to close empty BrwoserWindow
+      // bad style, but necessary to close empty BrowserWindow
       BrowserWindow.getAllWindows().forEach((w) => {
         if ((w.getTitle() === 'Electron') || (w.getTitle() === 'bbzcloud') {
           w.close();
         }
       });
       shell.openExternal(url);
-      /* const videoWin = new BrowserWindow({
-        width: 1400,
-        height: 800,
-        minWidth: 700,
-        minHeight: 400,
-        webPreferences: {
-          preload: app.isPackaged
-            ? path.join(__dirname, 'preload.js')
-            : path.join(__dirname, '../../.erb/dll/preload.js'),
-          nodeIntegration: true, // is NOT default value after Electron v5
-          contextIsolation: true, // protect against prototype pollution
-        },
-      });
-      videoWin.webContents.session.setPermissionCheckHandler(
-        (webContents, permission, details) => {
-          return true;
-        }
-      );
-      videoWin.webContents.session.setPermissionRequestHandler(
-        (webContents, permission, callback, details) => {
-          callback(true);
-        }
-      );
-      ipcMain.on('getDisplaySources', async (event) => {
-        desktopCapturer
-          .getSources({ types: ['window', 'screen'] })
-          .then((sources) => {
-            const btnStrings: string[] = [];
-            const arrayOfSourceIds: string[] = [];
-            for (const source of sources) {
-              btnStrings.push(source.name);
-              arrayOfSourceIds.push(source.id);
-            }
-            const msgOptions = {
-              type: 'info',
-              message: 'Bitte wählen Sie ein Fenster / Bildschirm aus:',
-              buttons: btnStrings,
-            };
-            dialog.showMessageBox(msgOptions).then((index) => {
-              event.reply(arrayOfSourceIds[index.response]);
-              // videoWin.webContents.send(arrayOfSourceIds[index.response]);
-            });
-          });
-      });
-      videoWin.loadURL(url); */
     }
   };
   contents.on('will-redirect', handleRedirect);
