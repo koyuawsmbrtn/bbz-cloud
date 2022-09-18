@@ -292,7 +292,7 @@ app.on('web-contents-created', (event, contents) => {
       e.preventDefault();
       // bad style, but necessary to close empty BrowserWindow
       BrowserWindow.getAllWindows().forEach((w) => {
-        if ((w.getTitle() === 'Electron') || (w.getTitle() === 'bbzcloud') {
+        if (w.getTitle() === 'Electron' || w.getTitle() === 'bbzcloud') {
           w.close();
         }
       });
