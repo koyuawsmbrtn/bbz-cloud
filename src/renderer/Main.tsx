@@ -312,8 +312,8 @@ export default class Main extends React.Component {
       }
 
       /* Credentials in die settings schreiben (UX)
-      console.log(document.getElementById('emailAdress')?.value);
-      document.getElementById('emailAdress').value = creds.outlookUsername; */
+        console.log(document.getElementById('emailAdress')?.value);
+        document.getElementById('emailAdress').value = creds.outlookUsername; */
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
@@ -327,7 +327,7 @@ export default class Main extends React.Component {
               `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
             );
             wv.executeJavaScript(
-              // Hier soll der Button geklickt werden
+              // Hier wird der Button geklickt
               `document.querySelector('#submitButton').click();`
             );
           }
@@ -342,7 +342,7 @@ export default class Main extends React.Component {
               `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
             );
           }
-          // Autofill
+          // Autofill BigBlueButton
           if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
             credsAreSet.bbb = true;
             wv.executeJavaScript(

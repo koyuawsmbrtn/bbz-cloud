@@ -24,4 +24,4 @@ AUR: https://aur.archlinux.org/packages/bbz-cloud
 
 ## License
 
-MIT Â© koyu
+MIT © koyu
