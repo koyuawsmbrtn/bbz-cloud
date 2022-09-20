@@ -172,6 +172,11 @@ export default class Main extends React.Component {
       $('#loading').hide();
       $('#main').show();
       $('body').css('background', `#fff`);
+      window.setInterval(() => {
+        if (!isTeacher) {
+          $('.teacher').hide();
+        }
+      });
       for (const [key, e] of Object.entries(links)) {
         if (e.enabled) {
           if (e.teacher === true && isTeacher === true) {
@@ -476,30 +481,35 @@ export default class Main extends React.Component {
                 />
                 <label htmlFor="icon_website">Icon der Website</label>
                 <h2>Anmeldedaten speichern</h2>
-                <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
-                <div id="views" className="twoColumn">
-                  <input
-                    type="text"
-                    id="emailAdress"
-                    size="50"
-                    name="emailAdress"
-                    placeholder="vorname.nachname@bbz-rd-eck.de"
-                    defaultValue=""
-                  />
-                  <label htmlFor="emailAdress">E-Mail-Adresse</label>
-                  <p />
-                  <h3>Lehrerkürzel (für Moodle)</h3>
-                  <input
-                    type="text"
-                    id="teacherID"
-                    size="50"
-                    name="teacherID"
-                    placeholder="NachV"
-                    defaultValue=""
-                  />
-                  <label htmlFor="teacherID">Lehrerkürzel</label>
-                  <p />
-                  <h3>Passworte</h3>
+                <div className="teacher">
+                  <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
+                  <div id="views" className="twoColumn">
+                    <input
+                      type="text"
+                      id="emailAdress"
+                      size="50"
+                      name="emailAdress"
+                      placeholder="vorname.nachname@bbz-rd-eck.de"
+                      defaultValue=""
+                    />
+                    <label htmlFor="emailAdress">E-Mail-Adresse</label>
+                    <p />
+                  </div>
+                </div>
+                <h3>Moodle-Nutzername</h3>
+                <input
+                  type="text"
+                  id="teacherID"
+                  size="50"
+                  name="teacherID"
+                  defaultValue=""
+                />
+                <label htmlFor="teacherID">
+                  {isTeacher ? 'Lehrerkürzel' : 'Benutzername'}
+                </label>
+                <p />
+                <h3>Passworte</h3>
+                <div className="teacher">
                   <input
                     type="password"
                     id="outlookPW"
@@ -508,16 +518,6 @@ export default class Main extends React.Component {
                     defaultValue=""
                   />
                   <label htmlFor="outlookPW">Outlook</label>
-                  <p />
-                  <input
-                    type="password"
-                    id="moodlePW"
-                    size="30"
-                    name="moodlePW"
-                    placeholder=""
-                    defaultValue=""
-                  />
-                  <label htmlFor="moodlePW">Moodle</label>
                   <p />
                   <input
                     type="password"
@@ -530,15 +530,33 @@ export default class Main extends React.Component {
                   <label htmlFor="bbbPW">BigBlueButton</label>
                   <p />
                 </div>
-                <button onClick={saveSettings} id="sbb">
-                  Speichern
-                </button>
               </div>
-              <p>
-                <b>BBZ Cloud App Version:</b> {versionApp} |{' '}
-                <b>Entwicklerin:</b> Leonie
-              </p>
+              <input
+                type="password"
+                id="moodlePW"
+                size="30"
+                name="moodlePW"
+                placeholder=""
+                defaultValue=""
+              />
+              <label htmlFor="moodlePW">Moodle-Passwort</label>
+              <p />
+              <button onClick={saveSettings} id="sbb">
+                Speichern
+              </button>
             </div>
+            <p style={{ color: 'white' }}>
+              <b>BBZ Cloud App Version:</b> {versionApp} <br />{' '}
+              <b>Entwickelt von:</b>{' '}
+              <a
+                href="https://web.koyu.space"
+                target="_blank"
+                style={{ color: 'white' }}
+                rel="noreferrer"
+              >
+                Leonie
+              </a>
+            </p>
           </div>
         </div>
         <div id="loading">
