@@ -2,17 +2,6 @@
   "name": "bbzcloud",
   "version": "1.4.2",
   "description": "Die Desktop-App für die BBZ Cloud - eine All-in-One-Plattform für Unterricht und Zusammenarbeit",
-  "keywords": [
-    "electron",
-    "boilerplate",
-    "react",
-    "typescript",
-    "ts",
-    "sass",
-    "webpack",
-    "hot",
-    "reload"
-  ],
   "homepage": "https://github.com/koyuawsmbrtn/bbz-cloud#readme",
   "bugs": {
     "url": "https://github.com/koyuawsmbrtn/bbz-cloud/issues"
@@ -23,13 +12,6 @@
     "email": "support@koyu.space",
     "url": "https://koyu.space"
   },
-  "contributors": [
-    {
-      "name": "Amila Welihinda",
-      "email": "amilajack@gmail.com",
-      "url": "https://github.com/amilajack"
-    }
-  ],
   "main": "./src/main/main.ts",
   "scripts": {
     "build": "concurrently \"npm run build:main\" \"npm run build:renderer\"",
@@ -223,7 +205,8 @@
       ],
       "category": "Office",
       "desktop": {
-        "StartupWMClass": "bbzcloud"
+        "StartupWMClass": "bbzcloud",
+		"Icon": "/usr/share/icons/hicolor/0x0/bbzcloud.png"
       }
     },
     "directories": {
@@ -243,9 +226,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koyuawsmbrtn/bbz-cloud.git"
-  },
-  "collective": {
-    "url": "https://opencollective.com/electron-react-boilerplate-594"
   },
   "devEngines": {
     "node": ">=14.x",
