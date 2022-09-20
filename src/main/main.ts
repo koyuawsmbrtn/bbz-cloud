@@ -16,7 +16,6 @@ import {
   shell,
   dialog,
   ipcMain,
-  desktopCapturer,
   Menu,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
@@ -66,28 +65,6 @@ ipcMain.on('getPassword', (event) => {
   }).catch(() => {
     mainWindow.webContents.send('getPassword', emptyCreds);
   });
-});
-
-/*
-ipcMain.on('getDisplaySources', async (event) => {
-  desktopCapturer
-    .getSources({ types: ['window', 'screen'] })
-    .then((sources) => {
-      const btnStrings: string[] = [];
-      const arrayOfSourceIds: string[] = [];
-      for (const source of sources) {
-        btnStrings.push(source.name);
-        arrayOfSourceIds.push(source.id);
-      }
-      const msgOptions = {
-        type: 'info',
-        message: 'Bitte wählen Sie ein Fenster / Bildschirm aus:',
-        buttons: btnStrings,
-      };
-      dialog.showMessageBox(msgOptions).then((index) => {
-        event.reply(arrayOfSourceIds[index.response]);
-      });
-    });
 });
 
 /*
