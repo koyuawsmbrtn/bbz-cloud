@@ -56,7 +56,8 @@
       ],
       "category": "Office",
       "desktop": {
-        "StartupWMClass": "bbzcloud"
+        "StartupWMClass": "bbzcloud",
+        "Icon": "/usr/share/icons/hicolor/0x0/bbzcloud.png"
       }
     },
     "directories": {
