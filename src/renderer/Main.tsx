@@ -178,70 +178,76 @@ export default class Main extends React.Component {
         }
       });
       for (const [key, e] of Object.entries(links)) {
-        if (e.enabled) {
-          if (e.teacher === true && isTeacher === true) {
-            $('#appchecks').append(
-              `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
-            );
-            if (localStorage.getItem(`checked-${key}`) === null) {
+        if (e.teacher === true && isTeacher === true) {
+          $('#appchecks').append(
+            `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+          );
+          if (localStorage.getItem(`checked-${key}`) === null) {
+            if (e.enabled) {
               localStorage.setItem(`checked-${key}`, 'true');
+            } else {
+              localStorage.setItem(`checked-${key}`, 'false');
             }
-            if (localStorage.getItem(`checked-${key}`) === 'true') {
-              $(`#check-${key}`).attr('checked', '');
-            }
-            $('#apps').append(
-              `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
-            );
-            if (localStorage.getItem(`checked-${key}`) === 'false') {
-              $(`.link-${key}`).hide();
-            }
-            $('#views').append(
-              `<webview
-                  id="wv-${key}"
-                  class="wv web-${key}"
-                  src="${e.url}"
-                  style="display:inline-flex; width:100%; height:91.5vh;"
-                  allowpopups></webview>`
-            );
           }
-          if (e.teacher === false) {
-            $('#appchecks').append(
-              `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
-            );
-            if (localStorage.getItem(`checked-${key}`) === null) {
-              localStorage.setItem(`checked-${key}`, 'true');
-            }
-            if (localStorage.getItem(`checked-${key}`) === 'true') {
-              $(`#check-${key}`).attr('checked', '');
-            }
-            $('#apps').append(
-              `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
-            );
-            if (localStorage.getItem(`checked-${key}`) === 'false') {
-              $(`.link-${key}`).hide();
-            }
-            $('#views').append(
-              `<webview
-                  id="wv-${key}"
-                  class="wv web-${key}"
-                  src="${e.url}"
-                  style="display:inline-flex; width:100%; height:91.5vh;"
-                  allowpopups></webview>`
-            );
+          if (localStorage.getItem(`checked-${key}`) === 'true') {
+            $(`#check-${key}`).attr('checked', '');
           }
-          $('#buttons').append(
-            `<span onClick="reloadView('${key}')" class="wvbr webbr-${key}" style="cursor:pointer;"><img height="20" style="vertical-align:middle;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNDg5LjUzMyA0ODkuNTMzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0ODkuNTMzIDQ4OS41MzM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMjY4LjE3NSw0ODguMTYxYzk4LjItMTEsMTc2LjktODkuNSwxODguMS0xODcuN2MxNC43LTEyOC40LTg1LjEtMjM3LjctMjEwLjItMjM5LjF2LTU3LjZjMC0zLjItNC00LjktNi43LTIuOQoJCWwtMTE4LjYsODcuMWMtMiwxLjUtMiw0LjQsMCw1LjlsMTE4LjYsODcuMWMyLjcsMiw2LjcsMC4yLDYuNy0yLjl2LTU3LjVjODcuOSwxLjQsMTU4LjMsNzYuMiwxNTIuMywxNjUuNgoJCWMtNS4xLDc2LjktNjcuOCwxMzkuMy0xNDQuNywxNDQuMmMtODEuNSw1LjItMTUwLjgtNTMtMTYzLjItMTMwYy0yLjMtMTQuMy0xNC44LTI0LjctMjkuMi0yNC43Yy0xNy45LDAtMzEuOSwxNS45LTI5LjEsMzMuNgoJCUM0OS41NzUsNDE4Ljk2MSwxNTAuODc1LDUwMS4yNjEsMjY4LjE3NSw0ODguMTYxeiIgc3R5bGU9ImZpbGw6I2ZmZjsiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"></span>`
+          $('#apps').append(
+            `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
           );
-          $('#buttons').append(
-            `<span onClick="back('${key}')" class="wvbb webbb-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&larr;</span>`
-          );
-          $('#buttons').append(
-            `<span onClick="forward('${key}')" class="wvbf webbf-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&rarr;</span>`
-          );
-          $('#buttons').append(
-            `<span onClick="copyUrl('${key}')" class="wvbc webbc-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
+          if (localStorage.getItem(`checked-${key}`) === 'false') {
+            $(`.link-${key}`).hide();
+          }
+          $('#views').append(
+            `<webview
+                id="wv-${key}"
+                class="wv web-${key}"
+                src="${e.url}"
+                style="display:inline-flex; width:100%; height:91.5vh;"
+                allowpopups></webview>`
           );
         }
+        if (e.teacher === false) {
+          $('#appchecks').append(
+            `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+          );
+          if (localStorage.getItem(`checked-${key}`) === null) {
+            if (e.enabled) {
+              localStorage.setItem(`checked-${key}`, 'true');
+            } else {
+              localStorage.setItem(`checked-${key}`, 'false');
+            }
+          }
+          if (localStorage.getItem(`checked-${key}`) === 'true') {
+            $(`#check-${key}`).attr('checked', '');
+          }
+          $('#apps').append(
+            `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+          );
+          if (localStorage.getItem(`checked-${key}`) === 'false') {
+            $(`.link-${key}`).hide();
+          }
+          $('#views').append(
+            `<webview
+                id="wv-${key}"
+                class="wv web-${key}"
+                src="${e.url}"
+                style="display:inline-flex; width:100%; height:91.5vh;"
+                allowpopups></webview>`
+          );
+        }
+        $('#buttons').append(
+          `<span onClick="reloadView('${key}')" class="wvbr webbr-${key}" style="cursor:pointer;"><img height="20" style="vertical-align:middle;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNDg5LjUzMyA0ODkuNTMzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0ODkuNTMzIDQ4OS41MzM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMjY4LjE3NSw0ODguMTYxYzk4LjItMTEsMTc2LjktODkuNSwxODguMS0xODcuN2MxNC43LTEyOC40LTg1LjEtMjM3LjctMjEwLjItMjM5LjF2LTU3LjZjMC0zLjItNC00LjktNi43LTIuOQoJCWwtMTE4LjYsODcuMWMtMiwxLjUtMiw0LjQsMCw1LjlsMTE4LjYsODcuMWMyLjcsMiw2LjcsMC4yLDYuNy0yLjl2LTU3LjVjODcuOSwxLjQsMTU4LjMsNzYuMiwxNTIuMywxNjUuNgoJCWMtNS4xLDc2LjktNjcuOCwxMzkuMy0xNDQuNywxNDQuMmMtODEuNSw1LjItMTUwLjgtNTMtMTYzLjItMTMwYy0yLjMtMTQuMy0xNC44LTI0LjctMjkuMi0yNC43Yy0xNy45LDAtMzEuOSwxNS45LTI5LjEsMzMuNgoJCUM0OS41NzUsNDE4Ljk2MSwxNTAuODc1LDUwMS4yNjEsMjY4LjE3NSw0ODguMTYxeiIgc3R5bGU9ImZpbGw6I2ZmZjsiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"></span>`
+        );
+        $('#buttons').append(
+          `<span onClick="back('${key}')" class="wvbb webbb-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&larr;</span>`
+        );
+        $('#buttons').append(
+          `<span onClick="forward('${key}')" class="wvbf webbf-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&rarr;</span>`
+        );
+        $('#buttons').append(
+          `<span onClick="copyUrl('${key}')" class="wvbc webbc-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
+        );
       }
       if (
         localStorage.getItem(`custom1_url`) != '' &&
