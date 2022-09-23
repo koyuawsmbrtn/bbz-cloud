@@ -200,6 +200,11 @@ const createWindow = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
+  try {
+    fs.unlinkSync('check.lock');
+  } catch (error) {
+    console.log('Deleting check.lock failed: ', error);
+  }
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -353,9 +358,20 @@ app
   .whenReady()
   .then(() => {
     try {
+      // Try to read check.lock ...
       fs.readFileSync('check.lock');
+      const options = {
+        type: 'error',
+        buttons: ['Ok'],
+        title: 'Fehler',
+        message:
+          'Die BBZ Cloud App läuft bereits und kann nicht mehrfach gestartet werden. Beenden Sie bitte die App, bevor Sie sie neu starten.',
+      };
+      dialog.showMessageBoxSync(mainWindow, options);
+      app.quit();
     } catch {
-      // ...
+      // If touching the check.lock file fails, generate it and go on
+      fs.writeFileSync('check.lock', '');
     }
     createWindow();
     app.on('activate', () => {
