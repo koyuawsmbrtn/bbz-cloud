@@ -10,16 +10,10 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import {
-  app,
-  BrowserWindow,
-  shell,
-  dialog,
-  ipcMain,
-  Menu,
-} from 'electron';
+import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
+import fs from 'fs';
 import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
@@ -358,6 +352,11 @@ app.on('web-contents-created', (event, contents) => {
 app
   .whenReady()
   .then(() => {
+    try {
+      fs.readFileSync('check.lock');
+    } catch {
+      // ...
+    }
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
