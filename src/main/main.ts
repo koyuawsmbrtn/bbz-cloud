@@ -169,13 +169,20 @@ const createWindow = async () => {
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
     if (process.platform === 'darwin') {
-      dialog.showMessageBox(mainWindow, {
-        message:
-          'Ein Update ist verfügbar! Download über kurzelinks.de/bbz-cloud',
-        type: 'info',
-        buttons: ['Ok'],
-        title: 'Updater',
-      });
+      dialog
+        .showMessageBox(mainWindow, {
+          message:
+            'Ein Update ist verfügbar! Download über kurzelinks.de/bbz-cloud',
+          type: 'info',
+          buttons: ['Ok', 'Website zum Download öffnen'],
+          title: 'Updater',
+        })
+        .then((response) => {
+          if (response.response === 1) {
+            shell.openExternal('https://kurzelinks.de/bbz-cloud');
+          }
+          messageBoxIsDisplayed = false;
+        });
     }
   });
   autoUpdater.on('update-not-available', (ev, info) => {
@@ -188,6 +195,22 @@ const createWindow = async () => {
     sendStatusToWindow('Download progress...');
   });
   autoUpdater.on('update-downloaded', (ev, info) => {
+    if (process.platform !== 'darwin') {
+      dialog
+        .showMessageBox(mainWindow, {
+          message:
+            'Ein Update ist verfügbar und wurde heruntergeladen. Es wird automatisch beim Neustart der App installiert.',
+          type: 'info',
+          buttons: ['Ok', 'App jetzt neu starten'],
+          title: 'Updater',
+        })
+        .then((response) => {
+          if (response.response === 1) {
+            app.quit();
+          }
+          messageBoxIsDisplayed = false;
+        });
+    }
     sendStatusToWindow('Update downloaded');
   });
   autoUpdater.checkForUpdates();
@@ -370,7 +393,7 @@ app
       dialog.showMessageBoxSync(mainWindow, options);
       app.quit();
     } catch {
-      // If touching the check.lock file fails, generate it and go on
+      // If touching the check.lock file fails, generate it and go on - no other instance is running
       fs.writeFileSync('check.lock', '');
     }
     createWindow();
