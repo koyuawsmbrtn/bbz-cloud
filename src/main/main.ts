@@ -216,6 +216,8 @@ const createWindow = async () => {
   autoUpdater.checkForUpdates();
 };
 
+// ********************** Auto-Updater *******************************
+
 /**
  * Add event listeners...
  */
