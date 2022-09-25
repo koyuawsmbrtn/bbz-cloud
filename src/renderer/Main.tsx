@@ -132,7 +132,12 @@ function setNotificationCallback(callback: Function) {
 
   const newNotify = (title: string, opt: NotificationOptions) => {
     callback(title, opt);
-    return new OldNotify(title, opt);
+    const notify: Notification = new OldNotify(title, opt);
+    notify.onclick = () => {
+      // Hier sollte die WebView angezeigt werden
+      console.log('Erfolgreich!');
+    };
+    return notify;
   };
   newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
   Object.defineProperty(newNotify, 'permission', {
