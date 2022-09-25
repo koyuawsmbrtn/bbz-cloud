@@ -124,13 +124,13 @@ function clickable(b: boolean) {
 
 /*
  Implement Notification Proxy to allow Notification emitted by WebApps to be managed
-  *
+  */
 
-function setNotificationCallback(callback) {
+function setNotificationCallback(callback: Function) {
   const OldNotify = window.Notification;
   OldNotify.requestPermission();
 
-  const newNotify = (title, opt) => {
+  const newNotify = (title: string, opt: NotificationOptions) => {
     callback(title, opt);
     return new OldNotify(title, opt);
   };
