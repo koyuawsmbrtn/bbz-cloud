@@ -122,6 +122,40 @@ function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
 
+/*
+ Implement Notification Proxy to allow Notification emitted by WebApps to be managed
+  *
+
+function setNotificationCallback(callback) {
+  const OldNotify = window.Notification;
+  OldNotify.requestPermission();
+
+  const newNotify = (title, opt) => {
+    callback(title, opt);
+    return new OldNotify(title, opt);
+  };
+  newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
+  Object.defineProperty(newNotify, 'permission', {
+    get: () => {
+      return OldNotify.permission;
+    },
+  });
+
+  window.Notification = newNotify;
+}
+
+function notifyCallback(title, opt) {
+  console.log('title', title);
+}
+
+window.Notification.requestPermission((permission) => {
+  if (permission === 'granted') {
+    setNotificationCallback(notifyCallback);
+  }
+});
+
+// ********************* Notifiction Proxy done ************************ */
+
 export default class Main extends React.Component {
   async componentDidMount() {
     localStorage.setItem('isClickable', 'true');
