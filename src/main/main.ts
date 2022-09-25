@@ -398,6 +398,9 @@ app
       // If touching the check.lock file fails, generate it and go on - no other instance is running
       fs.writeFileSync('check.lock', '');
     }
+    if (process.platform === 'win32') {
+      app.setAppUserModelId(app.name);
+    }
     createWindow();
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
