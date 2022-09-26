@@ -65,6 +65,12 @@ window.api.receive('getPassword', (result) => {
 });
 window.api.send('getPassword');
 
+// on 'notifications' trigger changeUrl to correct app
+window.api.receive('notifications', (result: string) => {
+  console.log('notification-renderer');
+  // changeUrl(result);
+});
+
 function resetCredsAreSet() {
   credsAreSet.bbb = false;
   credsAreSet.moodle = false;
@@ -121,45 +127,6 @@ function saveSettings() {
 function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
-
-/*
- Implement Notification Proxy to allow Notification emitted by WebApps to be managed
-  */
-
-function setNotificationCallback(callback: Function) {
-  const OldNotify = window.Notification;
-  OldNotify.requestPermission();
-
-  const newNotify = (title: string, opt: NotificationOptions) => {
-    callback(title, opt);
-    const notify: Notification = new OldNotify(title, opt);
-    notify.onclick = () => {
-      // Hier sollte die WebView angezeigt werden
-      console.log('Erfolgreich!');
-    };
-    return notify;
-  };
-  newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
-  Object.defineProperty(newNotify, 'permission', {
-    get: () => {
-      return OldNotify.permission;
-    },
-  });
-
-  window.Notification = newNotify;
-}
-
-function notifyCallback(title, opt) {
-  console.log('title', title);
-}
-
-window.Notification.requestPermission((permission) => {
-  if (permission === 'granted') {
-    setNotificationCallback(notifyCallback);
-  }
-});
-
-// ********************* Notifiction Proxy done ************************ */
 
 export default class Main extends React.Component {
   async componentDidMount() {
@@ -361,9 +328,52 @@ export default class Main extends React.Component {
         $('#autostart').attr('checked', 'true');
       }
 
-      /* Credentials in die settings schreiben (UX)
-        console.log(document.getElementById('emailAdress')?.value);
-        document.getElementById('emailAdress').value = creds.outlookUsername; */
+      /* WebView injections
+         - Credentials
+         - Notification Proxy */
+      // Notification proxy inject into webviews
+      document.querySelectorAll('webview').forEach((wv) => {
+        wv.addEventListener('did-finish-load', async (event) => {
+          wv.executeJavaScript(
+            `function setNotificationCallback(callback: Function) {
+              const OldNotify = window.Notification;
+              OldNotify.requestPermission();
+
+              const newNotify = (title: string, opt: NotificationOptions) => {
+                callback(title, opt);
+                const notify: Notification = new OldNotify(title, opt);
+                notify.onclick = () => {
+                  window.api.send(
+                    'notifications',
+                    wv.id
+                  ); // Hier soll die WebView angezeigt werden
+                  console.log('Erfolgreich!');
+                };
+                return notify;
+              };
+              newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
+              Object.defineProperty(newNotify, 'permission', {
+                get: () => {
+                  return OldNotify.permission;
+                },
+              });
+
+              window.Notification = newNotify;
+            }
+
+            function notifyCallback(title, opt) {
+              console.log('title', title);
+            }
+
+            window.Notification.requestPermission((permission) => {
+              if (permission === 'granted') {
+                setNotificationCallback(notifyCallback);
+              }
+            });`
+          );
+        });
+      });
+
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {

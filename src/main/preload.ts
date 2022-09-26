@@ -13,7 +13,7 @@ contextBridge.exposeInMainWorld('api', {
       'zoom',
       'savePassword',
       'getPassword',
-      'getDisplaySources',
+      'notifications',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -24,7 +24,7 @@ contextBridge.exposeInMainWorld('api', {
       'fromMain',
       'savePassword',
       'getPassword',
-      'getDisplaySources',
+      'notifications',
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

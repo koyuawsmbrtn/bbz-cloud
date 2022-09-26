@@ -36,6 +36,13 @@ ipcMain.on('zoom', (event, args) => {
   mainWindow.webContents.setZoomFactor(zoomFaktor);
 });
 
+// Communication with renderer for focussing WebApp on Notification click
+ipcMain.on('notifications', (event, wvid) => {
+  app.focus();
+  console.log('notification - main');
+  mainWindow.webContents.send('notifications', wvid);
+});
+
 ipcMain.on('savePassword', (event, cred) => {
   keytar.setPassword('bbzcloud', 'credentials', JSON.stringify(cred));
 });
