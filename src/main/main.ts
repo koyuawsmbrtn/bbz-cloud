@@ -171,11 +171,13 @@ const createWindow = async () => {
     if (process.platform === 'darwin') {
       dialog
         .showMessageBox(mainWindow, {
-          message:
-            'Ein Update ist verfügbar! Download über kurzelinks.de/bbz-cloud',
+          title: 'Neues Update verfügbar',
+          message: info.releaseNotes,
           type: 'info',
-          buttons: ['Ok', 'Website zum Download öffnen'],
-          title: 'Updater',
+          buttons: [
+            'Update nicht herunterladen',
+            'Website zum Download öffnen',
+          ],
         })
         .then((response) => {
           if (response.response === 1) {
@@ -198,11 +200,10 @@ const createWindow = async () => {
     if (process.platform !== 'darwin') {
       dialog
         .showMessageBox(mainWindow, {
-          message:
-            'Ein Update ist verfügbar und wurde heruntergeladen. Es wird automatisch beim Neustart der App installiert.',
+          title: 'Neues Update verfügbar',
+          message: info.releaseNotes,
           type: 'info',
           buttons: ['Ok', 'App jetzt neu starten'],
-          title: 'Updater',
         })
         .then((response) => {
           if (response.response === 1) {
