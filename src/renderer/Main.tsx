@@ -67,7 +67,7 @@ window.api.send('getPassword');
 
 // on 'notifications' trigger changeUrl to correct app
 window.api.receive('notifications', (result: string) => {
-  console.log('notification-renderer');
+  console.log('notification-renderer: ', result);
   // changeUrl(result);
 });
 
