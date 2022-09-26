@@ -226,11 +226,6 @@ const createWindow = async () => {
 app.on('window-all-closed', () => {
   // Respect the OSX convention of having the application in memory even
   // after all windows have been closed
-  try {
-    fs.unlinkSync('check.lock');
-  } catch (error) {
-    console.log('Deleting check.lock failed: ', error);
-  }
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -383,9 +378,8 @@ app.on('web-contents-created', (event, contents) => {
 app
   .whenReady()
   .then(() => {
-    try {
-      // Try to read check.lock ...
-      fs.readFileSync('check.lock');
+    const gotTheLock = app.requestSingleInstanceLock();
+    if (!gotTheLock) {
       const options = {
         type: 'error',
         buttons: ['Ok'],
@@ -395,9 +389,14 @@ app
       };
       dialog.showMessageBoxSync(mainWindow, options);
       app.quit();
-    } catch {
-      // If touching the check.lock file fails, generate it and go on - no other instance is running
-      fs.writeFileSync('check.lock', '');
+    } else {
+      app.on('second-instance', (event, commandLine, workingDirectory) => {
+        // Someone tried to run a second instance, we should focus our window.
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) mainWindow.restore();
+          mainWindow.focus();
+        }
+      });
     }
     createWindow();
     app.on('activate', () => {
