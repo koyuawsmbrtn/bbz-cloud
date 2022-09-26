@@ -331,7 +331,7 @@ export default class Main extends React.Component {
       /* WebView injections
          - Credentials
          - Notification Proxy */
-      // Notification proxy inject into webviews
+
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
           wv.executeJavaScript(
@@ -371,12 +371,6 @@ export default class Main extends React.Component {
               }
             });`
           );
-        });
-      });
-
-      // Credentials in die einzelnen WebViews einfügen
-      document.querySelectorAll('webview').forEach((wv) => {
-        wv.addEventListener('did-finish-load', async (event) => {
           // Autofill Outlook
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;
