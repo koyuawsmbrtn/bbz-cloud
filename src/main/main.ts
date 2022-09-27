@@ -258,6 +258,7 @@ const createWindow = async () => {
         })
         .then((response) => {
           if (response.response === 1) {
+            tray.destroy();
             autoUpdater.quitAndInstall();
           }
           messageBoxIsDisplayed = false;
