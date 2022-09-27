@@ -10,7 +10,15 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import { app, BrowserWindow, shell, dialog, ipcMain, Menu } from 'electron';
+import {
+  app,
+  BrowserWindow,
+  shell,
+  dialog,
+  ipcMain,
+  Menu,
+  Tray,
+} from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
 import fs from 'fs';
@@ -128,6 +136,49 @@ const createWindow = async () => {
   if (!isDevelopment) {
     mainWindow.webContents.insertCSS('.debug{display:none !important;}');
   }
+
+  function createTray() {
+    const appIcon = new Tray(getAssetPath('tray.png'));
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'Anzeigen',
+        click() {
+          mainWindow.show();
+        },
+      },
+      {
+        label: 'Beenden',
+        click() {
+          tray.destroy();
+          app.isQuiting = true;
+          app.quit();
+        },
+      },
+    ]);
+
+    appIcon.on('double-click', function (event) {
+      mainWindow.show();
+    });
+    appIcon.setToolTip('Tray Tutorial');
+    appIcon.setContextMenu(contextMenu);
+    return appIcon;
+  }
+
+  let tray = createTray();
+
+  mainWindow.on('minimize', (event) => {
+    event.preventDefault();
+    mainWindow.hide();
+  });
+
+  mainWindow.on('close', (event) => {
+    event.preventDefault();
+    mainWindow.hide();
+  });
+
+  mainWindow.on('restore', function (event) {
+    mainWindow.show();
+  });
 
   mainWindow.on('ready-to-show', () => {
     if (!mainWindow) {
