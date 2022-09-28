@@ -159,7 +159,7 @@ const createWindow = async () => {
     appIcon.on('double-click', function (event) {
       mainWindow.show();
     });
-    appIcon.setToolTip('Tray Tutorial');
+    appIcon.setToolTip('BBZ Cloud');
     appIcon.setContextMenu(contextMenu);
     return appIcon;
   }
@@ -446,6 +446,7 @@ app
         // Someone tried to run a second instance, we should focus our window.
         if (mainWindow) {
           if (mainWindow.isMinimized()) mainWindow.restore();
+          mainWindow.show();
           mainWindow.focus();
         }
       });
