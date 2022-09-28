@@ -11,6 +11,7 @@
 /* eslint-disable func-names */
 import React from 'react';
 import $ from 'jquery';
+import smalltalk from 'smalltalk';
 import monkey from '../../assets/monkey.png';
 import u1 from '../../assets/uebersicht.png';
 import u2 from '../../assets/doge.png';
@@ -169,9 +170,16 @@ export default class Main extends React.Component {
     });
 
     window.setInterval(() => {
-      smalltalk.alert('Systemnachricht', 'WIP').then(() => {
-        console.log('ok');
-      });
+      $.get(
+        'https://refined-github-html-preview.kidonng.workers.dev/koyuawsmbrtn/bbz-cloud/raw/main/hosted/motd.html',
+        (data) => {
+          if (data !== localStorage.getItem("motd")) {
+            smalltalk.alert('Systemnachricht', data).then(() => {
+              localStorage.setItem('motd', data);
+            });
+          }
+        }
+      );
     }, 1000);
 
     window.setTimeout(() => {
