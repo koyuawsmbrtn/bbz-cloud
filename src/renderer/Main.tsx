@@ -352,6 +352,10 @@ export default class Main extends React.Component {
             wv.executeJavaScript(
               `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
             );
+            wv.executeJavaScript(
+              // Hier wird der Button geklickt
+              `document.querySelector('#loginbtn').click();`
+            );
           }
           // Autofill BigBlueButton
           if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {

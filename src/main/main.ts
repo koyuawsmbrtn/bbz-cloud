@@ -402,12 +402,14 @@ app.on('web-contents-created', (event, contents) => {
       } else if (state === 'progressing') {
         if (item.isPaused()) {
           console.log('Download is paused');
-        } else {
+        } else if (item.getTotalBytes() !== 0) {
           console.log(
             `Percentage of Download: ${
               (item.getTotalBytes() / item.getReceivedBytes()) * 100
             }`
           );
+        } else {
+          console.log(`Total Bytes downloaded: ${item.getReceivedBytes()}`);
         }
       }
     });
