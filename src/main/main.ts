@@ -151,6 +151,7 @@ const createWindow = async () => {
         click() {
           tray.destroy();
           app.isQuiting = true;
+          process.kill(process.pid, 9);
           app.quit();
         },
       },
