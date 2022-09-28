@@ -152,7 +152,7 @@ const createWindow = async () => {
           tray.destroy();
           app.isQuiting = true;
           process.kill(process.pid, 9);
-          app.quit();
+          autoUpdater.quitAndInstall();
         },
       },
     ]);
@@ -251,22 +251,8 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-downloaded', (ev, info) => {
     if (process.platform !== 'darwin') {
-      dialog
-        .showMessageBox(mainWindow, {
-          title: 'Neues Update verfügbar',
-          message: info.releaseNotes,
-          type: 'info',
-          buttons: ['Ok', 'App jetzt neu starten'],
-        })
-        .then((response) => {
-          if (response.response === 1) {
-            tray.destroy();
-            autoUpdater.quitAndInstall();
-          }
-          messageBoxIsDisplayed = false;
-        });
+      sendStatusToWindow('Update downloaded');
     }
-    sendStatusToWindow('Update downloaded');
   });
   autoUpdater.checkForUpdates();
 };
