@@ -169,17 +169,21 @@ export default class Main extends React.Component {
       }
     });
 
-    window.setInterval(() => {
+    function showMotd() {
       $.get(
-        'https://koyuawsmbrtn.github.io/bbz-cloud/hosted/motd.html',
+        `https://koyuawsmbrtn.github.io/bbz-cloud/hosted/motd.html?${Date.now()}`,
         (data) => {
           if (data !== localStorage.getItem("motd")) {
+            localStorage.setItem('motd', data);
             smalltalk.alert('Systemnachricht', data);
           }
-          localStorage.setItem('motd', data);
         }
       );
-    }, 1000);
+    }
+
+    showMotd();
+
+    window.setInterval(showMotd, 3000);
 
     window.setTimeout(() => {
       $('#loading').hide();
