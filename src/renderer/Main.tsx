@@ -250,8 +250,8 @@ export default class Main extends React.Component {
         );
       }
       if (
-        localStorage.getItem(`custom1_url`) != '' &&
-        localStorage.getItem(`custom1_url`) != null
+        localStorage.getItem(`custom1_url`) !== '' &&
+        localStorage.getItem(`custom1_url`) !== null
       ) {
         const custom1_url = localStorage.getItem(`custom1_url`);
         const custom1_icon = localStorage.getItem(`custom1_icon`);
