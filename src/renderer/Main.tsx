@@ -174,10 +174,9 @@ export default class Main extends React.Component {
         'https://refined-github-html-preview.kidonng.workers.dev/koyuawsmbrtn/bbz-cloud/raw/main/hosted/motd.html',
         (data) => {
           if (data !== localStorage.getItem("motd")) {
-            smalltalk.alert('Systemnachricht', data).then(() => {
-              localStorage.setItem('motd', data);
-            });
+            smalltalk.alert('Systemnachricht', data);
           }
+          localStorage.setItem('motd', data);
         }
       );
     }, 1000);
