@@ -403,7 +403,11 @@ app.on('web-contents-created', (event, contents) => {
         if (item.isPaused()) {
           console.log('Download is paused');
         } else {
-          console.log(`Received bytes: ${item.getReceivedBytes()}`);
+          console.log(
+            `Percentage of Download: ${
+              (item.getTotalBytes() / item.getReceivedBytes()) * 100
+            }`
+          );
         }
       }
     });
