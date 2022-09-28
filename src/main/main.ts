@@ -223,7 +223,8 @@ const createWindow = async () => {
       dialog
         .showMessageBox(mainWindow, {
           title: 'Neues Update verfügbar',
-          message: info.releaseNotes,
+          message:
+            'Ein neues Update steht bereit. Wollen Sie es herunterladen oder ablehnen?',
           type: 'info',
           buttons: [
             'Update nicht herunterladen',
