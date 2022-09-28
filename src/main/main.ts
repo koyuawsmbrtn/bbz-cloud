@@ -449,14 +449,14 @@ app
   .then(() => {
     const gotTheLock = app.requestSingleInstanceLock();
     if (!gotTheLock) {
-      const options = {
+      /* const options = {
         type: 'error',
         buttons: ['Ok'],
         title: 'Fehler',
         message:
           'Die BBZ Cloud App läuft bereits und kann nicht mehrfach gestartet werden. Beenden Sie bitte die App, bevor Sie sie neu starten.',
       };
-      dialog.showMessageBoxSync(mainWindow, options);
+      dialog.showMessageBoxSync(mainWindow, options); */
       app.quit();
     } else {
       app.on('second-instance', (event, commandLine, workingDirectory) => {
