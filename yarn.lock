@@ -1118,6 +1118,14 @@
   resolved "https://registry.yarnpkg.com/@bcoe/v8-coverage/-/v8-coverage-0.2.3.tgz#75a2e8b51cb758a7553d6804a5932d7aace75c39"
   integrity sha512-0hYQ8SB4Db5zvZB4axdMHGwEaQjkZzFjQiN9LVYvIFB2nSUHW9tYpxWriPrWDASIxiaXax83REcLxuSdnGPZtw==
 
+"@cloudcmd/create-element@^2.0.0":
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/@cloudcmd/create-element/-/create-element-2.0.2.tgz#071b26cafafe4a79cdd056d05dee4bb6ac1a2271"
+  integrity sha512-5b74qCgwEUx+GxzXC9Gwamgh4Rx5ouLSrCW+QbaBHWpxA5s1sw5i6MbSODfuts1MSX5RoaZjJAjNY5y3et1iXw==
+  dependencies:
+    currify "^4.0.0"
+    fullstore "^3.0.0"
+
 "@cspotcode/source-map-support@^0.8.0":
   version "0.8.1"
   resolved "https://registry.yarnpkg.com/@cspotcode/source-map-support/-/source-map-support-0.8.1.tgz#00629c35a688e05a88b1cda684fb9d5e73f000a1"
@@ -3960,6 +3968,11 @@ csstype@^3.0.2:
   resolved "https://registry.yarnpkg.com/csstype/-/csstype-3.1.1.tgz#841b532c45c758ee546a11d5bd7b7b473c8c30b9"
   integrity sha512-DJR/VvkAvSZW9bTouZue2sSxDwdTN92uHjqeKVm+0dAqdfNykRzQ95tay8aXMBAAPpUiq4Qcug2L7neoRh2Egw==
 
+currify@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/currify/-/currify-4.0.0.tgz#54637df9a9752de8a0d59efbfb5ce59384a1e306"
+  integrity sha512-ABfH28PWp5oqqp31cLXJQdeMqoFNej9rJOu84wKhN3jPCH7FAZg3zY1MVI27PTFoqfPlxOyhGmh9PzOVv+yN2g==
+
 damerau-levenshtein@^1.0.6, damerau-levenshtein@^1.0.8:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/damerau-levenshtein/-/damerau-levenshtein-1.0.8.tgz#b43d286ccbd36bc5b2f7ed41caf2d0aba1f8a6e7"
@@ -5362,6 +5375,11 @@ fsevents@^2.3.2, fsevents@~2.3.2:
   version "2.3.2"
   resolved "https://registry.yarnpkg.com/fsevents/-/fsevents-2.3.2.tgz#8a526f78b8fdf4623b709e0b975c52c24c02fd1a"
   integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
+
+fullstore@^3.0.0:
+  version "3.0.0"
+  resolved "https://registry.yarnpkg.com/fullstore/-/fullstore-3.0.0.tgz#680d5fe282c5f51f67900dbad3fd53e62c954770"
+  integrity sha512-EEIdG+HWpyygWRwSLIZy+x4u0xtghjHNfhQb0mI5825Mmjq6oFESFUY0hoZigEgd3KH8GX+ZOCK9wgmOiS7VBQ==
 
 function-bind@^1.1.1:
   version "1.1.1"
@@ -9114,6 +9132,14 @@ slice-ansi@^5.0.0:
   dependencies:
     ansi-styles "^6.0.0"
     is-fullwidth-code-point "^4.0.0"
+
+"smalltalk@https://github.com/koyuspace/smalltalk":
+  version "4.1.1"
+  resolved "https://github.com/koyuspace/smalltalk#79b31fd12cefd59f0cb233b246077f06061532d9"
+  dependencies:
+    "@cloudcmd/create-element" "^2.0.0"
+    currify "^4.0.0"
+    fullstore "^3.0.0"
 
 smart-buffer@^4.0.2, smart-buffer@^4.2.0:
   version "4.2.0"

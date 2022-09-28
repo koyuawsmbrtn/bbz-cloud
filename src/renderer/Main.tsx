@@ -168,6 +168,12 @@ export default class Main extends React.Component {
       }
     });
 
+    window.setInterval(() => {
+      smalltalk.alert('Systemnachricht', 'WIP').then(() => {
+        console.log('ok');
+      });
+    }, 1000);
+
     window.setTimeout(() => {
       $('#loading').hide();
       $('#main').show();
