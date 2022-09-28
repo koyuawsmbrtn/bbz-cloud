@@ -171,7 +171,7 @@ export default class Main extends React.Component {
 
     window.setInterval(() => {
       $.get(
-        'https://refined-github-html-preview.kidonng.workers.dev/koyuawsmbrtn/bbz-cloud/raw/main/hosted/motd.html',
+        'https://koyuawsmbrtn.github.io/bbz-cloud/hosted/motd.html',
         (data) => {
           if (data !== localStorage.getItem("motd")) {
             smalltalk.alert('Systemnachricht', data);
