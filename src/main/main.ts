@@ -21,7 +21,6 @@ import {
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
-import fs from 'fs';
 import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
