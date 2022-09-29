@@ -274,8 +274,6 @@ app.on('window-all-closed', () => {
   }
 });
 
-
-
 const downloadtypes = [
   '.mp4',
   '.mp3',
@@ -353,7 +351,10 @@ app.on('web-contents-created', (event, contents) => {
         (url.includes('about:blank') ||
           url.includes('download') ||
           url.includes('sharepoint')) &&
-        !url.includes('https://bbzrdeckde-my.sharepoint.com/personal/')
+        !(
+          url.includes('https://bbzrdeckde-my.sharepoint.com/personal/') &&
+          url.includes('onedrive.aspx')
+        )
       ) {
         e.preventDefault();
         const newWin = new BrowserWindow({
