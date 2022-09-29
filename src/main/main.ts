@@ -274,8 +274,6 @@ app.on('window-all-closed', () => {
   }
 });
 
-
-
 const downloadtypes = [
   '.mp4',
   '.mp3',
@@ -398,8 +396,12 @@ app.on('web-contents-created', (event, contents) => {
         } else if (item.getTotalBytes() !== 0) {
           console.log(
             `Percentage of Download: ${
-              (item.getTotalBytes() / item.getReceivedBytes()) * 100
+              (item.getReceivedBytes() / item.getTotalBytes()) * 100
             }`
+          );
+          mainWindow?.webContents.send(
+            'download',
+            (item.getReceivedBytes() / item.getTotalBytes()) * 100
           );
         } else {
           console.log(`Total Bytes downloaded: ${item.getReceivedBytes()}`);

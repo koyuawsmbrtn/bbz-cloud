@@ -67,6 +67,15 @@ window.api.receive('getPassword', (result) => {
 });
 window.api.send('getPassword');
 
+// Download progress bar
+window.api.receive('download', (result) => {
+  $('#download').show();
+  $('#download').attr('value', result);
+  if (result === 100) {
+    $('#download').hide();
+  }
+});
+
 function resetCredsAreSet() {
   credsAreSet.bbb = false;
   credsAreSet.moodle = false;
@@ -135,6 +144,7 @@ export default class Main extends React.Component {
     $('#main').hide();
     $('#error').hide();
     $('#settings').hide();
+    $('#download').hide();
     $('#settingsb').click(function () {
       $('#settings').show();
       $('#content').hide();
@@ -179,7 +189,7 @@ export default class Main extends React.Component {
       $.get(
         `https://koyuawsmbrtn.github.io/bbz-cloud/hosted/motd.html?${Date.now()}`,
         (data) => {
-          if (data !== localStorage.getItem("motd")) {
+          if (data !== localStorage.getItem('motd')) {
             localStorage.setItem('motd', data);
             smalltalk.alert('Systemnachricht', data);
           }
@@ -427,6 +437,7 @@ export default class Main extends React.Component {
           <header>
             <div id="container">
               <div id="headnote">
+                <progress id="download" value="100" max="100" />
                 <p>
                   <img src={logo} alt="BBZ Logo" height="28" id="logo" />
                   <h1>BBZ Cloud</h1>
