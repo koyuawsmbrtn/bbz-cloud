@@ -396,7 +396,7 @@ export default class Main extends React.Component {
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         $('#doge').html(
-          '<iframe width="560" height="315" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'
+          '<video src="https://f001.backblazeb2.com/file/koyuspace-media/pleroma/8f9f1c1f-6199-4a54-bf42-36252e66c353/rickroll.mp4" width="640" height="480" autoplay loop></video>'
         );
       } else if (event.ctrlKey && event.keyCode === 187) {
         zoomFaktor += 0.1; // Zoom in um 10%
