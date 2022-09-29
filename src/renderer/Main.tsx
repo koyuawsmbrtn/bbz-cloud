@@ -23,6 +23,7 @@ import isTeacherVar from '../../assets/isTeacher.json';
 
 const versionApp = version.version;
 let zoomFaktor = 1.0;
+let wvHeight = '91.5vh';
 
 // PW- und Username-Variablen
 const defaultCreds = {
@@ -123,6 +124,11 @@ function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
 
+window.api.receive('resize', (result) => {
+  wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
+  console.log(wvHeight);
+});
+
 export default class Main extends React.Component {
   async componentDidMount() {
     localStorage.setItem('isClickable', 'true');
@@ -220,7 +226,7 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:91.5vh;"
+                style="display:inline-flex; width:100%; height:${wvHeight};"
                 allowpopups></webview>`
           );
         }
@@ -249,7 +255,7 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:91.5vh;"
+                style="display:inline-flex; width:100%; height:${wvHeight};"
                 allowpopups></webview>`
           );
         }
@@ -287,7 +293,7 @@ export default class Main extends React.Component {
               id="wv-custom1"
               class="wv web-custom1"
               src="${custom1_url}"
-              style="display:inline-flex; width:100%; height:91.5vh;"
+              style="display:inline-flex; width:100%; height:${wvHeight};"
               allowpopups></webview>`
         );
         $('#buttons').append(
@@ -319,7 +325,7 @@ export default class Main extends React.Component {
               id="wv-custom2"
               class="wv web-custom2"
               src="${custom2_url}"
-              style="display:inline-flex; width:100%; height:91.5vh;"
+              style="display:inline-flex; width:100%; height:${wvHeight};"
               allowpopups></webview>`
         );
         $('#buttons').append(

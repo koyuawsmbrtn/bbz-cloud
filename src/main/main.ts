@@ -167,6 +167,10 @@ const createWindow = async () => {
 
   let tray = createTray();
 
+  mainWindow.on('resize', () => {
+    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+  });
+
   mainWindow.on('minimize', (event) => {
     event.preventDefault();
     mainWindow.hide();
@@ -270,6 +274,8 @@ app.on('window-all-closed', () => {
     app.quit();
   }
 });
+
+
 
 const downloadtypes = [
   '.mp4',

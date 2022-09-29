@@ -14,6 +14,7 @@ contextBridge.exposeInMainWorld('api', {
       'savePassword',
       'getPassword',
       'download',
+      'resize',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -25,6 +26,7 @@ contextBridge.exposeInMainWorld('api', {
       'savePassword',
       'getPassword',
       'download',
+      'resize',
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
