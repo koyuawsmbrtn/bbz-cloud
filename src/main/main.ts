@@ -394,9 +394,11 @@ app.on('web-contents-created', (event, contents) => {
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
         console.log('Download is interrupted but can be resumed');
+        mainWindow?.webContents.send('download', 'interrupted');
       } else if (state === 'progressing') {
         if (item.isPaused()) {
           console.log('Download is paused');
+          mainWindow?.webContents.send('download', 'paused');
         } else if (item.getTotalBytes() !== 0) {
           console.log(
             `Percentage of Download: ${
@@ -409,6 +411,7 @@ app.on('web-contents-created', (event, contents) => {
           );
         } else {
           console.log(`Total Bytes downloaded: ${item.getReceivedBytes()}`);
+          mainWindow?.webContents.send('download', 'noPercent');
         }
       }
     });
