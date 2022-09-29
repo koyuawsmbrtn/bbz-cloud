@@ -126,7 +126,6 @@ function clickable(b: boolean) {
 
 window.api.receive('resize', (result) => {
   wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
-  console.log(wvHeight);
 });
 
 export default class Main extends React.Component {

@@ -350,9 +350,10 @@ app.on('web-contents-created', (event, contents) => {
       !url.includes('stashcat')
     ) {
       if (
-        url.includes('about:blank') ||
-        url.includes('download') ||
-        url.includes('sharepoint')
+        (url.includes('about:blank') ||
+          url.includes('download') ||
+          url.includes('sharepoint')) &&
+        !url.includes('https://bbzrdeckde-my.sharepoint.com/personal/')
       ) {
         e.preventDefault();
         const newWin = new BrowserWindow({
