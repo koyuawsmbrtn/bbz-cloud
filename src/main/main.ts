@@ -170,6 +170,10 @@ const createWindow = async () => {
     mainWindow.webContents.send('resize', mainWindow.getBounds().height);
   });
 
+  mainWindow.on('maximize', () => {
+    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+  });
+
   mainWindow.on('minimize', (event) => {
     event.preventDefault();
     mainWindow.hide();
