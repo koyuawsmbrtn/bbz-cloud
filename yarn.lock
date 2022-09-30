@@ -9133,9 +9133,10 @@ slice-ansi@^5.0.0:
     ansi-styles "^6.0.0"
     is-fullwidth-code-point "^4.0.0"
 
-"smalltalk@https://github.com/koyuspace/smalltalk":
+smalltalk@^4.1.1:
   version "4.1.1"
-  resolved "https://github.com/koyuspace/smalltalk#79b31fd12cefd59f0cb233b246077f06061532d9"
+  resolved "https://registry.yarnpkg.com/smalltalk/-/smalltalk-4.1.1.tgz#5c2363525d899743ad7ef40b6c41292d2073c2a2"
+  integrity sha512-zpYWgZ6CNCdVAiXPn0SiYF12LHcEgelJqx32VcPHR5kbLP+khEQIPqyZSTIWxOSCzy1+/cLU35MhmuxCfc/sKg==
   dependencies:
     "@cloudcmd/create-element" "^2.0.0"
     currify "^4.0.0"
