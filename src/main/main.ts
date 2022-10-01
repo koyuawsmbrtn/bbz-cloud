@@ -25,6 +25,7 @@ import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
+
 /*
  *** ipcCommunication
  */
@@ -136,6 +137,7 @@ const createWindow = async () => {
     mainWindow.webContents.insertCSS('.debug{display:none !important;}');
   }
 
+  // tray icon managements
   function createTray() {
     const appIcon = new Tray(getAssetPath('tray.png'));
     const contextMenu = Menu.buildFromTemplate([
@@ -209,7 +211,7 @@ const createWindow = async () => {
 
   mainWindow.setMenu(null);
 
-  // Open urls in the user's browser
+  // Open urls in the user's browser - just as fallback, should never be useds
   mainWindow.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
@@ -307,6 +309,7 @@ const downloadtypes = [
 
 const keywordsMicrosoft = ['onedrive', 'onenote', 'download.aspx'];
 
+// Filter out Download types - necessary for easier child window handling
 function isDownloadType(url: string) {
   var isdt = false;
   downloadtypes.forEach((s) => {
@@ -317,6 +320,7 @@ function isDownloadType(url: string) {
   return isdt;
 }
 
+// detect, if an URL is MS-related (necessary for new window management)
 function isMicrosoft(url: string) {
   var isms = false;
   keywordsMicrosoft.forEach((s) => {
@@ -345,6 +349,7 @@ app.on('web-contents-created', (event, contents) => {
   };
   contents.on('will-redirect', handleRedirect);
 
+  // Managing new Windows opened - a bit confusing because of strange behaviour of MS-Office Sitess
   // eslint-disable-next-line no-var
   var handleNewWindow = (e, url) => {
     if (
@@ -394,6 +399,7 @@ app.on('web-contents-created', (event, contents) => {
   };
   contents.on('new-window', handleNewWindow);
 
+  // Manage all download related tasks
   function handleDownloads(event, item, webContents) {
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
@@ -449,14 +455,6 @@ app
   .then(() => {
     const gotTheLock = app.requestSingleInstanceLock();
     if (!gotTheLock) {
-      /* const options = {
-        type: 'error',
-        buttons: ['Ok'],
-        title: 'Fehler',
-        message:
-          'Die BBZ Cloud App läuft bereits und kann nicht mehrfach gestartet werden. Beenden Sie bitte die App, bevor Sie sie neu starten.',
-      };
-      dialog.showMessageBoxSync(mainWindow, options); */
       app.quit();
     } else {
       app.on('second-instance', (event, commandLine, workingDirectory) => {

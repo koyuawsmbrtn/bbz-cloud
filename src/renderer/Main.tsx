@@ -21,12 +21,13 @@ import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
 
+// global (to renderer) variables
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 let wvHeight = '91.5vh';
 let progressValue = 'value=100';
 
-// PW- und Username-Variablen
+// PW- and username variables
 const defaultCreds = {
   outlookUsername: '',
   outlookPassword: '',
@@ -37,7 +38,7 @@ const defaultCreds = {
 };
 let creds = defaultCreds;
 
-// wiederholtes Neuladen der Seiten beim Einfügen der Credentials verhindern
+// allow to recognize state for already injected creds - to prevent continous reloading of WebApps
 const credsAreSet = {
   outlook: false,
   moodle: false,
@@ -53,6 +54,7 @@ if (
 
 window.api.send('zoom', zoomFaktor);
 
+// starting image - dependend on, which version is compiled
 var doge;
 const isTeacher = isTeacherVar.value;
 if (isTeacher) {
@@ -81,13 +83,12 @@ window.api.receive('download', (result) => {
     $('#download_label').hide();
   }
   if (result === 'noPercent') {
-    progressValue = '';
+    progressValue = ''; // disable the value option for progressbar to get a not-progressing bar - when no total data amount is known
     $('#download').show();
     $('#download_label').show();
-    $('#download').attr('value', 100);
+    progressValue = 'value=100'; // reenable standard value - just in case
   }
   if (typeof result === 'number') {
-    progressValue = 'value=100';
     $('#download').show();
     $('#download_label').show();
     $('#download').attr('value', result);
@@ -373,9 +374,6 @@ export default class Main extends React.Component {
         $('#autostart').attr('checked', 'true');
       }
 
-      /* Credentials in die settings schreiben (UX)
-        console.log(document.getElementById('emailAdress')?.value);
-        document.getElementById('emailAdress').value = creds.outlookUsername; */
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
@@ -429,6 +427,7 @@ export default class Main extends React.Component {
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
+        // Easter Egg ;)
         $('#doge').html(
           '<video src="https://f001.backblazeb2.com/file/koyuspace-media/pleroma/8f9f1c1f-6199-4a54-bf42-36252e66c353/rickroll.mp4" width="640" height="480" autoplay loop></video>'
         );
