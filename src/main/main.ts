@@ -397,24 +397,17 @@ app.on('web-contents-created', (event, contents) => {
   function handleDownloads(event, item, webContents) {
     item.on('updated', (event, state) => {
       if (state === 'interrupted') {
-        console.log('Download is interrupted but can be resumed');
         mainWindow?.webContents.send('download', 'interrupted');
       } else if (state === 'progressing') {
         if (item.isPaused()) {
           console.log('Download is paused');
           mainWindow?.webContents.send('download', 'paused');
         } else if (item.getTotalBytes() !== 0) {
-          console.log(
-            `Percentage of Download: ${
-              (item.getReceivedBytes() / item.getTotalBytes()) * 100
-            }`
-          );
           mainWindow?.webContents.send(
             'download',
             (item.getReceivedBytes() / item.getTotalBytes()) * 100
           );
         } else {
-          console.log(`Total Bytes downloaded: ${item.getReceivedBytes()}`);
           mainWindow?.webContents.send('download', 'noPercent');
         }
       }
@@ -427,6 +420,7 @@ app.on('web-contents-created', (event, contents) => {
         const getAssetPath = (...paths: string[]): string => {
           return path.join(RESOURCES_PATH, ...paths);
         };
+        mainWindow?.webContents.send('download', 'completed');
         const options = {
           type: 'info',
           buttons: ['Ok', 'Downloads-Ordner öffnen'],
@@ -443,7 +437,7 @@ app.on('web-contents-created', (event, contents) => {
           });
         }
       } else {
-        console.log(`Download failed: ${state}`);
+        mainWindow?.webContents.send('download', 'failed');
       }
     });
   }

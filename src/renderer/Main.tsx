@@ -24,6 +24,7 @@ import isTeacherVar from '../../assets/isTeacher.json';
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 let wvHeight = '91.5vh';
+let progressValue = 'value=100';
 
 // PW- und Username-Variablen
 const defaultCreds = {
@@ -36,7 +37,7 @@ const defaultCreds = {
 };
 let creds = defaultCreds;
 
-// wiederholtes Neuladen der Seiten beim Einfügen verhindern
+// wiederholtes Neuladen der Seiten beim Einfügen der Credentials verhindern
 const credsAreSet = {
   outlook: false,
   moodle: false,
@@ -69,10 +70,27 @@ window.api.send('getPassword');
 
 // Download progress bar
 window.api.receive('download', (result) => {
-  $('#download').show();
-  $('#download').attr('value', result);
-  if (result === 100) {
+  if (
+    result === 'completed' ||
+    result === 'interrupted' ||
+    result === 'paused' ||
+    result === 'failed' ||
+    result === 100
+  ) {
     $('#download').hide();
+    $('#download_label').hide();
+  }
+  if (result === 'noPercent') {
+    progressValue = '';
+    $('#download').show();
+    $('#download_label').show();
+    $('#download').attr('value', 100);
+  }
+  if (typeof result === 'number') {
+    progressValue = 'value=100';
+    $('#download').show();
+    $('#download_label').show();
+    $('#download').attr('value', result);
   }
 });
 
@@ -144,6 +162,7 @@ export default class Main extends React.Component {
     $('#error').hide();
     $('#settings').hide();
     $('#download').hide();
+    $('#download_label').hide();
     $('#settingsb').click(function () {
       $('#settings').show();
       $('#content').hide();
@@ -436,11 +455,14 @@ export default class Main extends React.Component {
           <header>
             <div id="container">
               <div id="headnote">
-                <progress id="download" value="100" max="100" />
                 <p>
                   <img src={logo} alt="BBZ Logo" height="28" id="logo" />
                   <h1>BBZ Cloud</h1>
                 </p>
+                <label htmlFor="download" id="download_label">
+                  Download:{' '}
+                </label>
+                <progress id="download" {...progressValue} max="100" />
                 <p>
                   Aktuell sind es <span id="temperature" />
                   °C

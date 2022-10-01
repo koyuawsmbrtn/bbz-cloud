@@ -59,6 +59,11 @@ header {
   width: 22%;
 }
 
+#download {
+  width: 70%;
+  margin-left: 15%;
+}
+
 #apps a {
   margin: 4px;
   width: 55%;
