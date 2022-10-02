@@ -2,7 +2,6 @@
 source ~/.config/user-dirs.dirs
 git pull
 git checkout -- .
-yarn
 VERSION="$(jq .version package.json)"
 BASEDIR="$XDG_DESKTOP_DIR/bbzcloud-build"
 if [ -d "$BASEDIR" ]; then
@@ -10,6 +9,7 @@ if [ -d "$BASEDIR" ]; then
   echo "${DIR} existiert bereits. Exit!"
   exit 1
 fi
+yarn
 mkdir $BASEDIR
 rm -rf release/build
 echo "Baue Lehrerversion..."
