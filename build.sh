@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 source ~/.config/user-dirs.dirs
 git pull
 git checkout -- .
