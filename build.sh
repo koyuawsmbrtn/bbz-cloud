@@ -6,7 +6,7 @@ VERSION="$(jq .version package.json)"
 BASEDIR="$XDG_DESKTOP_DIR/bbzcloud-build"
 if [ -d "$BASEDIR" ]; then
   # Take action if $DIR exists. #
-  echo "${DIR} existiert bereits. Exit!"
+  echo "$BASEDIR existiert bereits. Exit!"
   exit 1
 fi
 yarn
