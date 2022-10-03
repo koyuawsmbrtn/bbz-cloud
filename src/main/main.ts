@@ -173,11 +173,7 @@ const createWindow = async () => {
         click() {
           tray.destroy();
           app.isQuiting = true;
-          if (updateAvailable) {
-            autoUpdater.quitAndInstall();
-          } else {
-            process.kill(process.pid, 9);
-          }
+          process.kill(process.pid, 9);
         },
       },
     ]);
@@ -263,7 +259,6 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
-    mainWindow?.webContents.send('update', 'available');
     if (process.platform === 'darwin') {
       dialog
         .showMessageBox(mainWindow, {
@@ -293,24 +288,7 @@ const createWindow = async () => {
   autoUpdater.on('update-downloaded', (ev, info) => {
     updateAvailable = true;
     if (process.platform !== 'darwin') {
-      dialog
-        .showMessageBox(mainWindow, {
-          title: 'Neues Update verfügbar',
-          message:
-            'Ein neues Update steht bereit. Wollen Sie es jetzt installieren oder vorerst ignorieren?',
-          type: 'info',
-          buttons: [
-            'Update jetzt ignorieren',
-            'App beenden und Update installieren',
-          ],
-        })
-        .then((response) => {
-          if (response.response === 1) {
-            autoUpdater.quitAndInstall();
-          }
-          messageBoxIsDisplayed = false;
-        });
-
+      mainWindow?.webContents.send('update', 'available');
       sendStatusToWindow('Update downloaded');
     }
   });
