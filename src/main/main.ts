@@ -25,6 +25,7 @@ import { resolveHtmlPath } from './util';
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
+let updateAvailable = false;
 
 /*
  *** ipcCommunication
@@ -140,7 +141,7 @@ const createWindow = async () => {
   // tray icon managements
   function createTray() {
     const appIcon = new Tray(getAssetPath('tray.png'));
-    const contextMenu = Menu.buildFromTemplate([
+    const templateNoUpdate = [
       {
         label: 'Anzeigen',
         click() {
@@ -156,7 +157,30 @@ const createWindow = async () => {
           autoUpdater.quitAndInstall();
         },
       },
-    ]);
+    ];
+    const templateUpdate = [
+      {
+        label: 'Anzeigen',
+        click() {
+          mainWindow.show();
+        },
+      },
+      {
+        label: 'Beenden und Update installieren',
+        click() {
+          app.isQuiting = true;
+          tray.destroy();
+          autoUpdater.quitAndInstall();
+          process.kill(process.pid, 9);
+        },
+      },
+    ];
+
+    if (updateAvailable) {
+      const contextMenu = Menu.buildFromTemplate(templateUpdate);
+    } else {
+      const contextMenu = Menu.buildFromTemplate(templateNoUpdate);
+    }
 
     appIcon.on('double-click', function (event) {
       mainWindow.show();
@@ -182,11 +206,21 @@ const createWindow = async () => {
   });
 
   mainWindow.on('close', (event) => {
-    event.preventDefault();
-    mainWindow.hide();
+    if (updateAvailable) {
+      if (process.platform !== 'darwin') {
+        autoUpdater.quitAndInstall();
+      } else {
+        event.preventDefault();
+        mainWindow.hide();
+      }
+    } else {
+      event.preventDefault();
+      mainWindow.hide();
+    }
   });
 
   mainWindow.on('restore', function (event) {
+    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
     mainWindow.show();
   });
 
@@ -259,6 +293,7 @@ const createWindow = async () => {
     sendStatusToWindow('Download progress...');
   });
   autoUpdater.on('update-downloaded', (ev, info) => {
+    updateAvailable = true;
     if (process.platform !== 'darwin') {
       sendStatusToWindow('Update downloaded');
     }
