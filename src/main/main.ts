@@ -176,11 +176,9 @@ const createWindow = async () => {
       },
     ];
 
-    if (updateAvailable) {
-      const contextMenu = Menu.buildFromTemplate(templateUpdate);
-    } else {
-      const contextMenu = Menu.buildFromTemplate(templateNoUpdate);
-    }
+    const contextMenu = Menu.buildFromTemplate(
+      updateAvailable ? templateUpdate : templateNoUpdate
+    );
 
     appIcon.on('double-click', function (event) {
       mainWindow.show();
