@@ -247,13 +247,16 @@ const createWindow = async () => {
     return { action: 'deny' };
   });
 
-  // AutoUpdater - including debug loggin in %USERPROFILE%\AppData\Roaming\bbzcloud\logs\
+  // AutoUpdater - including debug logging in %USERPROFILE%\AppData\Roaming\bbzcloud\logs\
   const log = require('electron-log');
   log.transports.file.level = 'debug';
   autoUpdater.logger = log;
   function sendStatusToWindow(text) {
     log.info(text);
   }
+  setInterval(() => {
+    autoUpdater.checkForUpdates();
+  }, 10000);
   autoUpdater.on('checking-for-update', () => {
     sendStatusToWindow('Checking for update...');
   });
