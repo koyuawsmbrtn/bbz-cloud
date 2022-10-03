@@ -72,7 +72,12 @@ ipcMain.on('getPassword', (event) => {
 
 // Run update IPC
 ipcMain.on('runUpdate', () => {
-  autoUpdater.quitAndInstall();
+  if (process.platform !== 'darwin') {
+    autoUpdater.quitAndInstall();
+  } else {
+    const pathMacUpdate = autoUpdater.getFeedURL();
+    shell.openExternal(pathMacUpdate);
+  }
 });
 
 /*
@@ -290,10 +295,10 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-downloaded', (ev, info) => {
     updateAvailable = true;
-    if (process.platform !== 'darwin') {
-      mainWindow?.webContents.send('update', 'available');
-      sendStatusToWindow('Update downloaded');
-    }
+    // if (process.platform !== 'darwin') {
+    mainWindow?.webContents.send('update', 'available');
+    sendStatusToWindow('Update downloaded');
+    // }
   });
   autoUpdater.checkForUpdates();
 };
