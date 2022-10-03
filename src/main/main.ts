@@ -141,7 +141,8 @@ const createWindow = async () => {
   // tray icon managements
   function createTray() {
     const appIcon = new Tray(getAssetPath('tray.png'));
-    const templateNoUpdate = [
+
+    const contextMenu = Menu.buildFromTemplate([
       {
         label: 'Anzeigen',
         click() {
@@ -153,32 +154,14 @@ const createWindow = async () => {
         click() {
           tray.destroy();
           app.isQuiting = true;
-          process.kill(process.pid, 9);
-          autoUpdater.quitAndInstall();
+          if (updateAvailable) {
+            autoUpdater.quitAndInstall();
+          } else {
+            process.kill(process.pid, 9);
+          }
         },
       },
-    ];
-    const templateUpdate = [
-      {
-        label: 'Anzeigen',
-        click() {
-          mainWindow.show();
-        },
-      },
-      {
-        label: 'Beenden und Update installieren',
-        click() {
-          app.isQuiting = true;
-          tray.destroy();
-          autoUpdater.quitAndInstall();
-          process.kill(process.pid, 9);
-        },
-      },
-    ];
-
-    const contextMenu = Menu.buildFromTemplate(
-      updateAvailable ? templateUpdate : templateNoUpdate
-    );
+    ]);
 
     appIcon.on('double-click', function (event) {
       mainWindow.show();
@@ -266,12 +249,9 @@ const createWindow = async () => {
         .showMessageBox(mainWindow, {
           title: 'Neues Update verfügbar',
           message:
-            'Ein neues Update steht bereit. Wollen Sie es herunterladen oder ablehnen?',
+            'Ein neues Update steht bereit. Wollen Sie es herunterladen oder ignorieren?',
           type: 'info',
-          buttons: [
-            'Update nicht herunterladen',
-            'Website zum Download öffnen',
-          ],
+          buttons: ['Update jetzt ignorieren', 'Website zum Download öffnen'],
         })
         .then((response) => {
           if (response.response === 1) {
@@ -293,6 +273,24 @@ const createWindow = async () => {
   autoUpdater.on('update-downloaded', (ev, info) => {
     updateAvailable = true;
     if (process.platform !== 'darwin') {
+      dialog
+        .showMessageBox(mainWindow, {
+          title: 'Neues Update verfügbar',
+          message:
+            'Ein neues Update steht bereit. Wollen Sie es jetzt installieren oder vorerst ignorieren?',
+          type: 'info',
+          buttons: [
+            'Update jetzt ignorieren',
+            'App beenden und Update installieren',
+          ],
+        })
+        .then((response) => {
+          if (response.response === 1) {
+            autoUpdater.quitAndInstall();
+          }
+          messageBoxIsDisplayed = false;
+        });
+
       sendStatusToWindow('Update downloaded');
     }
   });
