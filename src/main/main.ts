@@ -70,6 +70,11 @@ ipcMain.on('getPassword', (event) => {
   });
 });
 
+// Run update IPC
+ipcMain.on('runUpdate', () => {
+  autoUpdater.quitAndInstall();
+});
+
 /*
  ***
  */
@@ -144,11 +149,25 @@ const createWindow = async () => {
 
     const contextMenu = Menu.buildFromTemplate([
       {
+        label: 'BBZ Cloud',
+        enabled: false,
+      },
+      { type: 'separator' },
+      {
         label: 'Anzeigen',
         click() {
           mainWindow.show();
         },
       },
+      {
+        label: 'Einstellungen',
+        click() {
+          mainWindow.show();
+          mainWindow.focus();
+          mainWindow?.webContents.send('changeUrl', 'settings');
+        },
+      },
+      { type: 'separator' },
       {
         label: 'Beenden',
         click() {
@@ -244,6 +263,7 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
+    mainWindow?.webContents.send('update', 'available');
     if (process.platform === 'darwin') {
       dialog
         .showMessageBox(mainWindow, {

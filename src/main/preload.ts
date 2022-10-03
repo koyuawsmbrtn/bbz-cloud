@@ -14,6 +14,8 @@ contextBridge.exposeInMainWorld('api', {
       'savePassword',
       'getPassword',
       'download',
+      'runUpdate',
+      'changeUrl',
       'resize',
     ];
     if (validChannels.includes(channel)) {
@@ -26,6 +28,8 @@ contextBridge.exposeInMainWorld('api', {
       'savePassword',
       'getPassword',
       'download',
+      'runUpdate',
+      'changeUrl',
       'resize',
     ];
     if (validChannels.includes(channel)) {

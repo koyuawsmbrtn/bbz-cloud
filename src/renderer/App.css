@@ -285,3 +285,12 @@ input {
   font-size: 14pt !important;
   background: transparent;
 }
+
+#updateButton {
+  background: #ffb606 !important;
+  color: #fff;
+  border: 0;
+  padding: 8px;
+  border-radius: 4px;
+  margin-top: 14px;
+}

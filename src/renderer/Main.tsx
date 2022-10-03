@@ -95,6 +95,23 @@ window.api.receive('download', (result) => {
   }
 });
 
+window.api.receive('update', (result) => {
+  if (result === 'available') {
+    $('#updateButton').show();
+  }
+});
+
+window.api.receive('changeUrl', (result) => {
+  if (result === 'settings') {
+    $('#settings').show();
+    $('#content').hide();
+    $('#buttons').css('visibility', 'hidden');
+    $('body').css('overflow', 'overlay');
+  } else {
+    changeUrl(result);
+  }
+});
+
 function resetCredsAreSet() {
   credsAreSet.bbb = false;
   credsAreSet.moodle = false;
@@ -164,6 +181,7 @@ export default class Main extends React.Component {
     $('#settings').hide();
     $('#download').hide();
     $('#download_label').hide();
+    $('#updateButton').hide();
     $('#settingsb').click(function () {
       $('#settings').show();
       $('#content').hide();
@@ -425,6 +443,10 @@ export default class Main extends React.Component {
       $('.wvbc').hide();
     }, 2000);
 
+    $('#updateButton').click(() => {
+      window.api.send('runUpdate');
+    });
+
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         // Easter Egg ;)
@@ -476,6 +498,9 @@ export default class Main extends React.Component {
                 height="20"
               />
               <div id="buttons" />
+              <div style={{ float: 'right', marginRight: '20px' }}>
+                <button id="updateButton">Update verfügbar</button>
+              </div>
               <br />
             </div>
           </header>
