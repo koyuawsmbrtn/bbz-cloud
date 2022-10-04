@@ -267,7 +267,7 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
-    if (process.platform === 'darwin') {
+    /* if (process.platform === 'darwin') {
       dialog
         .showMessageBox(mainWindow, {
           title: 'Neues Update verfügbar',
@@ -282,7 +282,7 @@ const createWindow = async () => {
           }
           messageBoxIsDisplayed = false;
         });
-    }
+    } */
   });
   autoUpdater.on('update-not-available', (ev, info) => {
     sendStatusToWindow('Update not available.');
