@@ -66,6 +66,14 @@
         wv = document.getElementById("wv-"+v);
         navigator.clipboard.writeText(wv.getURL());
       }
+      function showUpdate() {
+        $("#updateButton").show();
+      }
+      function fakeDownload() {
+        $('#download').show();
+        $('#download_label').show();
+        $('#download').attr('value', 69); // Nice
+      }
     </script>
   </body>
 </html>

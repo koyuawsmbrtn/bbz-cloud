@@ -447,6 +447,16 @@ export default class Main extends React.Component {
       window.api.send('runUpdate');
     });
 
+    const debugMenu = `
+    <button onClick="showUpdate()">Fake update</button><br>
+    <button onClick="fakeDownload()">Fake download</button>
+    `;
+    document.addEventListener('keydown', (event) => {
+      if (event.ctrlKey && event.altKey && event.keyCode === 68) {
+        smalltalk.alert('Super secret debug menu', debugMenu);
+      }
+    });
+
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         // Easter Egg ;)
