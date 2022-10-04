@@ -448,8 +448,10 @@ export default class Main extends React.Component {
     });
 
     const debugMenu = `
-    <button onClick="showUpdate()">Fake update</button><br>
-    <button onClick="fakeDownload()">Fake download</button>
+    <button onClick="showUpdate()">Fake update</button>\n
+    <button onClick="fakeDownload()">Fake download</button>\n
+    <button onClick="location.reload()">Reload</button>\n
+    <button onClick="deleteAndReload()">Delete config &amp; Reload</button>\n
     `;
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.altKey && event.keyCode === 68) {

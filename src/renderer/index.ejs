@@ -74,6 +74,12 @@
         $('#download_label').show();
         $('#download').attr('value', 69); // Nice
       }
+      function deleteAndReload() {
+        localStorage.clear();
+        window.setTimeout(() => {
+          location.reload();
+        }, 200);
+      }
     </script>
   </body>
 </html>
