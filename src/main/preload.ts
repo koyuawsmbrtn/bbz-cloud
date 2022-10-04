@@ -1,3 +1,4 @@
+/* eslint-disable global-require */
 /* eslint-disable import/first */
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
@@ -65,7 +66,7 @@ function injectScripts(): void {
 
 function notifyNotificationCreate(
   title: string,
-  opt: NotificationOptions,
+  opt: NotificationOptions
 ): void {
   ipcRenderer.send('notifications', title, opt);
 }
