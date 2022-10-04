@@ -70,6 +70,12 @@ window.api.receive('getPassword', (result) => {
 });
 window.api.send('getPassword');
 
+// on 'notifications' trigger changeUrl to correct app
+window.api.receive('notifications', (result: string) => {
+  console.log('notification-renderer: ', result);
+  // changeUrl(result);
+});
+
 // Download progress bar
 window.api.receive('download', (result) => {
   if (
@@ -110,6 +116,54 @@ window.api.receive('changeUrl', (result) => {
   } else {
     changeUrl(result);
   }
+});
+<<<<<<< HEAD
+// Download progress bar
+window.api.receive('download', (result) => {
+  if (
+    result === 'completed' ||
+    result === 'interrupted' ||
+    result === 'paused' ||
+    result === 'failed' ||
+    result === 100
+  ) {
+    $('#download').hide();
+    $('#download_label').hide();
+  }
+  if (result === 'noPercent') {
+    progressValue = ''; // disable the value option for progressbar to get a not-progressing bar - when no total data amount is known
+    $('#download').show();
+    $('#download_label').show();
+    progressValue = 'value=100'; // reenable standard value - just in case
+  }
+  if (typeof result === 'number') {
+    $('#download').show();
+    $('#download_label').show();
+    $('#download').attr('value', result);
+  }
+});
+
+window.api.receive('update', (result) => {
+  if (result === 'available') {
+    $('#updateButton').show();
+  }
+});
+
+window.api.receive('changeUrl', (result) => {
+  if (result === 'settings') {
+    $('#settings').show();
+    $('#content').hide();
+    $('#buttons').css('visibility', 'hidden');
+    $('body').css('overflow', 'overlay');
+  } else {
+    changeUrl(result);
+  }
+=======
+// on 'notifications' trigger changeUrl to correct app
+window.api.receive('notifications', (result: string) => {
+  console.log('notification-renderer: ', result);
+  // changeUrl(result);
+>>>>>>> 21-feature-new-notification-management
 });
 
 function resetCredsAreSet() {
@@ -173,6 +227,13 @@ window.api.receive('resize', (result) => {
   wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
 });
 
+<<<<<<< HEAD
+window.api.receive('resize', (result) => {
+  wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
+});
+
+=======
+>>>>>>> 21-feature-new-notification-management
 export default class Main extends React.Component {
   async componentDidMount() {
     localStorage.setItem('isClickable', 'true');
@@ -392,9 +453,54 @@ export default class Main extends React.Component {
         $('#autostart').attr('checked', 'true');
       }
 
+// Credentials in die einzelnen WebViews einfügen
+<<<<<<< HEAD
       // Credentials in die einzelnen WebViews einfügen
+=======
+      /* WebView injections
+         - Credentials
+         - Notification Proxy */
+
+>>>>>>> 21-feature-new-notification-management
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
+          wv.executeJavaScript(
+            `function setNotificationCallback(callback: Function) {
+              const OldNotify = window.Notification;
+              OldNotify.requestPermission();
+
+              const newNotify = (title: string, opt: NotificationOptions) => {
+                callback(title, opt);
+                const notify: Notification = new OldNotify(title, opt);
+                notify.onclick = () => {
+                  window.api.send(
+                    'notifications',
+                    wv.id
+                  ); // Hier soll die WebView angezeigt werden
+                  console.log('Erfolgreich!');
+                };
+                return notify;
+              };
+              newNotify.requestPermission = OldNotify.requestPermission.bind(OldNotify);
+              Object.defineProperty(newNotify, 'permission', {
+                get: () => {
+                  return OldNotify.permission;
+                },
+              });
+
+              window.Notification = newNotify;
+            }
+
+            function notifyCallback(title, opt) {
+              console.log('title', title);
+            }
+
+            window.Notification.requestPermission((permission) => {
+              if (permission === 'granted') {
+                setNotificationCallback(notifyCallback);
+              }
+            });`
+          );
           // Autofill Outlook
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;

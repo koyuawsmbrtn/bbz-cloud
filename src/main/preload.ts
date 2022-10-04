@@ -13,11 +13,21 @@ contextBridge.exposeInMainWorld('api', {
       'zoom',
       'savePassword',
       'getPassword',
+      'notifications',
       'download',
       'update',
       'runUpdate',
       'changeUrl',
       'resize',
+<<<<<<< HEAD
+      'download',
+      'update',
+      'runUpdate',
+      'changeUrl',
+      'resize',
+=======
+      'notifications',
+>>>>>>> 21-feature-new-notification-management
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -33,6 +43,16 @@ contextBridge.exposeInMainWorld('api', {
       'runUpdate',
       'changeUrl',
       'resize',
+      'notifications',
+<<<<<<< HEAD
+      'download',
+      'update',
+      'runUpdate',
+      'changeUrl',
+      'resize',
+=======
+      'notifications',
+>>>>>>> 21-feature-new-notification-management
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`
