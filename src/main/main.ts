@@ -150,7 +150,10 @@ const createWindow = async () => {
 
   // tray icon managements
   function createTray() {
-    const appIcon = new Tray(getAssetPath('tray.png'));
+    let appIcon = new Tray(getAssetPath('tray.png'));
+    if (process.platform === 'win32') {
+      appIcon = new Tray(getAssetPath('tray-windows.png'));
+    }
 
     const contextMenu = Menu.buildFromTemplate([
       {
