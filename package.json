@@ -205,7 +205,7 @@
         "AppImage",
         "pacman"
       ],
-      "category": "Office",
+      "category": "Education",
       "desktop": {
         "StartupWMClass": "bbzcloud"
       }
