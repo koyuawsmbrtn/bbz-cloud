@@ -43,6 +43,7 @@ const credsAreSet = {
   outlook: false,
   moodle: false,
   bbb: false,
+  handbuch: false,
 };
 
 if (
@@ -116,6 +117,7 @@ function resetCredsAreSet() {
   credsAreSet.bbb = false;
   credsAreSet.moodle = false;
   credsAreSet.outlook = false;
+  credsAreSet.handbuch = false;
 }
 
 function reloadPage() {
@@ -398,6 +400,20 @@ export default class Main extends React.Component {
           // Autofill Outlook
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;
+            wv.executeJavaScript(
+              `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
+            );
+            wv.executeJavaScript(
+              `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
+            );
+            wv.executeJavaScript(
+              // Hier wird der Button geklickt
+              `document.querySelector('#submitButton').click();`
+            );
+          }
+          // Autofill Handbuch
+          if (wv.id === 'wv-Handbuch' && credsAreSet.handbuch === false) {
+            credsAreSet.handbuch = true;
             wv.executeJavaScript(
               `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
             );
