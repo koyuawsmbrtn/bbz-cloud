@@ -412,7 +412,7 @@ export default class Main extends React.Component {
             );
           }
           // Autofill Handbuch
-          if (wv.id === 'wv-Handbuch' && credsAreSet.handbuch === false) {
+          if (wv.id === 'wv-BBZHandbuch' && credsAreSet.handbuch === false) {
             credsAreSet.handbuch = true;
             wv.executeJavaScript(
               `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
