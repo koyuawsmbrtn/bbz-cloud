@@ -71,6 +71,11 @@ window.api.receive('getPassword', (result) => {
 });
 window.api.send('getPassword');
 
+// Ändere WebView-Größe, wenn ein Resize-Event gefeuert wird
+window.api.receive('resize', (result) => {
+  wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
+});
+
 // Download progress bar
 window.api.receive('download', (result) => {
   if (
@@ -170,10 +175,6 @@ function saveSettings() {
 function clickable(b: boolean) {
   localStorage.setItem('isClickable', String(b));
 }
-
-window.api.receive('resize', (result) => {
-  wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
-});
 
 export default class Main extends React.Component {
   async componentDidMount() {
