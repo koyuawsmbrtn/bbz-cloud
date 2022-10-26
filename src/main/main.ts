@@ -144,6 +144,8 @@ const createWindow = async () => {
 
   Menu.setApplicationMenu(null);
 
+  mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+
   if (!isDevelopment) {
     mainWindow.webContents.insertCSS('.debug{display:none !important;}');
   }
@@ -272,22 +274,6 @@ const createWindow = async () => {
   });
   autoUpdater.on('update-available', (ev, info) => {
     sendStatusToWindow('Update available.');
-    /* if (process.platform === 'darwin') {
-      dialog
-        .showMessageBox(mainWindow, {
-          title: 'Neues Update verfügbar',
-          message:
-            'Ein neues Update steht bereit. Wollen Sie es herunterladen oder ignorieren?',
-          type: 'info',
-          buttons: ['Update jetzt ignorieren', 'Website zum Download öffnen'],
-        })
-        .then((response) => {
-          if (response.response === 1) {
-            shell.openExternal('https://kurzelinks.de/bbz-cloud');
-          }
-          messageBoxIsDisplayed = false;
-        });
-    } */
   });
   autoUpdater.on('update-not-available', (ev, info) => {
     sendStatusToWindow('Update not available.');

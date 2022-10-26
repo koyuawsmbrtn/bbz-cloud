@@ -450,6 +450,10 @@ export default class Main extends React.Component {
             wv.executeJavaScript(
               `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
             );
+            wv.executeJavaScript(
+              // Hier wird der Button geklickt
+              `document.getElementsByClassName('signin-button')[0].click();`
+            );
           }
         });
       });
