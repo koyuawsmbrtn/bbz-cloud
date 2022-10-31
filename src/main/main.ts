@@ -168,14 +168,14 @@ const createWindow = async () => {
       {
         label: 'Anzeigen',
         click() {
-          mainWindow.show();
+          mainWindow?.show();
         },
       },
       {
         label: 'Einstellungen',
         click() {
-          mainWindow.show();
-          mainWindow.focus();
+          mainWindow?.show();
+          mainWindow?.focus();
           mainWindow?.webContents.send('changeUrl', 'settings');
         },
       },
@@ -191,7 +191,7 @@ const createWindow = async () => {
     ]);
 
     appIcon.on('double-click', function (event) {
-      mainWindow.show();
+      mainWindow?.show();
     });
     appIcon.setToolTip('BBZ Cloud');
     appIcon.setContextMenu(contextMenu);
@@ -201,17 +201,19 @@ const createWindow = async () => {
   let tray = createTray();
 
   mainWindow.on('resize', () => {
-    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+    mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
 
   mainWindow.on('maximize', () => {
-    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+    mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
 
+  /*
   mainWindow.on('minimize', (event) => {
     event.preventDefault();
-    mainWindow.hide();
+    mainWindow?.hide();
   });
+  */
 
   mainWindow.on('close', (event) => {
     if (updateAvailable) {
@@ -219,11 +221,11 @@ const createWindow = async () => {
         autoUpdater.quitAndInstall();
       } else {
         event.preventDefault();
-        mainWindow.hide();
+        mainWindow?.hide();
       }
     } else {
       event.preventDefault();
-      mainWindow.hide();
+      mainWindow?.hide();
     }
   });
 
