@@ -153,8 +153,8 @@ const createWindow = async () => {
   // tray icon managements
   function createTray() {
     let appIcon;
-    if (process.platform === 'win32') {
-      appIcon = new Tray(getAssetPath('tray-windows.png'));
+    if (process.platform === 'win32' || process.platform === 'darwin') {
+      appIcon = new Tray(getAssetPath('tray-lowres.png'));
     } else {
       appIcon = new Tray(getAssetPath('tray.png'));
     }
