@@ -1,8 +1,7 @@
-#!/bin/bash
 cd ~/bbz-cloud
 git pull
 git checkout -- .
-BASEDIR="~/Desktop/bbzcloud-build"
+export BASEDIR="~/Desktop/bbzcloud-build"
 if [ -d "$BASEDIR" ]; then
   # Take action if $DIR exists. #
   echo "$BASEDIR existiert bereits. Exit!"
