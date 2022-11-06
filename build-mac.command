@@ -1,7 +1,7 @@
 #!/bin/bash
+cd ~/bbz-cloud
 git pull
 git checkout -- .
-VERSION="$(jq .version package.json)"
 BASEDIR="~/Desktop/bbzcloud-build"
 if [ -d "$BASEDIR" ]; then
   # Take action if $DIR exists. #
