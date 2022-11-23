@@ -2,7 +2,6 @@
 source ~/.config/user-dirs.dirs
 git pull
 git checkout -- .
-VERSION="$(jq .version package.json)"
 BASEDIR="$XDG_DESKTOP_DIR/bbzcloud-build"
 if [ -d "$BASEDIR" ]; then
   # Take action if $DIR exists. #
