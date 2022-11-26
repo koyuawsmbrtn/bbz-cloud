@@ -10,6 +10,7 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
+import fs from 'fs-extra';
 import electron, {
   app,
   BrowserWindow,
@@ -200,6 +201,16 @@ const createWindow = async () => {
   }
 
   let tray = createTray();
+
+  // Delete and reload IPC
+  ipcMain.on('deleteAndReload', () => {
+    const getAppPath = path.join(app.getPath('appData'), app.getName());
+    fs.remove(getAppPath);
+    setTimeout(() => {
+      app.relaunch();
+      app.quit();
+    }, 3000);
+  });
 
   mainWindow.on('resize', () => {
     mainWindow?.webContents.send('resize', mainWindow.getBounds().height);

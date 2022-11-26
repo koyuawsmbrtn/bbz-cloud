@@ -75,10 +75,7 @@
         $('#download').attr('value', 69); // Nice
       }
       function deleteAndReload() {
-        localStorage.clear();
-        window.setTimeout(() => {
-          location.reload();
-        }, 200);
+        window.api.send("deleteAndReload");
       }
     </script>
   </body>
