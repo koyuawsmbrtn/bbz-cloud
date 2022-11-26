@@ -76,6 +76,11 @@ window.api.receive('resize', (result) => {
   wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
 });
 
+// Relaod app on command from the main process
+window.api.receive('reloadApp', (result) => {
+  window.location.reload();
+});
+
 // Download progress bar
 window.api.receive('download', (result) => {
   if (

@@ -10,7 +10,7 @@
 /* eslint global-require: off, no-console: off, promise/always-return: off */
 
 import path from 'path';
-import {
+import electron, {
   app,
   BrowserWindow,
   shell,
@@ -22,6 +22,7 @@ import {
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
+const { powerMonitor } = electron.powerMonitor;
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
@@ -501,6 +502,14 @@ app
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
+    });
+    powerMonitor.on('resume', () => {
+      console.log('The system is resuming');
+      mainWindow?.webContents.send('reloadApp');
+    });
+    powerMonitor.on('unlock-screen', () => {
+      console.log('The system is unlocked');
+      mainWindow?.webContents.send('reloadApp');
     });
   })
   .catch(console.log);
