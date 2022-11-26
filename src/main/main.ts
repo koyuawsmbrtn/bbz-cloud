@@ -207,8 +207,8 @@ const createWindow = async () => {
     const getAppPath = path.join(app.getPath('appData'), app.getName());
     fs.remove(getAppPath);
     setTimeout(() => {
-      app.relaunch();
-      app.quit();
+      tray.destroy();
+      mainWindow.reload();
     }, 3000);
   });
 
