@@ -78,6 +78,7 @@ window.api.receive('resize', (result) => {
 
 // Relaod app on command from the main process
 window.api.receive('reloadApp', (result) => {
+  console.log('Reload der App getriggert', result);
   window.location.reload();
 });
 
