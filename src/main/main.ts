@@ -11,7 +11,7 @@
 
 import path from 'path';
 import fs from 'fs-extra';
-import electron, {
+import {
   app,
   BrowserWindow,
   shell,
@@ -19,11 +19,13 @@ import electron, {
   ipcMain,
   Menu,
   Tray,
+  powerMonitor,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
-const { powerMonitor } = electron.powerMonitor;
+
+// const { powerMonitor } = electron.powerMonitor;
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
@@ -210,6 +212,15 @@ const createWindow = async () => {
       tray.destroy();
       mainWindow.reload();
     }, 3000);
+  });
+
+  powerMonitor.on('resume', () => {
+    console.log('The system is resuming');
+    mainWindow?.webContents.send('reloadApp');
+  });
+  powerMonitor.on('unlock-screen', () => {
+    console.log('The system is unlocked');
+    mainWindow?.webContents.send('reloadApp');
   });
 
   mainWindow.on('resize', () => {
@@ -513,14 +524,6 @@ app
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
       if (mainWindow === null) createWindow();
-    });
-    powerMonitor.on('resume', () => {
-      console.log('The system is resuming');
-      mainWindow?.webContents.send('reloadApp');
-    });
-    powerMonitor.on('unlock-screen', () => {
-      console.log('The system is unlocked');
-      mainWindow?.webContents.send('reloadApp');
     });
   })
   .catch(console.log);
