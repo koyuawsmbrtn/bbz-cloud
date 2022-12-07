@@ -77,6 +77,10 @@
       function deleteAndReload() {
         window.api.send("deleteAndReload");
       }
+      function devtools() {
+        const currentWebContents = require('electron').remote.getCurrentWebContents();
+        currentWebContents.openDevTools();
+      }
     </script>
   </body>
 </html>

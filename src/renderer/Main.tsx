@@ -479,6 +479,7 @@ export default class Main extends React.Component {
     <button onClick="fakeDownload()">Fake download</button>\n
     <button onClick="location.reload()">Reload</button>\n
     <button onClick="deleteAndReload()">Delete config &amp; Reload</button>\n
+    <button onClick="devtools()">Open dev tools</button>\n
     `;
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.altKey && event.keyCode === 68) {
