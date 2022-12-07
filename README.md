@@ -3,7 +3,7 @@
 Start the app in the `dev` environment:
 
 ```bash
-yarn start
+yarn dev
 ```
 
 ## Packaging for Production
