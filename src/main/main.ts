@@ -20,6 +20,7 @@ import {
   Menu,
   Tray,
   powerMonitor,
+  session,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
@@ -206,12 +207,18 @@ const createWindow = async () => {
 
   // Delete and reload IPC
   ipcMain.on('deleteAndReload', () => {
-    const getAppPath = path.join(app.getPath('appData'), app.getName());
+    session.clearCache(function () {
+      console.log('Cache cleared!');
+    });
+    app.relaunch();
+    app.quit();
+    /* const getAppPath = path.join(app.getPath('appData'), app.getName());
     fs.remove(getAppPath);
     setTimeout(() => {
       tray.destroy();
       mainWindow.reload();
     }, 3000);
+    */
   });
 
   powerMonitor.on('resume', () => {
