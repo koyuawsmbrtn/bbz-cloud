@@ -24,7 +24,7 @@ import isTeacherVar from '../../assets/isTeacher.json';
 // global (to renderer) variables
 const versionApp = version.version;
 let zoomFaktor = 1.0;
-let wvHeight = '91.5vh';
+let wvHeight = '840px';
 let progressValue = 'value=100';
 
 // PW- and username variables
@@ -134,9 +134,6 @@ function resetCredsAreSet() {
 function reloadPage() {
   resetCredsAreSet();
   window.location.reload();
-  window.api.receive('resize', (result) => {
-    wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
-  });
 }
 
 function saveSettings() {
