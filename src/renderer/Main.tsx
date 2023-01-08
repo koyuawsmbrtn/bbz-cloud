@@ -134,6 +134,9 @@ function resetCredsAreSet() {
 function reloadPage() {
   resetCredsAreSet();
   window.location.reload();
+  window.api.receive('resize', (result) => {
+    wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
+  });
 }
 
 function saveSettings() {
@@ -481,11 +484,6 @@ export default class Main extends React.Component {
     <button onClick="deleteAndReload()">Delete config &amp; Reload</button>\n
     <button onClick="devtools()">Open dev tools</button>\n
     `;
-    document.addEventListener('keydown', (event) => {
-      if (event.ctrlKey && event.altKey && event.keyCode === 68) {
-        smalltalk.alert('Super secret debug menu', debugMenu);
-      }
-    });
 
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
@@ -494,15 +492,20 @@ export default class Main extends React.Component {
           '<video src="https://f001.backblazeb2.com/file/koyuspace-media/pleroma/8f9f1c1f-6199-4a54-bf42-36252e66c353/rickroll.mp4" width="640" height="480" autoplay loop></video>'
         );
       } else if (event.ctrlKey && event.keyCode === 187) {
+        // Strg + +
         zoomFaktor += 0.1; // Zoom in um 10%
         if (zoomFaktor > 5.0) {
           zoomFaktor = 5.0;
         }
       } else if (event.ctrlKey && event.keyCode === 189) {
+        // Strg + -
         zoomFaktor -= 0.1; // Zoom in um 10%
         if (zoomFaktor < 0.2) {
           zoomFaktor = 0.2;
         }
+      } else if (event.ctrlKey && event.altKey && event.keyCode === 68) {
+        // Strg + Alt * D
+        smalltalk.alert('Super secret debug menu', debugMenu);
       }
       localStorage.setItem('zoomFaktor', zoomFaktor.toString());
       window.api.send('zoom', zoomFaktor);
