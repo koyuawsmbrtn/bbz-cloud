@@ -75,6 +75,7 @@ window.api.send('getPassword');
 window.api.receive('resize', (result) => {
   wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
 });
+window.api.send('resize'); // Get initial size manually
 
 // Relaod app on command from the main process
 window.api.receive('reloadApp', (result) => {

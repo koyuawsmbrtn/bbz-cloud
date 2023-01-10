@@ -44,6 +44,11 @@ ipcMain.on('autostart', (event, args) => {
   });
 });
 
+// Communication with renderer for delivering new height after update of window dimensions
+ipcMain.on('resize', (event) => {
+  mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+});
+
 // Communication with renderer for Zooming the App
 ipcMain.on('zoom', (event, args) => {
   zoomFaktor = args;
