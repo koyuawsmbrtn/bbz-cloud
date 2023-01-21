@@ -450,7 +450,22 @@ app.on('web-contents-created', (event, contents) => {
             show: false,
           });
           newWin.loadURL(url);
-          newWin.setMenu(null);
+          // newWin.setMenu(null);
+
+          const menu = Menu.buildFromTemplate([
+            {
+              label: 'URL kopieren',
+              click: async () => {
+                navigator.clipboard.writeText(newWin.webContents.getURL());
+              },
+            },
+            { label: 'Neu laden', role: 'reload' },
+            { label: 'Zoom zurücksetzen', role: 'resetZoom' },
+            { label: 'Hereinzoomen', role: 'zoomIn' },
+            { label: 'Herauszoomen', role: 'zoomOut' },
+          ]);
+          newWin.setMenu(menu);
+
           e.newGuest = newWin;
           if (!url.includes('about:blank') || !url.includes('download')) {
             newWin.show();
