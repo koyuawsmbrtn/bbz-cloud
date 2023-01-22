@@ -78,8 +78,7 @@
         window.api.send("deleteAndReload");
       }
       function devtools() {
-        const currentWebContents = require('electron').remote.getCurrentWebContents();
-        currentWebContents.openDevTools();
+        window.api.send("openDevTools");
       }
     </script>
   </body>

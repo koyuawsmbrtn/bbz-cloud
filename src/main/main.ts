@@ -294,6 +294,10 @@ const createWindow = async () => {
     */
   });
 
+  ipcMain.on('openDevTools', () => {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
+  });
+
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
