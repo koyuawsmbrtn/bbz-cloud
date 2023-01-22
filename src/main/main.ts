@@ -280,11 +280,10 @@ const createWindow = async () => {
 
   // Delete and reload IPC
   ipcMain.on('deleteAndReload', () => {
-    session.clearCache(function () {
-      console.log('Cache cleared!');
+    session.defaultSession.clearCache(() => {
+      mainWindow?.webContents.reload();
     });
-    app.relaunch();
-    app.quit();
+
     /* const getAppPath = path.join(app.getPath('appData'), app.getName());
     fs.remove(getAppPath);
     setTimeout(() => {
