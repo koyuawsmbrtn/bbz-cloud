@@ -278,14 +278,6 @@ const createWindow = async () => {
 
   let tray = createTray();
 
-  // Delete and reload IPC
-  ipcMain.on('deleteAndReload', () => {
-    app.relaunch();
-    tray.destroy();
-    app.isQuiting = true;
-    process.kill(process.pid, 9);
-  });
-
   ipcMain.on('openDevTools', () => {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
@@ -306,13 +298,6 @@ const createWindow = async () => {
   mainWindow.on('maximize', () => {
     mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
-
-  /*
-  mainWindow.on('minimize', (event) => {
-    event.preventDefault();
-    mainWindow?.hide();
-  });
-  */
 
   mainWindow.on('close', (event) => {
     if (updateAvailable) {
