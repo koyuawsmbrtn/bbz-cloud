@@ -75,7 +75,12 @@
         $('#download').attr('value', 69); // Nice
       }
       function deleteAndReload() {
-        window.api.send("deleteAndReload");
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            caches.delete(key);
+          });
+          location.reload();
+        });
       }
       function devtools() {
         window.api.send("openDevTools");
