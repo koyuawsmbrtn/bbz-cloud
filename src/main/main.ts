@@ -280,17 +280,10 @@ const createWindow = async () => {
 
   // Delete and reload IPC
   ipcMain.on('deleteAndReload', () => {
-    session.defaultSession.clearCache(() => {
-      mainWindow?.webContents.reload();
-    });
-
-    /* const getAppPath = path.join(app.getPath('appData'), app.getName());
-    fs.remove(getAppPath);
-    setTimeout(() => {
-      tray.destroy();
-      mainWindow.reload();
-    }, 3000);
-    */
+    app.relaunch();
+    tray.destroy();
+    app.isQuiting = true;
+    process.kill(process.pid, 9);
   });
 
   ipcMain.on('openDevTools', () => {
