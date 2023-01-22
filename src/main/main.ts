@@ -536,18 +536,21 @@ app
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      const menu = Menu.buildFromTemplate([
+      const template = [
         {
           label: 'URL kopieren',
           click: async () => {
-            navigator.clipboard.writeText(newWin.webContents.getURL());
+            navigator.clipboard.writeText(
+              BrowserWindow.getFocusedWindow().webContents.getURL()
+            );
           },
         },
-        { label: 'Neu laden', role: 'reload' },
-        { label: 'Zoom zurücksetzen', role: 'resetZoom' },
-        { label: 'Hereinzoomen', role: 'zoomIn' },
-        { label: 'Herauszoomen', role: 'zoomOut' },
-      ]);
+        { role: 'reload' },
+        { role: 'resetZoom' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+      ];
+      const menu = Menu.buildFromTemplate(template);
       Menu.setApplicationMenu(menu);
       if (mainWindow === null) createWindow();
     });
