@@ -26,11 +26,79 @@ import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
 import { resolveHtmlPath } from './util';
 
-// const { powerMonitor } = electron.powerMonitor;
+const { clipboard } = require('electron');
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
+
+/*
+ *** Setting general Application Menu for child windows - navbar
+ */
+let childZoomLevel = 1.0;
+const template = [
+  {
+    label: '⏪',
+    accelerator: 'CmdOrCtrl+[',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) focusedWindow.webContents.goBack();
+    },
+  },
+  {
+    label: '⏩',
+    accelerator: 'CmdOrCtrl+]',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) focusedWindow.webContents.goForward();
+    },
+  },
+  {
+    label: '🔄',
+    accelerator: 'CmdOrCtrl+R',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) focusedWindow.webContents.reload();
+    },
+  },
+  { type: 'separator' },
+  {
+    label: '➕🔎',
+    accelerator: 'CmdOrCtrl+Plus',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) {
+        childZoomLevel += 0.2;
+        focusedWindow.webContents.setZoomLevel(childZoomLevel);
+      }
+    },
+  },
+  { type: 'separator' },
+  {
+    label: '➖🔎',
+    accelerator: 'CmdOrCtrl+-',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow) {
+        childZoomLevel -= 0.2;
+        focusedWindow.webContents.setZoomLevel(childZoomLevel);
+      }
+    },
+  },
+  { type: 'separator' },
+  {
+    label: '📋🔗',
+    accelerator: 'CmdOrCtrl+L',
+    click: () => {
+      const focusedWindow = BrowserWindow.getFocusedWindow();
+      if (focusedWindow)
+        clipboard.writeText(focusedWindow.webContents.getURL());
+    },
+  },
+];
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
 
 /*
  *** ipcCommunication
@@ -439,6 +507,7 @@ app.on('web-contents-created', (event, contents) => {
           show: false,
         });
         newWin.loadURL(url);
+        newWin.setMenu(menu);
       } else if (!isDownloadType(url)) {
         if (!url.includes('onedrive')) {
           e.preventDefault();
@@ -450,7 +519,7 @@ app.on('web-contents-created', (event, contents) => {
             show: false,
           });
           newWin.loadURL(url);
-          // newWin.setMenu(null);
+          newWin.setMenu(menu);
 
           e.newGuest = newWin;
           if (!url.includes('about:blank') || !url.includes('download')) {
@@ -536,22 +605,6 @@ app
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
-      const template = [
-        {
-          label: 'URL kopieren',
-          click: async () => {
-            navigator.clipboard.writeText(
-              BrowserWindow.getFocusedWindow().webContents.getURL()
-            );
-          },
-        },
-        { role: 'reload' },
-        { role: 'resetZoom' },
-        { role: 'zoomIn' },
-        { role: 'zoomOut' },
-      ];
-      const menu = Menu.buildFromTemplate(template);
-      Menu.setApplicationMenu(menu);
       if (mainWindow === null) createWindow();
     });
   })
