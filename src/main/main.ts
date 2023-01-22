@@ -152,7 +152,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  Menu.setApplicationMenu(null);
+  mainWindow.setMenu(null);
 
   mainWindow.webContents.send('resize', mainWindow.getBounds().height);
 
@@ -452,20 +452,6 @@ app.on('web-contents-created', (event, contents) => {
           newWin.loadURL(url);
           // newWin.setMenu(null);
 
-          const menu = Menu.buildFromTemplate([
-            {
-              label: 'URL kopieren',
-              click: async () => {
-                navigator.clipboard.writeText(newWin.webContents.getURL());
-              },
-            },
-            { label: 'Neu laden', role: 'reload' },
-            { label: 'Zoom zurücksetzen', role: 'resetZoom' },
-            { label: 'Hereinzoomen', role: 'zoomIn' },
-            { label: 'Herauszoomen', role: 'zoomOut' },
-          ]);
-          newWin.setMenu(menu);
-
           e.newGuest = newWin;
           if (!url.includes('about:blank') || !url.includes('download')) {
             newWin.show();
@@ -550,6 +536,19 @@ app
     app.on('activate', () => {
       // On macOS it's common to re-create a window in the app when the
       // dock icon is clicked and there are no other windows open.
+      const menu = Menu.buildFromTemplate([
+        {
+          label: 'URL kopieren',
+          click: async () => {
+            navigator.clipboard.writeText(newWin.webContents.getURL());
+          },
+        },
+        { label: 'Neu laden', role: 'reload' },
+        { label: 'Zoom zurücksetzen', role: 'resetZoom' },
+        { label: 'Hereinzoomen', role: 'zoomIn' },
+        { label: 'Herauszoomen', role: 'zoomOut' },
+      ]);
+      Menu.setApplicationMenu(menu);
       if (mainWindow === null) createWindow();
     });
   })
