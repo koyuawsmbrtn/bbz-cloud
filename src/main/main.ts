@@ -545,7 +545,7 @@ app.on('web-contents-created', (event, contents) => {
         mainWindow?.webContents.send('download', 'completed');
         const options = {
           type: 'info',
-          buttons: ['Ok', 'Datei öffnen', 'Downloads-Ordner öffnen'],
+          buttons: ['Ok', 'Datei öffnen', 'Ordner öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };
