@@ -121,7 +121,7 @@ window.api.receive('changeUrl', (result) => {
     $('#buttons').css('visibility', 'hidden');
     $('body').css('overflow', 'overlay');
   } else {
-    changeUrl(result);
+    changeUrl(result, '');
   }
 });
 
@@ -273,7 +273,7 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+            `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -302,7 +302,7 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `<a onClick="changeUrl('${key}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+            `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -343,7 +343,7 @@ export default class Main extends React.Component {
         $('#moodlePW').attr('value', creds.moodlePassword);
         $('#bbbPW').attr('value', creds.bbbPassword);
         $('#apps').append(
-          `<a onClick="changeUrl('custom1')" target="_blank" class="link-custom1 app" style="cursor:pointer;"><img src="${custom1_icon}" height="20" title="Benutzerapp1"></a>`
+          `<a onClick="changeUrl('custom1', '${custom1_url}')" target="_blank" class="link-custom1 app" style="cursor:pointer;"><img src="${custom1_icon}" height="20" title="Benutzerapp1"></a>`
         );
         $('#views').append(
           `<webview
@@ -375,7 +375,7 @@ export default class Main extends React.Component {
         $('#custom2_url').attr('value', custom2_url);
         $('#custom2_icon').attr('value', custom2_icon);
         $('#apps').append(
-          `<a onClick="changeUrl('custom2')" target="_blank" class="link-custom2 app" style="cursor:pointer;"><img src="${custom2_icon}" height="20" title="Benutzerapp2"></a>`
+          `<a onClick="changeUrl('custom2', '${custom2_url}')" target="_blank" class="link-custom2 app" style="cursor:pointer;"><img src="${custom2_icon}" height="20" title="Benutzerapp2"></a>`
         );
         $('#views').append(
           `<webview
