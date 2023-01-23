@@ -35,7 +35,7 @@ let updateAvailable = false;
 /*
  *** Setting general Application Menu for child windows - navbar
  */
-let childZoomLevel = 1.0;
+let childZoomLevel = zoomFaktor;
 const template = [
   {
     label: '⏪',
