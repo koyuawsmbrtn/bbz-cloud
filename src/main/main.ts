@@ -545,7 +545,7 @@ app.on('web-contents-created', (event, contents) => {
         mainWindow?.webContents.send('download', 'completed');
         const options = {
           type: 'info',
-          buttons: ['Ok', 'Downloads-Ordner öffnen'],
+          buttons: ['Ok', 'Datei öffnen', 'Downloads-Ordner öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };
@@ -553,7 +553,12 @@ app.on('web-contents-created', (event, contents) => {
           messageBoxIsDisplayed = true;
           dialog.showMessageBox(mainWindow, options).then((response) => {
             if (response.response === 1) {
-              shell.openPath(app.getPath('downloads'));
+              // shell.openPath(app.getPath('downloads'));
+              shell.openPath(item.getSavePath());
+            }
+            if (response.response === 2) {
+              // shell.openPath(app.getPath('downloads'));
+              shell.openPath(path.dirname(item.getSavePath()));
             }
             messageBoxIsDisplayed = false;
           });
