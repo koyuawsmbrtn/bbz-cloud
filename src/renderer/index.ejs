@@ -13,26 +13,31 @@
   <body>
     <div id="root"></div>
     <script>
-      function changeUrl(u) {
-        if (localStorage.getItem('isClickable') === 'true') {
-          $(".wv").hide();
-          $(".wvbr").hide();
-          $(".wvbb").hide();
-          $(".wvbf").hide();
-          $('.wvbc').hide();
-          $(".web-"+u).show();
-          $(".webbr-"+u).show();
-          $(".webbb-"+u).show();
-          $(".webbf-"+u).show();
-          $(".webbc-"+u).show();
-          $("#doge").hide();
-          $("#doge").html('');
-          $('#settings').show();
-          $('#content').show();
-          $('#buttons').css('visibility', 'visible');
-          $('body').css('overflow', 'hidden');
+      function changeUrl(u, url) {
+          if (localStorage.getItem('isClickable') === 'true') {
+            if (event.ctrlKey) {
+              // If Ctrl + click on Button, WebApp is opened in Standard-Browser
+              window.open(url, '_blank');
+            } else {
+              $('.wv').hide();
+              $('.wvbr').hide();
+              $('.wvbb').hide();
+              $('.wvbf').hide();
+              $('.wvbc').hide();
+              $('.web-' + u).show();
+              $('.webbr-' + u).show();
+              $('.webbb-' + u).show();
+              $('.webbf-' + u).show();
+              $('.webbc-' + u).show();
+              $('#doge').hide();
+              $('#doge').html('');
+              $('#settings').show();
+              $('#content').show();
+              $('#buttons').css('visibility', 'visible');
+              $('body').css('overflow', 'hidden');
+            }
+          }
         }
-      }
       function reloadView(v) {
         if (localStorage.getItem('isClickable') === 'true') {
           wv = document.getElementById("wv-"+v);
@@ -75,11 +80,15 @@
         $('#download').attr('value', 69); // Nice
       }
       function deleteAndReload() {
-        window.api.send("deleteAndReload");
+        caches.keys().then((keys) => {
+          keys.forEach((key) => {
+            caches.delete(key);
+          });
+          location.reload();
+        });
       }
       function devtools() {
-        const currentWebContents = require('electron').remote.getCurrentWebContents();
-        currentWebContents.openDevTools();
+        window.api.send("openDevTools");
       }
     </script>
   </body>
