@@ -35,7 +35,7 @@ let updateAvailable = false;
 /*
  *** Setting general Application Menu for child windows - navbar
  */
-let childZoomLevel = 1.0;
+let childZoomLevel = zoomFaktor;
 const template = [
   {
     label: '⏪',
@@ -278,20 +278,8 @@ const createWindow = async () => {
 
   let tray = createTray();
 
-  // Delete and reload IPC
-  ipcMain.on('deleteAndReload', () => {
-    session.clearCache(function () {
-      console.log('Cache cleared!');
-    });
-    app.relaunch();
-    app.quit();
-    /* const getAppPath = path.join(app.getPath('appData'), app.getName());
-    fs.remove(getAppPath);
-    setTimeout(() => {
-      tray.destroy();
-      mainWindow.reload();
-    }, 3000);
-    */
+  ipcMain.on('openDevTools', () => {
+    mainWindow.webContents.openDevTools({ mode: 'detach' });
   });
 
   powerMonitor.on('resume', () => {
@@ -310,13 +298,6 @@ const createWindow = async () => {
   mainWindow.on('maximize', () => {
     mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
-
-  /*
-  mainWindow.on('minimize', (event) => {
-    event.preventDefault();
-    mainWindow?.hide();
-  });
-  */
 
   mainWindow.on('close', (event) => {
     if (updateAvailable) {
@@ -564,7 +545,7 @@ app.on('web-contents-created', (event, contents) => {
         mainWindow?.webContents.send('download', 'completed');
         const options = {
           type: 'info',
-          buttons: ['Ok', 'Downloads-Ordner öffnen'],
+          buttons: ['Ok', 'Datei öffnen', 'Ordner öffnen'],
           title: 'Download',
           message: 'Download abgeschlossen',
         };
@@ -572,7 +553,12 @@ app.on('web-contents-created', (event, contents) => {
           messageBoxIsDisplayed = true;
           dialog.showMessageBox(mainWindow, options).then((response) => {
             if (response.response === 1) {
-              shell.openPath(app.getPath('downloads'));
+              // shell.openPath(app.getPath('downloads'));
+              shell.openPath(item.getSavePath());
+            }
+            if (response.response === 2) {
+              // shell.openPath(app.getPath('downloads'));
+              shell.openPath(path.dirname(item.getSavePath()));
             }
             messageBoxIsDisplayed = false;
           });
