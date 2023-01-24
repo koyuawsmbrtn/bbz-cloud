@@ -329,11 +329,6 @@ export default class Main extends React.Component {
           `<span onClick="copyUrl('${key}')" class="wvbc webbc-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
         );
       }
-      // This is not working
-      $('#burger-menu').append(
-        `<button onClick="" target="_blank" class="" style="cursor:pointer;">Button</button>`
-      );
-
       if (
         localStorage.getItem(`custom1_url`) !== '' &&
         localStorage.getItem(`custom1_url`) !== null

@@ -74,30 +74,6 @@ header {
   margin-left: 16px;
 }
 
-#burger-menu {
-  display: none;
-}
-
-@media only screen and (max-width: 850px) {
-
-  /* styles for small screens */
-  #buttons,
-  #apps {
-    display: none;
-  }
-
-  /* Add a button or icon to toggle the menu */
-  #burger-menu {
-    display: block;
-  }
-
-  /* Styles for the menu when it's open */
-  #burger-menu.open {
-    display: block;
-    /* menu styles */
-  }
-}
-
 .twoColumn {
   -webkit-column-count: 2;
      -moz-column-count: 2;
