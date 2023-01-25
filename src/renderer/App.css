@@ -75,11 +75,9 @@ header {
 }
 
 @media screen and (max-width: 900px) {
-  #apps {
+  #headnote {
     display: none;
   }
-
-
 }
 
 .twoColumn {
