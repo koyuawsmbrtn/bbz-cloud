@@ -287,10 +287,9 @@ const createWindow = async () => {
 
   // delete all data and cache on call from debug menu
   ipcMain.on('deleteAndReload', (event) => {
-    console.log(getAppPath);
     fs.rmdir(getAppPath, () => {
       // callback
-      console.log('App data cleared');
+      console.log('App data cleared from ', getAppPath);
       // You should relaunch the app after clearing the app settings.
       app.relaunch();
       tray.destroy();
