@@ -20,6 +20,7 @@ contextBridge.exposeInMainWorld('api', {
       'changeUrl',
       'resize',
       'reloadApp',
+      'deleteAndReload',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -37,6 +38,7 @@ contextBridge.exposeInMainWorld('api', {
       'changeUrl',
       'resize',
       'reloadApp',
+      'deleteAndReload',
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

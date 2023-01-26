@@ -20,17 +20,18 @@ import {
   Menu,
   Tray,
   powerMonitor,
-  session,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
+import { clipboard } from 'electron';
 import { resolveHtmlPath } from './util';
 
-const { clipboard } = require('electron');
+const appName = app.getName();
 
 let zoomFaktor = 1.0;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
+const getAppPath = path.join(app.getPath('appData'), appName);
 
 /*
  *** Setting general Application Menu for child windows - navbar
@@ -282,6 +283,19 @@ const createWindow = async () => {
 
   ipcMain.on('openDevTools', () => {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
+  });
+
+  // delete all data and cache on call from debug menu
+  ipcMain.on('deleteAndReload', (event) => {
+    console.log(getAppPath);
+    fs.rmdir(getAppPath, () => {
+      // callback
+      console.log('App data cleared');
+      // You should relaunch the app after clearing the app settings.
+      app.relaunch();
+      tray.destroy();
+      process.kill(process.pid, 9);
+    });
   });
 
   powerMonitor.on('resume', () => {
