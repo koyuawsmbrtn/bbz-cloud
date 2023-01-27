@@ -287,14 +287,11 @@ const createWindow = async () => {
 
   // delete all data and cache on call from debug menu
   ipcMain.on('deleteAndReload', (event) => {
-    fs.rmdir(getAppPath, () => {
-      // callback
-      console.log('App data cleared from ', getAppPath);
-      // You should relaunch the app after clearing the app settings.
-      app.relaunch();
-      tray.destroy();
-      process.kill(process.pid, 9);
-    });
+    fs.rm(getAppPath, { recursive: true, force: true });
+    // You should relaunch the app after clearing the app settings.
+    app.relaunch();
+    tray.destroy();
+    process.kill(process.pid, 9);
   });
 
   powerMonitor.on('resume', () => {
