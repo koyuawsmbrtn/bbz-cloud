@@ -232,6 +232,12 @@ export default class Main extends React.Component {
       }
     });
 
+    function sleep(ms) {
+      return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+      });
+    }
+
     function showMotd() {
       $.get(
         `https://koyuawsmbrtn.github.io/bbz-cloud/hosted/motd.html?${Date.now()}`,
@@ -432,6 +438,7 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.querySelector('#submitButton').click();`
             );
+            await sleep(5000);
             wv.reload();
           }
           // Autofill Moodle
