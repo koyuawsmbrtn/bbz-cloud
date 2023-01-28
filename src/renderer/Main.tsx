@@ -432,6 +432,7 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.querySelector('#submitButton').click();`
             );
+            wv.reload();
           }
           // Autofill Moodle
           if (wv.id === 'wv-BBZPortal' && credsAreSet.moodle === false) {
