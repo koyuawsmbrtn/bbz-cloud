@@ -377,9 +377,6 @@ const createWindow = async () => {
     sendStatusToWindow('Checking for update...');
   });
   autoUpdater.on('update-available', (ev, info) => {
-    updateAvailable = true;
-    // if (process.platform !== 'darwin') {
-    mainWindow?.webContents.send('update', 'available');
     sendStatusToWindow('Update available.');
   });
   autoUpdater.on('update-not-available', (ev, info) => {
@@ -392,6 +389,9 @@ const createWindow = async () => {
     sendStatusToWindow('Download progress...');
   });
   autoUpdater.on('update-downloaded', (ev, info) => {
+    updateAvailable = true;
+    // if (process.platform !== 'darwin') {
+    mainWindow?.webContents.send('update', 'available');
     sendStatusToWindow('Update downloaded');
     // }
   });
