@@ -480,6 +480,7 @@ export default class Main extends React.Component {
     }, 2000);
 
     $('#updateButton').click(() => {
+      $('#updateButton').html('Installiere...');
       window.api.send('runUpdate');
     });
 
