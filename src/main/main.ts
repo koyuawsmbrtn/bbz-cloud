@@ -69,7 +69,7 @@ const template = [
     click: () => {
       const focusedWindow = BrowserWindow.getFocusedWindow();
       if (focusedWindow) {
-        childZoomLevel += 0.2;
+        childZoomLevel += 0.1;
         focusedWindow.webContents.setZoomLevel(childZoomLevel);
       }
     },
@@ -81,7 +81,7 @@ const template = [
     click: () => {
       const focusedWindow = BrowserWindow.getFocusedWindow();
       if (focusedWindow) {
-        childZoomLevel -= 0.2;
+        childZoomLevel -= 0.1;
         focusedWindow.webContents.setZoomLevel(childZoomLevel);
       }
     },
