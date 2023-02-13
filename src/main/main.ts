@@ -303,10 +303,12 @@ const createWindow = async () => {
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
+    mainWindow?.showInactive();
   });
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
+    mainWindow?.showInactive();
   });
 
   mainWindow.on('resize', () => {
