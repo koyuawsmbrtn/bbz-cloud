@@ -1,4 +1,4 @@
-cd ~/bbz-cloud
+cd ~/Documents/code/bbz-cloud
 git pull
 git checkout -- .
 rm -rf ~/Desktop/bbzcloud-build
