@@ -211,6 +211,12 @@
         "StartupWMClass": "bbzcloud"
       }
     },
+    "nsis": {
+      "differentialPackage": false
+    },
+    "dmg": {
+      "writeUpdateInfo": false
+    },
     "directories": {
       "app": "release/app",
       "buildResources": "assets",
