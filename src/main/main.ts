@@ -223,7 +223,7 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  var mainWindowMenuTemplate = [
+  var mainWindowMenuTemplate = Menu.buildFromTemplate([
     {
       label: 'Edit',
       submenu: [
@@ -268,17 +268,19 @@ const createWindow = async () => {
         {
           label: 'Reload',
           accelerator: 'CmdOrCtrl+R',
-          click: function (item, focusedWindow) {
+          click() {
+            const focusedWindow = BrowserWindow.getFocusedWindow();
             if (focusedWindow) focusedWindow.reload();
           },
         },
         {
           label: 'Toggle Full Screen',
-          accelerator: (function () {
-            if (process.platform == 'darwin') return 'Ctrl+Command+F';
-            else return 'F11';
+          accelerator: (() => {
+            if (process.platform === 'darwin') return 'Ctrl+Command+F';
+            return 'F11';
           })(),
-          click: function (item, focusedWindow) {
+          click() {
+            const focusedWindow = BrowserWindow.getFocusedWindow();
             if (focusedWindow)
               focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
           },
@@ -307,14 +309,15 @@ const createWindow = async () => {
       submenu: [
         {
           label: 'Learn More',
-          click: function () {
-            require('electron').shell.openExternal('http://electron.atom.io');
+          click() {
+            shell.openExternal('https://github.com/koyuawsmbrtn/bbz-cloud/');
           },
         },
       ],
     },
-  ];
+  ]);
 
+  mainWindow.setMenu(mainWindowMenuTemplate);
   mainWindow.webContents.send('resize', mainWindow.getBounds().height);
 
   if (!isDevelopment) {
