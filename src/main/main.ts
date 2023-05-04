@@ -226,15 +226,49 @@ const createWindow = async () => {
   if (process.platform == 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
       {
-        label: 'Edit',
+        label: 'BBZ Cloud',
         submenu: [
           {
-            label: 'Undo',
+            label: 'BBZ Cloud',
+            enabled: false,
+          },
+          { type: 'separator' },
+          {
+            label: 'Einstellungen',
+            accelerator: 'CmdOrCtrl+,',
+            click() {
+              mainWindow?.show();
+              mainWindow?.focus();
+              mainWindow?.webContents.send('changeUrl', 'settings');
+            },
+          },
+          {
+            label: 'BBZ Cloud ausblenden',
+            accelerator: 'CmdOrCtrl+H',
+            click() {
+              mainWindow?.hide();
+            },
+          },
+          { type: 'separator' },
+          {
+            label: 'Beenden',
+            accelerator: 'CmdOrCtrl+Q',
+            click() {
+              process.kill(process.pid, 9);
+            },
+          },
+        ],
+      },
+      {
+        label: 'Bearbeiten',
+        submenu: [
+          {
+            label: 'Widerrufen',
             accelerator: 'CmdOrCtrl+Z',
             role: 'undo',
           },
           {
-            label: 'Redo',
+            label: 'Wiederholen',
             accelerator: 'Shift+CmdOrCtrl+Z',
             role: 'redo',
           },
@@ -242,32 +276,32 @@ const createWindow = async () => {
             type: 'separator',
           },
           {
-            label: 'Cut',
+            label: 'Ausschneiden',
             accelerator: 'CmdOrCtrl+X',
             role: 'cut',
           },
           {
-            label: 'Copy',
+            label: 'Kopieren',
             accelerator: 'CmdOrCtrl+C',
             role: 'copy',
           },
           {
-            label: 'Paste',
+            label: 'Einsetzen',
             accelerator: 'CmdOrCtrl+V',
             role: 'paste',
           },
           {
-            label: 'Select All',
+            label: 'Alles auswählen',
             accelerator: 'CmdOrCtrl+A',
             role: 'selectAll',
           },
         ],
       },
       {
-        label: 'View',
+        label: 'Darstellung',
         submenu: [
           {
-            label: 'Reload',
+            label: 'Neu laden',
             accelerator: 'CmdOrCtrl+R',
             click() {
               const focusedWindow = BrowserWindow.getFocusedWindow();
@@ -275,7 +309,7 @@ const createWindow = async () => {
             },
           },
           {
-            label: 'Toggle Full Screen',
+            label: 'Vollbildmodus',
             accelerator: (() => {
               if (process.platform === 'darwin') return 'Ctrl+Command+F';
               return 'F11';
@@ -289,27 +323,27 @@ const createWindow = async () => {
         ],
       },
       {
-        label: 'Window',
+        label: 'Fenster',
         role: 'window',
         submenu: [
           {
-            label: 'Minimize',
+            label: 'Im Dock ablegen',
             accelerator: 'CmdOrCtrl+M',
             role: 'minimize',
           },
           {
-            label: 'Close',
+            label: 'Schließen',
             accelerator: 'CmdOrCtrl+W',
             role: 'close',
           },
         ],
       },
       {
-        label: 'Help',
+        label: 'Hilfe',
         role: 'help',
         submenu: [
           {
-            label: 'Learn More',
+            label: 'Mehr erfahren',
             click() {
               shell.openExternal('https://github.com/koyuawsmbrtn/bbz-cloud/');
             },
@@ -376,7 +410,9 @@ const createWindow = async () => {
     return appIcon;
   }
 
-  let tray = createTray();
+  if (process.platform !== 'darwin') {
+    let tray = createTray();
+  }
 
   ipcMain.on('openDevTools', () => {
     mainWindow.webContents.openDevTools({ mode: 'detach' });
@@ -689,24 +725,30 @@ app.on('web-contents-created', (event, contents) => {
 app
   .whenReady()
   .then(() => {
-    const gotTheLock = app.requestSingleInstanceLock();
-    if (!gotTheLock) {
-      app.quit();
-    } else {
-      app.on('second-instance', (event, commandLine, workingDirectory) => {
-        // Someone tried to run a second instance, we should focus our window.
-        if (mainWindow) {
-          if (mainWindow.isMinimized()) mainWindow.restore();
-          mainWindow.show();
-          mainWindow.focus();
-        }
-      });
+    if (process.platform !== 'darwin') {
+      const gotTheLock = app.requestSingleInstanceLock();
+      if (!gotTheLock) {
+        app.quit();
+      } else {
+        app.on('second-instance', (event, commandLine, workingDirectory) => {
+          // Someone tried to run a second instance, we should focus our window.
+          if (mainWindow) {
+            if (mainWindow.isMinimized()) mainWindow.restore();
+            mainWindow.show();
+            mainWindow.focus();
+          }
+        });
+      }
     }
     createWindow();
-    app.on('activate', () => {
-      // On macOS it's common to re-create a window in the app when the
-      // dock icon is clicked and there are no other windows open.
-      if (mainWindow === null) createWindow();
-    });
   })
   .catch(console.log);
+
+app.on('activate', () => {
+  // On macOS it's common to re-create a window in the app when the
+  // dock icon is clicked and there are no other windows open.
+  if (mainWindow && process.platform === 'darwin') {
+    mainWindow.show();
+    mainWindow.focus();
+  }
+});
