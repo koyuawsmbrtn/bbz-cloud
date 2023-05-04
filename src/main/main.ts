@@ -259,7 +259,7 @@ const createWindow = async () => {
           {
             label: 'Select All',
             accelerator: 'CmdOrCtrl+A',
-            role: 'selectall',
+            role: 'selectAll',
           },
         ],
       },
