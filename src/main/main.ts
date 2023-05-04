@@ -318,7 +318,7 @@ const createWindow = async () => {
       },
     ]);
 
-    mainWindow.setMenu(mainWindowMenuTemplate);
+    Menu.setApplicationMenu(mainWindowMenuTemplate);
   } else {
     mainWindow.setMenu(null);
   }
