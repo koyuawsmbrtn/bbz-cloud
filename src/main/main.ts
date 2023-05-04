@@ -223,101 +223,105 @@ const createWindow = async () => {
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
-  var mainWindowMenuTemplate = Menu.buildFromTemplate([
-    {
-      label: 'Edit',
-      submenu: [
-        {
-          label: 'Undo',
-          accelerator: 'CmdOrCtrl+Z',
-          role: 'undo',
-        },
-        {
-          label: 'Redo',
-          accelerator: 'Shift+CmdOrCtrl+Z',
-          role: 'redo',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Cut',
-          accelerator: 'CmdOrCtrl+X',
-          role: 'cut',
-        },
-        {
-          label: 'Copy',
-          accelerator: 'CmdOrCtrl+C',
-          role: 'copy',
-        },
-        {
-          label: 'Paste',
-          accelerator: 'CmdOrCtrl+V',
-          role: 'paste',
-        },
-        {
-          label: 'Select All',
-          accelerator: 'CmdOrCtrl+A',
-          role: 'selectall',
-        },
-      ],
-    },
-    {
-      label: 'View',
-      submenu: [
-        {
-          label: 'Reload',
-          accelerator: 'CmdOrCtrl+R',
-          click() {
-            const focusedWindow = BrowserWindow.getFocusedWindow();
-            if (focusedWindow) focusedWindow.reload();
+  if (process.platform == 'darwin') {
+    var mainWindowMenuTemplate = Menu.buildFromTemplate([
+      {
+        label: 'Edit',
+        submenu: [
+          {
+            label: 'Undo',
+            accelerator: 'CmdOrCtrl+Z',
+            role: 'undo',
           },
-        },
-        {
-          label: 'Toggle Full Screen',
-          accelerator: (() => {
-            if (process.platform === 'darwin') return 'Ctrl+Command+F';
-            return 'F11';
-          })(),
-          click() {
-            const focusedWindow = BrowserWindow.getFocusedWindow();
-            if (focusedWindow)
-              focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+          {
+            label: 'Redo',
+            accelerator: 'Shift+CmdOrCtrl+Z',
+            role: 'redo',
           },
-        },
-      ],
-    },
-    {
-      label: 'Window',
-      role: 'window',
-      submenu: [
-        {
-          label: 'Minimize',
-          accelerator: 'CmdOrCtrl+M',
-          role: 'minimize',
-        },
-        {
-          label: 'Close',
-          accelerator: 'CmdOrCtrl+W',
-          role: 'close',
-        },
-      ],
-    },
-    {
-      label: 'Help',
-      role: 'help',
-      submenu: [
-        {
-          label: 'Learn More',
-          click() {
-            shell.openExternal('https://github.com/koyuawsmbrtn/bbz-cloud/');
+          {
+            type: 'separator',
           },
-        },
-      ],
-    },
-  ]);
+          {
+            label: 'Cut',
+            accelerator: 'CmdOrCtrl+X',
+            role: 'cut',
+          },
+          {
+            label: 'Copy',
+            accelerator: 'CmdOrCtrl+C',
+            role: 'copy',
+          },
+          {
+            label: 'Paste',
+            accelerator: 'CmdOrCtrl+V',
+            role: 'paste',
+          },
+          {
+            label: 'Select All',
+            accelerator: 'CmdOrCtrl+A',
+            role: 'selectall',
+          },
+        ],
+      },
+      {
+        label: 'View',
+        submenu: [
+          {
+            label: 'Reload',
+            accelerator: 'CmdOrCtrl+R',
+            click() {
+              const focusedWindow = BrowserWindow.getFocusedWindow();
+              if (focusedWindow) focusedWindow.reload();
+            },
+          },
+          {
+            label: 'Toggle Full Screen',
+            accelerator: (() => {
+              if (process.platform === 'darwin') return 'Ctrl+Command+F';
+              return 'F11';
+            })(),
+            click() {
+              const focusedWindow = BrowserWindow.getFocusedWindow();
+              if (focusedWindow)
+                focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+            },
+          },
+        ],
+      },
+      {
+        label: 'Window',
+        role: 'window',
+        submenu: [
+          {
+            label: 'Minimize',
+            accelerator: 'CmdOrCtrl+M',
+            role: 'minimize',
+          },
+          {
+            label: 'Close',
+            accelerator: 'CmdOrCtrl+W',
+            role: 'close',
+          },
+        ],
+      },
+      {
+        label: 'Help',
+        role: 'help',
+        submenu: [
+          {
+            label: 'Learn More',
+            click() {
+              shell.openExternal('https://github.com/koyuawsmbrtn/bbz-cloud/');
+            },
+          },
+        ],
+      },
+    ]);
 
-  mainWindow.setMenu(mainWindowMenuTemplate);
+    mainWindow.setMenu(mainWindowMenuTemplate);
+  } else {
+    mainWindow.setMenu(null);
+  }
   mainWindow.webContents.send('resize', mainWindow.getBounds().height);
 
   if (!isDevelopment) {
@@ -449,60 +453,6 @@ const createWindow = async () => {
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
-
-  if (process.platform == 'darwin') {
-    var name = require('electron').app.getName();
-    // I hope this doesn't crash :)
-    template.unshift({
-      label: name,
-      submenu: [
-        {
-          type: 'separator',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Hide ' + name,
-          accelerator: 'Command+H',
-          role: 'hide',
-        },
-        {
-          label: 'Hide Others',
-          accelerator: 'Command+Shift+H',
-          role: 'hideothers',
-        },
-        {
-          label: 'Show All',
-          role: 'unhide',
-        },
-        {
-          type: 'separator',
-        },
-        {
-          label: 'Quit',
-          accelerator: 'Command+Q',
-          click: function () {
-            app.quit();
-          },
-        },
-      ],
-    });
-    // Window menu.
-    template[3].submenu.push(
-      {
-        type: 'separator',
-      },
-      {
-        label: 'Bring All to Front',
-        role: 'front',
-      }
-    );
-
-    mainWindow.setMenu(Menu.buildFromTemplate(mainWindowMenuTemplate));
-  } else {
-    mainWindow.setMenu(null);
-  }
 
   // Open urls in the user's browser - just as fallback, should never be useds
   mainWindow.webContents.setWindowOpenHandler((edata) => {
