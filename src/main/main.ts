@@ -418,8 +418,9 @@ const createWindow = async () => {
     return appIcon;
   }
 
+  let tray = null;
   if (process.platform !== 'darwin') {
-    let tray = createTray();
+    tray = createTray();
   }
 
   ipcMain.on('openDevTools', () => {
