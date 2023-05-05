@@ -343,6 +343,14 @@ const createWindow = async () => {
         role: 'help',
         submenu: [
           {
+            label: 'Problem oder Funktionswunsch melden …',
+            click() {
+              mainWindow?.show();
+              mainWindow?.focus();
+              mainWindow?.webContents.send('changeUrl', 'Issues');
+            },
+          },
+          {
             label: 'Mehr erfahren',
             click() {
               shell.openExternal('https://github.com/koyuawsmbrtn/bbz-cloud/');

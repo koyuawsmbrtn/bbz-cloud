@@ -266,7 +266,7 @@ export default class Main extends React.Component {
       for (const [key, e] of Object.entries(links)) {
         if (e.teacher === true && isTeacher === true) {
           $('#appchecks').append(
-            `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+            `<p id="checkbox-${key}"><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
           );
           if (localStorage.getItem(`checked-${key}`) === null) {
             if (e.enabled) {
@@ -404,6 +404,9 @@ export default class Main extends React.Component {
           `<span onClick="copyUrl('custom2')" class="wvbc webbc-custom2" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
         );
       }
+      $('#buttons').append(
+        `<span onClick="changeUrl('Issues', 'https://bbz-cloud-issues.netlify.app')" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:16px;">!</span>`
+      );
       if (localStorage.getItem('autostart') === 'true') {
         $('#autostart').attr('checked', 'true');
       }

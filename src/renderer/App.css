@@ -82,12 +82,12 @@ header {
 
 .twoColumn {
   -webkit-column-count: 2;
-     -moz-column-count: 2;
-          column-count: 2;
+  -moz-column-count: 2;
+  column-count: 2;
 
   -webkit-column-gap: 20px;
-     -moz-column-gap: 20px;
-          column-gap: 20px;
+  -moz-column-gap: 20px;
+  column-gap: 20px;
 }
 
 .link-WebUntis img {
@@ -104,6 +104,11 @@ header {
 
 .link-BiBox img {
   background-color: #e40613 !important;
+}
+
+.link-Issues,
+#checkbox-Issues {
+  display: none;
 }
 
 h1,
@@ -221,7 +226,7 @@ h1 {
   cursor: pointer;
 }
 
-@media(max-height:900px) {
+@media (max-height: 900px) {
   .wv {
     width: calc(100vw + 3px) !important;
     height: calc(100vh - 70px) !important;
@@ -239,8 +244,8 @@ h1 {
 }
 
 input {
-  margin: .4rem 0;
-  margin-right: .4rem;
+  margin: 0.4rem 0;
+  margin-right: 0.4rem;
 }
 
 #settingsv button {
