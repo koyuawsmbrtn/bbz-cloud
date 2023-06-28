@@ -516,6 +516,9 @@ export default class Main extends React.Component {
       } else if (event.ctrlKey && event.altKey && event.keyCode === 68) {
         // Strg + Alt * D
         smalltalk.alert('Super secret debug menu', debugMenu);
+      } else if (event.ctrlKey && event.shiftKey && event.keyCode === 76) {
+        // Strg + Shift + L
+        window.open('bitwarden://desktop', '_blank');
       }
       localStorage.setItem('zoomFaktor', zoomFaktor.toString());
       window.api.send('zoom', zoomFaktor);
