@@ -1,3 +1,5 @@
 {
-  "workspace.name" : "bbz-cloud"
+  "workspace.art_style" : 1,
+  "workspace.color" : 12,
+  "workspace.name" : "BBZ Cloud"
 }
