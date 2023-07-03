@@ -445,7 +445,7 @@ export default class Main extends React.Component {
             wv.reload();
           }
           // Autofill Moodle
-          if (wv.id === 'wv-BBZPortal' && credsAreSet.moodle === false) {
+          if (wv.id === 'wv-Moodle-Portal' && credsAreSet.moodle === false) {
             credsAreSet.moodle = true;
 
             wv.executeJavaScript(
