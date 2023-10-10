@@ -204,7 +204,8 @@
       "target": [
         "snap",
         "AppImage",
-        "pacman"
+        "pacman",
+        "deb"
       ],
       "category": "Education",
       "desktop": {

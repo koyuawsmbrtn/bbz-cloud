@@ -37,3 +37,11 @@ Snap: `sudo snap install bbzcloud`
 AppImage & Windows: https://github.com/dclausen01/bbz-cloud-sus/releases
 
 AUR: https://aur.archlinux.org/packages/bbz-cloud-sus
+
+DEB:
+
+```
+echo "deb [trusted=yes] https://repo.koyu.space/ /" | sudo tee /etc/apt/sources.list.d/koyu.list
+sudo apt update
+sudo apt install -y bbzcloud
+```
