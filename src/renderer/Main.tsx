@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-filename-extension */
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
 /* eslint-disable vars-on-top */
