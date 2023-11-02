@@ -566,7 +566,6 @@ const downloadtypes = [
   '.oga',
   '.ogv',
   '.opus',
-  '.pdf',
   '.xls',
   '.xlsx',
   '.ppt',
@@ -580,6 +579,7 @@ const downloadtypes = [
   '.docx',
   '.fls',
 ];
+//  '.pdf',
 
 const keywordsMicrosoft = ['onedrive', 'onenote', 'download.aspx'];
 
