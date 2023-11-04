@@ -453,10 +453,8 @@ const createWindow = async () => {
   });
   powerMonitor.on('suspend', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    mainWindow?.setBounds({
-      width: BrowserWindowWidth,
-      height: BrowserWindowHeight,
-    });
+    BrowserWindowWidth = mainWindow?.getBounds().width;
+    BrowserWindowHeight = mainWindow?.getBounds().height;
     isVisible = mainWindow?.isVisible();
   });
   powerMonitor.on('resume', () => {
@@ -466,7 +464,7 @@ const createWindow = async () => {
       width: BrowserWindowWidth,
       height: BrowserWindowHeight,
     });
-    mainWindow.webContents.send('resize', BrowserWindowHeight);
+    mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -480,7 +478,7 @@ const createWindow = async () => {
       width: BrowserWindowWidth,
       height: BrowserWindowHeight,
     });
-    mainWindow.webContents.send('resize', BrowserWindowHeight);
+    mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
