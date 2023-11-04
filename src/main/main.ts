@@ -460,21 +460,25 @@ const createWindow = async () => {
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
+    mainWindow?.setBounds().height = BrowserWindowHeight;
+    mainWindow?.setBounds().width = BrowserWindowWidth;
     mainWindow.webContents.send('resize', BrowserWindowHeight);
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
-      mainWindow?.minimize();
+      mainWindow?.minimize(); // even if the app is completely hidden, it must return minimized, else it can't be opened
     }
   });
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
+    mainWindow?.setBounds().height = BrowserWindowHeight;
+    mainWindow?.setBounds().width = BrowserWindowWidth;
     mainWindow.webContents.send('resize', BrowserWindowHeight);
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
-      mainWindow?.minimize();
+      mainWindow?.minimize(); // even if the app is completely hidden, it must return minimized, else it can't be opened
     }
   });
 
