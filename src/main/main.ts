@@ -476,8 +476,10 @@ const createWindow = async () => {
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds().height = BrowserWindowHeight;
-    mainWindow?.setBounds().width = BrowserWindowWidth;
+    mainWindow?.setBounds({
+      width: BrowserWindowWidth,
+      height: BrowserWindowHeight,
+    });
     mainWindow.webContents.send('resize', BrowserWindowHeight);
     if (isVisible) {
       mainWindow?.showInactive();
