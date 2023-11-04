@@ -81,8 +81,24 @@ window.api.send('resize'); // Get initial size manually
 // Relaod app on command from the main process
 window.api.receive('reloadApp', (result) => {
   console.log('Reload der App getriggert', result);
-  window.location.reload();
+  document.querySelectorAll('webview').forEach((wv) => {
+    if (wv.id === 'wv-Outlook') {
+      // reload all WebViews - for now
+      wv.getWebContents().reload();
+      wv.executeJavaScript(
+        `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
+      );
+      wv.executeJavaScript(
+        `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
+      );
+      wv.executeJavaScript(
+        // Hier wird der Button geklickt
+        `document.querySelector('#submitButton').click();`
+      );
+    }
+  });
 });
+// window.location.reload();
 
 // Download progress bar
 window.api.receive('download', (result) => {

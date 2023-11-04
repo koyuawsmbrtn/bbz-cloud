@@ -28,7 +28,7 @@ import { resolveHtmlPath } from './util';
 
 const appName = app.getName();
 
-let zoomFaktor = 1.0;
+let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
 const getAppPath = path.join(app.getPath('appData'), appName);
