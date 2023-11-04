@@ -453,15 +453,19 @@ const createWindow = async () => {
   });
   powerMonitor.on('suspend', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    BrowserWindowWidth = mainWindow?.getBounds().width;
-    BrowserWindowHeight = mainWindow?.getBounds().height;
+    mainWindow?.setBounds({
+      width: BrowserWindowWidth,
+      height: BrowserWindowHeight,
+    });
     isVisible = mainWindow?.isVisible();
   });
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds().height = BrowserWindowHeight;
-    mainWindow?.setBounds().width = BrowserWindowWidth;
+    mainWindow?.setBounds({
+      width: BrowserWindowWidth,
+      height: BrowserWindowHeight,
+    });
     mainWindow.webContents.send('resize', BrowserWindowHeight);
     if (isVisible) {
       mainWindow?.showInactive();
