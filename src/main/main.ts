@@ -31,6 +31,9 @@ const appName = app.getName();
 let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
+let BrowserWindowHeight = 900;
+let BrowserWindowWidth = 1600;
+let isVisible = true;
 const getAppPath = path.join(app.getPath('appData'), appName);
 
 /*
@@ -205,8 +208,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: 1600,
-    height: 900,
+    width: BrowserWindowWidth,
+    height: BrowserWindowHeight,
     minWidth: 725,
     minHeight: 700,
     icon: getAssetPath('icon.png'),
@@ -442,15 +445,37 @@ const createWindow = async () => {
     });
   });
 
+  powerMonitor.on('lock-screen', () => {
+    // save window dimensions and visibility state of window for reset after returning from sleep / lock
+    BrowserWindowWidth = mainWindow?.getBounds().width;
+    BrowserWindowHeight = mainWindow?.getBounds().height;
+    isVisible = mainWindow?.isVisible();
+  });
+  powerMonitor.on('suspend', () => {
+    // save window dimensions and visibility state of window for reset after returning from sleep / lock
+    BrowserWindowWidth = mainWindow?.getBounds().width;
+    BrowserWindowHeight = mainWindow?.getBounds().height;
+    isVisible = mainWindow?.isVisible();
+  });
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.showInactive();
+    mainWindow.webContents.send('resize', BrowserWindowHeight);
+    if (isVisible) {
+      mainWindow?.showInactive();
+    } else {
+      mainWindow?.hide();
+    }
   });
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.showInactive();
+    mainWindow.webContents.send('resize', BrowserWindowHeight);
+    if (isVisible) {
+      mainWindow?.showInactive();
+    } else {
+      mainWindow?.hide();
+    }
   });
 
   mainWindow.on('resize', () => {

@@ -78,7 +78,7 @@ window.api.receive('resize', (result) => {
 });
 window.api.send('resize'); // Get initial size manually
 
-// Relaod app on command from the main process
+// Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
   console.log('Reload der App getriggert', result);
   document.querySelectorAll('webview').forEach((wv) => {
