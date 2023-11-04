@@ -464,7 +464,7 @@ const createWindow = async () => {
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
-      mainWindow?.hide();
+      mainWindow?.minimize();
     }
   });
   powerMonitor.on('unlock-screen', () => {
@@ -474,7 +474,7 @@ const createWindow = async () => {
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
-      mainWindow?.hide();
+      mainWindow?.minimize();
     }
   });
 
