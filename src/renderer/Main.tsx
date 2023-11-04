@@ -83,18 +83,20 @@ window.api.receive('reloadApp', (result) => {
   console.log('Reload der App getriggert', result);
   document.querySelectorAll('webview').forEach((wv) => {
     if (wv.id === 'wv-Outlook') {
-      // reload all WebViews - for now
-      wv.getWebContents().reload();
-      wv.executeJavaScript(
-        `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
-      );
-      wv.executeJavaScript(
-        `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
-      );
-      wv.executeJavaScript(
-        // Hier wird der Button geklickt
-        `document.querySelector('#submitButton').click();`
-      );
+      // reload OWA WebView
+      wv.reload();
+      wv.addEventListener('did-finish-load', async (event) => {
+        wv.executeJavaScript(
+          `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
+        );
+        wv.executeJavaScript(
+          `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
+        );
+        wv.executeJavaScript(
+          // Hier wird der Button geklickt
+          `document.querySelector('#submitButton').click();`
+        );
+      });
     }
   });
 });
