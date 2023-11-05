@@ -21,6 +21,7 @@ contextBridge.exposeInMainWorld('api', {
       'resize',
       'reloadApp',
       'deleteAndReload',
+      'bitwarden',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);

@@ -543,7 +543,7 @@ export default class Main extends React.Component {
         smalltalk.alert('Super secret debug menu', debugMenu);
       } else if (event.ctrlKey && event.shiftKey && event.keyCode === 76) {
         // Strg + Shift + L
-        window.open('bitwarden://desktop', '_blank');
+        window.api.send('bitwarden');
       }
       localStorage.setItem('zoomFaktor', zoomFaktor.toString());
       window.api.send('zoom', zoomFaktor);

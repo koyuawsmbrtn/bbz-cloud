@@ -121,6 +121,69 @@ ipcMain.on('zoom', (event, args) => {
   mainWindow?.webContents.setZoomFactor(zoomFaktor);
 });
 
+// Launch bitwarden app
+ipcMain.on('bitwarden', (event) => {
+  // Run program
+  const child = require('child_process').execFile;
+  if (process.platform === 'win32') {
+    child(
+      'C:\\Program Files\\Bitwarden\\Bitwarden.exe',
+      (err: any, data: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(data.toString());
+      }
+    );
+  }
+  if (process.platform === 'linux') {
+    // Check if Flatpak, Snap or AppImage
+    if (fs.existsSync('/var/lib/snapd')) {
+      child('snap', ['run', 'bitwarden'], (err: any, data: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(data.toString());
+      });
+    } else if (fs.existsSync('/var/lib/flatpak')) {
+      child(
+        'flatpak',
+        ['run', 'com.bitwarden.desktop'],
+        (err: any, data: any) => {
+          if (err) {
+            console.error(err);
+            return;
+          }
+          console.log(data.toString());
+        }
+      );
+    } else {
+      child('bitwarden', (err: any, data: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(data.toString());
+      });
+    }
+  }
+  if (process.platform === 'darwin') {
+    child(
+      'open',
+      ['-a', '/Applications/Bitwarden.app'],
+      (err: any, data: any) => {
+        if (err) {
+          console.error(err);
+          return;
+        }
+        console.log(data.toString());
+      }
+    );
+  }
+});
+
 ipcMain.on('savePassword', (event, cred) => {
   keytar.setPassword('bbzcloud', 'credentials', JSON.stringify(cred));
 });
