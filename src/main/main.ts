@@ -31,8 +31,7 @@ const appName = app.getName();
 let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
-let BrowserWindowHeight = 900;
-let BrowserWindowWidth = 1600;
+let BrowserWindowDim = { x: 0, y: 0, width: 1600, height: 900 };
 let isVisible = true;
 const getAppPath = path.join(app.getPath('appData'), appName);
 
@@ -208,8 +207,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
-    width: BrowserWindowWidth,
-    height: BrowserWindowHeight,
+    width: BrowserWindowDim.width,
+    height: BrowserWindowDim.height,
     minWidth: 725,
     minHeight: 700,
     icon: getAssetPath('icon.png'),
@@ -447,23 +446,16 @@ const createWindow = async () => {
 
   powerMonitor.on('lock-screen', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    BrowserWindowWidth = mainWindow?.getBounds().width;
-    BrowserWindowHeight = mainWindow?.getBounds().height;
     isVisible = mainWindow?.isVisible();
   });
   powerMonitor.on('suspend', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    BrowserWindowWidth = mainWindow?.getBounds().width;
-    BrowserWindowHeight = mainWindow?.getBounds().height;
     isVisible = mainWindow?.isVisible();
   });
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds({
-      width: BrowserWindowWidth,
-      height: BrowserWindowHeight,
-    });
+    mainWindow?.setBounds(BrowserWindowDim);
     mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
     if (isVisible) {
       mainWindow?.showInactive();
@@ -474,10 +466,7 @@ const createWindow = async () => {
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds({
-      width: BrowserWindowWidth,
-      height: BrowserWindowHeight,
-    });
+    mainWindow?.setBounds(BrowserWindowDim);
     mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
     if (isVisible) {
       mainWindow?.showInactive();
@@ -487,10 +476,22 @@ const createWindow = async () => {
   });
 
   mainWindow.on('resize', () => {
+    BrowserWindowDim = {
+      x: mainWindow?.getBounds().x,
+      y: mainWindow?.getBounds().y,
+      width: mainWindow?.getBounds().width,
+      height: mainWindow?.getBounds().height,
+    };
     mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
 
   mainWindow.on('maximize', () => {
+    BrowserWindowDim = {
+      x: mainWindow?.getBounds().x,
+      y: mainWindow?.getBounds().y,
+      width: mainWindow?.getBounds().width,
+      height: mainWindow?.getBounds().height,
+    };
     mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
   });
 
