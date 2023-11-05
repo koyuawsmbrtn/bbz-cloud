@@ -55,4 +55,6 @@ baseurl=https://repo.koyu.space/yum/
 enabled=1
 gpgcheck=0
 EOT
+sudo dnf check-updates
+sudo dnf install -y bbzcloud
 ```
