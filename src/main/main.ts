@@ -231,20 +231,23 @@ const createWindow = async () => {
   mainWindow.loadURL(resolveHtmlPath('index.html'));
 
   // funky workaraound (could be done via ipc communication - but might be easier like this)
-  mainWindow.webContents
-    .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
-    .then((result) => {
-      if (result === null) {
-        mainWindow.webContents.executeJavaScript(
-          `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-            BrowserWindowDim
-          )}');`,
-          true
-        );
-      } else {
-        BrowserWindowDim = JSON.parse(result);
-      }
-    });
+  function getBrowserWindowDim() {
+    mainWindow.webContents
+      .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
+      .then((result) => {
+        if (result === null) {
+          mainWindow.webContents.executeJavaScript(
+            `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+              BrowserWindowDim
+            )}');`,
+            true
+          );
+        } else {
+          BrowserWindowDim = JSON.parse(result);
+        }
+      });
+    return BrowserWindowDim;
+  }
 
   if (process.platform == 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
@@ -479,7 +482,7 @@ const createWindow = async () => {
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds(BrowserWindowDim);
+    mainWindow?.setBounds(getBrowserWindowDim());
     mainWindow.webContents.send('resize', {
       height: mainWindow.getBounds().height,
       width: mainWindow.getBounds().width,
@@ -493,7 +496,7 @@ const createWindow = async () => {
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds(BrowserWindowDim);
+    mainWindow?.setBounds(getBrowserWindowDim());
     mainWindow.webContents.send('resize', {
       height: mainWindow.getBounds().height,
       width: mainWindow.getBounds().width,
@@ -531,6 +534,12 @@ const createWindow = async () => {
       width: mainWindow?.getBounds().width,
       height: mainWindow?.getBounds().height,
     };
+    mainWindow.webContents.executeJavaScript(
+      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+        BrowserWindowDim
+      )}');`,
+      true
+    );
     mainWindow?.webContents.send('resize', {
       height: mainWindow.getBounds().height,
       width: mainWindow.getBounds().width,
@@ -552,7 +561,7 @@ const createWindow = async () => {
   });
 
   mainWindow.on('restore', function (event) {
-    mainWindow?.setBounds(BrowserWindowDim);
+    mainWindow?.setBounds(getBrowserWindowDim());
     mainWindow.webContents.send('resize', {
       height: mainWindow.getBounds().height,
       width: mainWindow.getBounds().width,
