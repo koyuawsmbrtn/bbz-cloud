@@ -206,7 +206,8 @@
         "snap",
         "AppImage",
         "pacman",
-        "deb"
+        "deb",
+        "rpm"
       ],
       "category": "Education",
       "desktop": {

@@ -5,7 +5,6 @@
 /* eslint-disable react/button-has-type */
 /* eslint-disable jsx-a11y/label-has-associated-control */
 /* eslint-disable no-restricted-syntax */
-/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-var */
 /* eslint-disable no-console */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
@@ -82,7 +81,6 @@ function getBrowserWindowDim() {
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
-  console.log('Reload der App getriggert', result);
   document.querySelectorAll('webview').forEach((wv) => {
     if (wv.id === 'wv-Outlook') {
       // reload OWA WebView
@@ -286,9 +284,11 @@ export default class Main extends React.Component {
       });
       for (const [key, e] of Object.entries(links)) {
         if (e.teacher === true && isTeacher === true) {
-          $('#appchecks').append(
-            `<p id="checkbox-${key}"><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
-          );
+          if (key !== 'Issues') {
+            $('#appchecks').append(
+              `<p id="checkbox-${key}"><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+            );
+          }
           if (localStorage.getItem(`checked-${key}`) === null) {
             if (e.enabled) {
               localStorage.setItem(`checked-${key}`, 'true');
@@ -317,9 +317,11 @@ export default class Main extends React.Component {
           );
         }
         if (e.teacher === false) {
-          $('#appchecks').append(
-            `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
-          );
+          if (key !== 'Issues') {
+            $('#appchecks').append(
+              `<p><input type="checkbox" id="check-${key}" onClick="toggleApp('${key}')" /> ${key}</p>`
+            );
+          }
           if (localStorage.getItem(`checked-${key}`) === null) {
             if (e.enabled) {
               localStorage.setItem(`checked-${key}`, 'true');

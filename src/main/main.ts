@@ -682,7 +682,8 @@ app.on('web-contents-created', (event, contents) => {
   var handleRedirect = (e, url) => {
     if (
       url.includes('bbb.bbz-rd-eck.de/bigbluebutton/api/join?') ||
-      url.includes('meet.stashcat.com')
+      url.includes('meet.stashcat.com') ||
+      url.includes('github.com')
     ) {
       e.preventDefault();
       // bad style, but necessary to close empty BrowserWindow
