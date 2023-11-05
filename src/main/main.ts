@@ -222,6 +222,26 @@ const createWindow = async () => {
 
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
+  // Kotextmenü
+  const contextMenuTemplate = [
+    { label: 'Ausschneiden', role: 'cut' },
+    { label: 'Kopieren', role: 'copy' },
+    { label: 'Einfügen', role: 'paste' },
+    { type: 'separator' },
+    { label: 'Alles markieren', role: 'selectall' },
+  ];
+
+  const contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
+
+  mainWindow.on('system-context-menu', (e) => {
+    if (/* WebView ist schul.cloud */) {
+      e.preventDefault();
+      contextMenu.popup();
+    } else {
+      // zeige den Standard der WebApp an
+    }
+  });
+
   // funky workaraound (could be done via ipc communication - but might be easier like this)
   function getBrowserWindowDim() {
     mainWindow?.webContents
