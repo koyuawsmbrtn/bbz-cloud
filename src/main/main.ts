@@ -204,7 +204,7 @@ const createWindow = async () => {
     show: false,
     x: BrowserWindowDim.x,
     y: BrowserWindowDim.y,
-    width: 1600,
+    width: 1500,
     height: 900,
     minWidth: 725,
     minHeight: 700,
