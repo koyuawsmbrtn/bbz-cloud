@@ -31,7 +31,7 @@ const appName = app.getName();
 let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
-let BrowserWindowDim = { x: 0, y: 0, width: 1600 * 0.8, height: 900 * 0.8 };
+let BrowserWindowDim = { x: 0, y: 0, width: 1600, height: 900 };
 let isVisible = true;
 const getAppPath = path.join(app.getPath('appData'), appName);
 
