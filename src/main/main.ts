@@ -118,7 +118,7 @@ ipcMain.on('autostart', (event, args) => {
 // Communication with renderer for Zooming the App
 ipcMain.on('zoom', (event, args) => {
   zoomFaktor = args;
-  mainWindow.webContents.setZoomFactor(zoomFaktor);
+  mainWindow?.webContents.setZoomFactor(zoomFaktor);
 });
 
 ipcMain.on('savePassword', (event, cred) => {
@@ -139,10 +139,10 @@ ipcMain.on('getPassword', (event) => {
   // eslint-disable-next-line promise/always-return
   pw.then((result) => {
     if (result === null) {
-      mainWindow.webContents.send('getPassword', emptyCreds);
-    } else mainWindow.webContents.send('getPassword', JSON.parse(result));
+      mainWindow?.webContents.send('getPassword', emptyCreds);
+    } else mainWindow?.webContents.send('getPassword', JSON.parse(result));
   }).catch(() => {
-    mainWindow.webContents.send('getPassword', emptyCreds);
+    mainWindow?.webContents.send('getPassword', emptyCreds);
   });
 });
 
@@ -204,8 +204,8 @@ const createWindow = async () => {
     show: false,
     x: BrowserWindowDim.x,
     y: BrowserWindowDim.y,
-    width: BrowserWindowDim.width,
-    height: BrowserWindowDim.height,
+    width: 1600,
+    height: 900,
     minWidth: 725,
     minHeight: 700,
     icon: getAssetPath('icon.png'),
@@ -220,15 +220,15 @@ const createWindow = async () => {
     },
   });
 
-  mainWindow.loadURL(resolveHtmlPath('index.html'));
+  mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
   // funky workaraound (could be done via ipc communication - but might be easier like this)
   function getBrowserWindowDim() {
-    mainWindow.webContents
+    mainWindow?.webContents
       .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
       .then((result) => {
         if (result === null) {
-          mainWindow.webContents.executeJavaScript(
+          mainWindow?.webContents.executeJavaScript(
             `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
               BrowserWindowDim
             )}');`,
@@ -240,7 +240,7 @@ const createWindow = async () => {
       });
     return BrowserWindowDim;
   }
-  mainWindow.setBounds(getBrowserWindowDim());
+  mainWindow?.setBounds(getBrowserWindowDim());
 
   if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
@@ -381,11 +381,11 @@ const createWindow = async () => {
 
     Menu.setApplicationMenu(mainWindowMenuTemplate);
   } else {
-    mainWindow.setMenu(null);
+    mainWindow?.setMenu(null);
   }
 
   if (!isDevelopment) {
-    mainWindow.webContents.insertCSS('.debug{display:none !important;}');
+    mainWindow?.webContents.insertCSS('.debug{display:none !important;}');
   }
 
   // tray icon managements
@@ -442,7 +442,7 @@ const createWindow = async () => {
   }
 
   ipcMain.on('openDevTools', () => {
-    mainWindow.webContents.openDevTools({ mode: 'detach' });
+    mainWindow?.webContents.openDevTools({ mode: 'detach' });
   });
 
   // delete all data and cache on call from debug menu
@@ -489,14 +489,14 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow.on('resize', () => {
+  mainWindow?.on('resize', () => {
     BrowserWindowDim = {
       x: mainWindow?.getBounds().x,
       y: mainWindow?.getBounds().y,
       width: mainWindow?.getBounds().width,
       height: mainWindow?.getBounds().height,
     };
-    mainWindow.webContents.executeJavaScript(
+    mainWindow?.webContents.executeJavaScript(
       `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
         BrowserWindowDim
       )}');`,
@@ -504,14 +504,14 @@ const createWindow = async () => {
     );
   });
 
-  mainWindow.on('maximize', () => {
+  mainWindow?.on('maximize', () => {
     BrowserWindowDim = {
       x: mainWindow?.getBounds().x,
       y: mainWindow?.getBounds().y,
       width: mainWindow?.getBounds().width,
       height: mainWindow?.getBounds().height,
     };
-    mainWindow.webContents.executeJavaScript(
+    mainWindow?.webContents.executeJavaScript(
       `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
         BrowserWindowDim
       )}');`,
@@ -519,7 +519,7 @@ const createWindow = async () => {
     );
   });
 
-  mainWindow.on('close', (event) => {
+  mainWindow?.on('close', (event) => {
     if (updateAvailable) {
       if (process.platform !== 'darwin') {
         autoUpdater.quitAndInstall();
@@ -533,12 +533,12 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow.on('restore', function (event) {
+  mainWindow?.on('restore', function (event) {
     mainWindow?.setBounds(getBrowserWindowDim());
-    mainWindow.show();
+    mainWindow?.show();
   });
 
-  mainWindow.on('ready-to-show', () => {
+  mainWindow?.on('ready-to-show', () => {
     if (!mainWindow) {
       throw new Error('"mainWindow" is not defined');
     }
@@ -546,19 +546,19 @@ const createWindow = async () => {
       process.env.START_MINIMIZED ||
       app.getLoginItemSettings().wasOpenedAsHidden
     ) {
-      mainWindow.show();
-      mainWindow.minimize();
+      mainWindow?.show();
+      mainWindow?.minimize();
     } else {
-      mainWindow.show();
+      mainWindow?.show();
     }
   });
 
-  mainWindow.on('closed', () => {
+  mainWindow?.on('closed', () => {
     mainWindow = null;
   });
 
   // Open urls in the user's browser - just as fallback, should never be useds
-  mainWindow.webContents.setWindowOpenHandler((edata) => {
+  mainWindow?.webContents.setWindowOpenHandler((edata) => {
     shell.openExternal(edata.url);
     return { action: 'deny' };
   });
@@ -800,9 +800,9 @@ app
         app.on('second-instance', (event, commandLine, workingDirectory) => {
           // Someone tried to run a second instance, we should focus our window.
           if (mainWindow) {
-            if (mainWindow.isMinimized()) mainWindow.restore();
-            mainWindow.show();
-            mainWindow.focus();
+            if (mainWindow?.isMinimized()) mainWindow?.restore();
+            mainWindow?.show();
+            mainWindow?.focus();
           }
         });
       }
@@ -815,7 +815,7 @@ app.on('activate', () => {
   // On macOS it's common to re-create a window in the app when the
   // dock icon is clicked and there are no other windows open.
   if (mainWindow && process.platform === 'darwin') {
-    mainWindow.show();
-    mainWindow.focus();
+    mainWindow?.show();
+    mainWindow?.focus();
   }
 });
