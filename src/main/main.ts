@@ -103,11 +103,6 @@ const template = [
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
-if (localStorage.getItem(`BrowserWindowDim`) === null) {
-  localStorage.setItem('BrowserWindowDim', JSON.stringify(BrowserWindowDim));
-} else {
-  BrowserWindowDim = JSON.parse(localStorage.getItem('BrowserWindowDim'));
-}
 /*
  *** ipcCommunication
  */
@@ -122,7 +117,10 @@ ipcMain.on('autostart', (event, args) => {
 
 // Communication with renderer for delivering new height after update of window dimensions
 ipcMain.on('resize', (event) => {
-  mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+  mainWindow.webContents.send('resize', {
+    height: mainWindow.getBounds().height,
+    width: mainWindow.getBounds().width,
+  });
 });
 
 // Communication with renderer for Zooming the App
@@ -231,6 +229,22 @@ const createWindow = async () => {
   });
 
   mainWindow.loadURL(resolveHtmlPath('index.html'));
+
+  // funky workaraound (could be done via ipc communication - but might be easier like this)
+  mainWindow.webContents
+    .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
+    .then((result) => {
+      if (result === null) {
+        mainWindow.webContents.executeJavaScript(
+          `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+            BrowserWindowDim
+          )}');`,
+          true
+        );
+      } else {
+        BrowserWindowDim = JSON.parse(result);
+      }
+    });
 
   if (process.platform == 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
@@ -373,7 +387,10 @@ const createWindow = async () => {
   } else {
     mainWindow.setMenu(null);
   }
-  mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+  mainWindow.webContents.send('resize', {
+    height: mainWindow.getBounds().height,
+    width: mainWindow.getBounds().width,
+  });
 
   if (!isDevelopment) {
     mainWindow.webContents.insertCSS('.debug{display:none !important;}');
@@ -463,7 +480,10 @@ const createWindow = async () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
     mainWindow?.setBounds(BrowserWindowDim);
-    mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
+    mainWindow.webContents.send('resize', {
+      height: mainWindow.getBounds().height,
+      width: mainWindow.getBounds().width,
+    });
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -474,7 +494,10 @@ const createWindow = async () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
     mainWindow?.setBounds(BrowserWindowDim);
-    mainWindow.webContents.send('resize', mainWindow?.getBounds().height);
+    mainWindow.webContents.send('resize', {
+      height: mainWindow.getBounds().height,
+      width: mainWindow.getBounds().width,
+    });
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -489,7 +512,16 @@ const createWindow = async () => {
       width: mainWindow?.getBounds().width,
       height: mainWindow?.getBounds().height,
     };
-    mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
+    mainWindow.webContents.executeJavaScript(
+      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+        BrowserWindowDim
+      )}');`,
+      true
+    );
+    mainWindow?.webContents.send('resize', {
+      height: mainWindow.getBounds().height,
+      width: mainWindow.getBounds().width,
+    });
   });
 
   mainWindow.on('maximize', () => {
@@ -499,7 +531,10 @@ const createWindow = async () => {
       width: mainWindow?.getBounds().width,
       height: mainWindow?.getBounds().height,
     };
-    mainWindow?.webContents.send('resize', mainWindow.getBounds().height);
+    mainWindow?.webContents.send('resize', {
+      height: mainWindow.getBounds().height,
+      width: mainWindow.getBounds().width,
+    });
   });
 
   mainWindow.on('close', (event) => {
@@ -518,7 +553,10 @@ const createWindow = async () => {
 
   mainWindow.on('restore', function (event) {
     mainWindow?.setBounds(BrowserWindowDim);
-    mainWindow.webContents.send('resize', mainWindow.getBounds().height);
+    mainWindow.webContents.send('resize', {
+      height: mainWindow.getBounds().height,
+      width: mainWindow.getBounds().width,
+    });
     mainWindow.show();
   });
 

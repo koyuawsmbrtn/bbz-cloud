@@ -26,6 +26,7 @@ import isTeacherVar from '../../assets/isTeacher.json';
 const versionApp = version.version;
 let zoomFaktor = 1.0;
 let wvHeight = '840px';
+let wvWidth = '1600px';
 let progressValue = 'value=100';
 
 // PW- and username variables
@@ -74,7 +75,8 @@ window.api.send('getPassword');
 
 // Ändere WebView-Größe, wenn ein Resize-Event gefeuert wird
 window.api.receive('resize', (result) => {
-  wvHeight = `${((result - 60) * zoomFaktor).toString}px`;
+  wvHeight = `${((result.height - 60) * zoomFaktor).toString}px`;
+  wvWidth = `${(result.width * zoomFaktor).toString}px`;
 });
 window.api.send('resize'); // Get initial size manually
 
@@ -308,7 +310,7 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:${wvHeight};"
+                style="display:inline-flex; width:100%; height:${wvHeight}; width:${wvWidth};"
                 allowpopups></webview>`
           );
         }
