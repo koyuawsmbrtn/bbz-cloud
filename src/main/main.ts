@@ -115,14 +115,6 @@ ipcMain.on('autostart', (event, args) => {
   });
 });
 
-// Communication with renderer for delivering new height after update of window dimensions
-ipcMain.on('resize', (event) => {
-  mainWindow.webContents.send('resize', {
-    height: mainWindow.getBounds().height,
-    width: mainWindow.getBounds().width,
-  });
-});
-
 // Communication with renderer for Zooming the App
 ipcMain.on('zoom', (event, args) => {
   zoomFaktor = args;
@@ -248,8 +240,9 @@ const createWindow = async () => {
       });
     return BrowserWindowDim;
   }
+  mainWindow.setBounds(getBrowserWindowDim());
 
-  if (process.platform == 'darwin') {
+  if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
       {
         label: 'BBZ Cloud',
@@ -390,10 +383,6 @@ const createWindow = async () => {
   } else {
     mainWindow.setMenu(null);
   }
-  mainWindow.webContents.send('resize', {
-    height: mainWindow.getBounds().height,
-    width: mainWindow.getBounds().width,
-  });
 
   if (!isDevelopment) {
     mainWindow.webContents.insertCSS('.debug{display:none !important;}');
@@ -483,10 +472,6 @@ const createWindow = async () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
     mainWindow?.setBounds(getBrowserWindowDim());
-    mainWindow.webContents.send('resize', {
-      height: mainWindow.getBounds().height,
-      width: mainWindow.getBounds().width,
-    });
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -497,10 +482,6 @@ const createWindow = async () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
     mainWindow?.setBounds(getBrowserWindowDim());
-    mainWindow.webContents.send('resize', {
-      height: mainWindow.getBounds().height,
-      width: mainWindow.getBounds().width,
-    });
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -521,10 +502,6 @@ const createWindow = async () => {
       )}');`,
       true
     );
-    mainWindow?.webContents.send('resize', {
-      height: mainWindow.getBounds().height,
-      width: mainWindow.getBounds().width,
-    });
   });
 
   mainWindow.on('maximize', () => {
@@ -540,10 +517,6 @@ const createWindow = async () => {
       )}');`,
       true
     );
-    mainWindow?.webContents.send('resize', {
-      height: mainWindow.getBounds().height,
-      width: mainWindow.getBounds().width,
-    });
   });
 
   mainWindow.on('close', (event) => {
@@ -562,10 +535,6 @@ const createWindow = async () => {
 
   mainWindow.on('restore', function (event) {
     mainWindow?.setBounds(getBrowserWindowDim());
-    mainWindow.webContents.send('resize', {
-      height: mainWindow.getBounds().height,
-      width: mainWindow.getBounds().width,
-    });
     mainWindow.show();
   });
 

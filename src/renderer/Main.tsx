@@ -73,12 +73,12 @@ window.api.receive('getPassword', (result) => {
 });
 window.api.send('getPassword');
 
-// Ändere WebView-Größe, wenn ein Resize-Event gefeuert wird
-window.api.receive('resize', (result) => {
+function getBrowserWindowDim() {
+  const result = localStorage.getItem('BrowserWindowDim');
   wvHeight = `${((result.height - 60) * zoomFaktor).toString}px`;
   wvWidth = `${(result.width * zoomFaktor).toString}px`;
-});
-window.api.send('resize'); // Get initial size manually
+  return { wvHeight: wvHeight, wvWidth: wvWidth };
+}
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
@@ -310,7 +310,9 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:${wvHeight}; width:${wvWidth};"
+                style="display:inline-flex; width:100%; height:${
+                  getBrowserWindowDim().wvHeight
+                }; width:${getBrowserWindowDim().wvWidth};"
                 allowpopups></webview>`
           );
         }
