@@ -233,8 +233,8 @@ const createWindow = async () => {
 
   const contextMenu = Menu.buildFromTemplate(contextMenuTemplate);
 
-  mainWindow.on('system-context-menu', (e) => {
-    if (/* WebView ist schul.cloud */) {
+  mainWindow.webContents.on('context-menu', (e) => {
+    if (/* WebView ist schul.cloud */ true) {
       e.preventDefault();
       contextMenu.popup();
     } else {
