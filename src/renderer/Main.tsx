@@ -24,9 +24,9 @@ import isTeacherVar from '../../assets/isTeacher.json';
 
 // global (to renderer) variables
 const versionApp = version.version;
-let zoomFaktor = 1.0;
+let zoomFaktor = 0.8;
 let wvHeight = '840px';
-let wvWidth = '1600px';
+let wvWidth = '1550px';
 let progressValue = 'value=100';
 
 // PW- and username variables
