@@ -504,6 +504,21 @@ const createWindow = async () => {
     );
   });
 
+  mainWindow?.on('will-resize', (event, newBounds, details) => {
+    BrowserWindowDim = {
+      x: newBounds.x,
+      y: newBounds.y,
+      width: newBounds.width,
+      height: newBounds.height,
+    };
+    mainWindow?.webContents.executeJavaScript(
+      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+        BrowserWindowDim
+      )}');`,
+      true
+    );
+  });
+
   mainWindow?.on('maximize', () => {
     BrowserWindowDim = {
       x: mainWindow?.getBounds().x,
