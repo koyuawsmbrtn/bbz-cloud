@@ -41,7 +41,18 @@ AUR: https://aur.archlinux.org/packages/bbz-cloud-sus
 DEB:
 
 ```
-echo "deb [trusted=yes] https://repo.koyu.space/ /" | sudo tee /etc/apt/sources.list.d/koyu.list
+echo "deb [trusted=yes] https://repo.koyu.space/apt/ /" | sudo tee /etc/apt/sources.list.d/koyu.list
 sudo apt update
 sudo apt install -y bbzcloud
+```
+RPM:
+
+```
+sudo tee -a /etc/yum.repos.d/ > /dev/null <<EOT
+[fury]
+name=koyu.space
+baseurl=https://repo.koyu.space/yum/
+enabled=1
+gpgcheck=0
+EOT
 ```
