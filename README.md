@@ -48,13 +48,13 @@ sudo apt install -y bbzcloud
 RPM:
 
 ```
-sudo tee -a /etc/yum.repos.d/ > /dev/null <<EOT
-[fury]
+sudo tee -a /etc/yum.repos.d/koyu.repo > /dev/null <<EOT
+[koyu]
 name=koyu.space
 baseurl=https://repo.koyu.space/yum/
 enabled=1
 gpgcheck=0
 EOT
-sudo dnf check-updates
+sudo dnf check-update
 sudo dnf install -y bbzcloud
 ```
