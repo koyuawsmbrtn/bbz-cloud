@@ -103,6 +103,11 @@ const template = [
 const menu = Menu.buildFromTemplate(template);
 Menu.setApplicationMenu(menu);
 
+if (localStorage.getItem(`BrowserWindowDim`) === null) {
+  localStorage.setItem('BrowserWindowDim', JSON.stringify(BrowserWindowDim));
+} else {
+  BrowserWindowDim = JSON.parse(localStorage.getItem('BrowserWindowDim'));
+}
 /*
  *** ipcCommunication
  */
@@ -207,6 +212,8 @@ const createWindow = async () => {
 
   mainWindow = new BrowserWindow({
     show: false,
+    x: BrowserWindowDim.x,
+    y: BrowserWindowDim.y,
     width: BrowserWindowDim.width,
     height: BrowserWindowDim.height,
     minWidth: 725,
@@ -510,6 +517,7 @@ const createWindow = async () => {
   });
 
   mainWindow.on('restore', function (event) {
+    mainWindow?.setBounds(BrowserWindowDim);
     mainWindow.webContents.send('resize', mainWindow.getBounds().height);
     mainWindow.show();
   });
