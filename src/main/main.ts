@@ -552,51 +552,6 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow?.on('resize', () => {
-    BrowserWindowDim = {
-      x: mainWindow?.getBounds().x,
-      y: mainWindow?.getBounds().y,
-      width: mainWindow?.getBounds().width,
-      height: mainWindow?.getBounds().height,
-    };
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-        BrowserWindowDim
-      )}');`,
-      true
-    );
-  });
-
-  mainWindow?.on('will-resize', (event, newBounds, details) => {
-    BrowserWindowDim = {
-      x: newBounds.x,
-      y: newBounds.y,
-      width: newBounds.width,
-      height: newBounds.height,
-    };
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-        BrowserWindowDim
-      )}');`,
-      true
-    );
-  });
-
-  mainWindow?.on('maximize', () => {
-    BrowserWindowDim = {
-      x: mainWindow?.getBounds().x,
-      y: mainWindow?.getBounds().y,
-      width: mainWindow?.getBounds().width,
-      height: mainWindow?.getBounds().height,
-    };
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-        BrowserWindowDim
-      )}');`,
-      true
-    );
-  });
-
   mainWindow?.on('close', (event) => {
     if (updateAvailable) {
       if (process.platform !== 'darwin') {
