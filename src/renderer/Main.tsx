@@ -24,8 +24,6 @@ import isTeacherVar from '../../assets/isTeacher.json';
 // global (to renderer) variables
 const versionApp = version.version;
 let zoomFaktor = 0.8;
-let wvHeight = '840px';
-let wvWidth = '1550px';
 let progressValue = 'value=100';
 
 // PW- and username variables
@@ -71,13 +69,6 @@ window.api.receive('getPassword', (result) => {
   creds = result;
 });
 window.api.send('getPassword');
-
-function getBrowserWindowDim() {
-  const result = localStorage.getItem('BrowserWindowDim');
-  wvHeight = `${((result.height - 60) * zoomFaktor).toString}px`;
-  wvWidth = `${(result.width * zoomFaktor).toString}px`;
-  return { wvHeight: wvHeight, wvWidth: wvWidth };
-}
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
@@ -310,9 +301,7 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:${
-                  getBrowserWindowDim().wvHeight
-                }; width:${getBrowserWindowDim().wvWidth};"
+                style="display:inline-flex; width:100%;"
                 allowpopups></webview>`
           );
         }
@@ -343,9 +332,7 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:${
-                  getBrowserWindowDim().wvHeight
-                }; width:${getBrowserWindowDim().wvWidth};"
+                style="display:inline-flex; width:100%;"
                 allowpopups></webview>`
           );
         }
@@ -383,9 +370,7 @@ export default class Main extends React.Component {
               id="wv-custom1"
               class="wv web-custom1"
               src="${custom1_url}"
-              style="display:inline-flex; width:100%; height:${
-                getBrowserWindowDim().wvHeight
-              }; width:${getBrowserWindowDim().wvWidth};"
+              style="display:inline-flex; width:100%;"
               allowpopups></webview>`
         );
         $('#buttons').append(
@@ -417,9 +402,7 @@ export default class Main extends React.Component {
               id="wv-custom2"
               class="wv web-custom2"
               src="${custom2_url}"
-              style="display:inline-flex; width:100%; height:${
-                getBrowserWindowDim().wvHeight
-              }; width:${getBrowserWindowDim().wvWidth};"
+              style="display:inline-flex; width:100%;"
               allowpopups></webview>`
         );
         $('#buttons').append(
