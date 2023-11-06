@@ -525,11 +525,11 @@ const createWindow = async () => {
 
   powerMonitor.on('lock-screen', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    isVisible = mainWindow?.isVisible();
+    isVisible = mainWindow?.isVisible() || mainWindow?.isMinimized();
   });
   powerMonitor.on('suspend', () => {
     // save window dimensions and visibility state of window for reset after returning from sleep / lock
-    isVisible = mainWindow?.isVisible();
+    isVisible = mainWindow?.isVisible() || mainWindow?.isMinimized();
   });
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
