@@ -343,7 +343,9 @@ export default class Main extends React.Component {
                 id="wv-${key}"
                 class="wv web-${key}"
                 src="${e.url}"
-                style="display:inline-flex; width:100%; height:${wvHeight};"
+                style="display:inline-flex; width:100%; height:${
+                  getBrowserWindowDim().wvHeight
+                }; width:${getBrowserWindowDim().wvWidth};"
                 allowpopups></webview>`
           );
         }
@@ -381,7 +383,9 @@ export default class Main extends React.Component {
               id="wv-custom1"
               class="wv web-custom1"
               src="${custom1_url}"
-              style="display:inline-flex; width:100%; height:${wvHeight};"
+              style="display:inline-flex; width:100%; height:${
+                getBrowserWindowDim().wvHeight
+              }; width:${getBrowserWindowDim().wvWidth};"
               allowpopups></webview>`
         );
         $('#buttons').append(
@@ -413,7 +417,9 @@ export default class Main extends React.Component {
               id="wv-custom2"
               class="wv web-custom2"
               src="${custom2_url}"
-              style="display:inline-flex; width:100%; height:${wvHeight};"
+              style="display:inline-flex; width:100%; height:${
+                getBrowserWindowDim().wvHeight
+              }; width:${getBrowserWindowDim().wvWidth};"
               allowpopups></webview>`
         );
         $('#buttons').append(
