@@ -203,6 +203,7 @@ ipcMain.on('getPassword', (event) => {
     bbbUsername: '',
     bbbPassword: '',
   };
+
   const pw = keytar.getPassword('bbzcloud', 'credentials');
   // eslint-disable-next-line promise/always-return
   pw.then((result) => {
@@ -553,34 +554,59 @@ const createWindow = async () => {
 
   mainWindow?.on('resize', (event) => {
     BrowserWindowDim = mainWindow?.getBounds();
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-        mainWindow?.getBounds()
-      )}');`,
-      true
+    keytar.setPassword(
+      'bbzcloud',
+      'BrowserWindowDim',
+      JSON.stringify(mainWindow?.getBounds())
     );
   });
 
   mainWindow?.on('unmaximize', (event) => {
     BrowserWindowDim = mainWindow?.getBounds();
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-        mainWindow?.getBounds()
-      )}');`,
-      true
+    keytar.setPassword(
+      'bbzcloud',
+      'BrowserWindowDim',
+      JSON.stringify(mainWindow?.getBounds())
     );
   });
 
   mainWindow?.on('maximize', (event) => {
-    mainWindow?.webContents.executeJavaScript(
-      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify({
+    BrowserWindowDim = mainWindow?.getBounds();
+    keytar.setPassword(
+      'bbzcloud',
+      'BrowserWindowDim',
+      JSON.stringify({
         x: 0,
         y: 0,
         width: 0,
         height: 0,
-      })}');`,
-      true
+      })
     );
+  });
+
+  // Set BrowserWindow inital state
+  const bwdim = keytar.getPassword('bbzcloud', 'BrowserWindowDim');
+  // eslint-disable-next-line promise/always-return
+  bwdim.then((result) => {
+    if (
+      result === null ||
+      result === JSON.stringify({ x: 0, y: 0, width: 0, height: 0 })
+    ) {
+      mainWindow?.maximize();
+      keytar.setPassword(
+        'bbzcloud',
+        'BrowserWindowDim',
+        JSON.stringify({
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0,
+        })
+      );
+    } else {
+      BrowserWindowDim = JSON.parse(result);
+      mainWindow?.setBounds(BrowserWindowDim);
+    }
   });
 
   mainWindow?.on('close', (event) => {
@@ -656,22 +682,6 @@ const createWindow = async () => {
     // }
   });
   autoUpdater.checkForUpdates();
-
-  // Set BrowserWindow inital state
-  mainWindow?.webContents
-    .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
-    .then((result) => {
-      console.log('*** ' + result + ' ***');
-      if (
-        result === null ||
-        result === JSON.stringify({ x: 0, y: 0, width: 0, height: 0 })
-      ) {
-        mainWindow?.maximize();
-      } else {
-        BrowserWindowDim = JSON.parse(result);
-        mainWindow?.setBounds(BrowserWindowDim);
-      }
-    });
 };
 
 // ********************** Auto-Updater *******************************
