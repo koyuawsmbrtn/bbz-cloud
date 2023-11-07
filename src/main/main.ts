@@ -552,6 +552,13 @@ const createWindow = async () => {
     }
   });
 
+  mainWindow?.on('hide', (event) => {
+    mainWindow?.webContents
+      .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
+      .then((result) => {
+        console.log(result);
+      });
+  });
   mainWindow?.on('close', (event) => {
     if (updateAvailable) {
       if (process.platform !== 'darwin') {
