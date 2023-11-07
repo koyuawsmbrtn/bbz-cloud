@@ -658,7 +658,8 @@ const createWindow = async () => {
       ) {
         mainWindow?.maximize();
       } else {
-        mainWindow?.setBounds(JSON.parse(result));
+        BrowserWindowDim = JSON.parse(result);
+        mainWindow?.setBounds(BrowserWindowDim);
       }
     });
 };
