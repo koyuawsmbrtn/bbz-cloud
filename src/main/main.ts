@@ -31,7 +31,7 @@ const appName = app.getName();
 let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
-let BrowserWindowDim: string | Partial<Electron.Rectangle> = {
+let BrowserWindowDim: Partial<Electron.Rectangle> = {
   x: 0,
   y: 0,
   width: 1600 * 0.9,
@@ -290,28 +290,6 @@ const createWindow = async () => {
 
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
-  // funky workaraound (could be done via ipc communication - but might be easier like this)
-  function getBrowserWindowDim(): string | Partial<Electron.Rectangle> {
-    let rtrn;
-    mainWindow?.webContents
-      .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
-      .then((result) => {
-        if (result === null || result === 'maximized') {
-          rtrn = 'maximized';
-        }
-        const BrowserWindowDims = JSON.parse(result);
-        rtrn = BrowserWindowDims;
-      });
-    return rtrn;
-  }
-
-  BrowserWindowDim = getBrowserWindowDim();
-  if (BrowserWindowDim === 'maximized') {
-    mainWindow?.maximize();
-  } else {
-    mainWindow?.setBounds(BrowserWindowDim);
-  }
-
   if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
       {
@@ -541,7 +519,10 @@ const createWindow = async () => {
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    if (BrowserWindowDim === 'maximized') {
+    if (
+      BrowserWindowDim ===
+      JSON.parse(JSON.stringify({ x: 0, y: 0, width: 0, height: 0 }))
+    ) {
       mainWindow?.maximize();
     } else {
       mainWindow?.setBounds(BrowserWindowDim);
@@ -555,7 +536,10 @@ const createWindow = async () => {
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    if (BrowserWindowDim === 'maximized') {
+    if (
+      BrowserWindowDim ===
+      JSON.parse(JSON.stringify({ x: 0, y: 0, width: 0, height: 0 }))
+    ) {
       mainWindow?.maximize();
     } else {
       mainWindow?.setBounds(BrowserWindowDim);
@@ -567,21 +551,29 @@ const createWindow = async () => {
     }
   });
 
+  mainWindow?.on('resize', (event) => {
+    BrowserWindowDim = mainWindow?.getBounds();
+    mainWindow?.webContents.executeJavaScript(
+      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+        mainWindow?.getBounds()
+      )}');`,
+      true
+    );
+  });
+
+  mainWindow?.on('maximize', (event) => {
+    mainWindow?.webContents.executeJavaScript(
+      `localStorage.setItem("BrowserWindowDim",'${JSON.stringify({
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0,
+      })}');`,
+      true
+    );
+  });
+
   mainWindow?.on('close', (event) => {
-    // write actual BrowserWindow size (or maximized) to localStorage
-    if (mainWindow?.isMaximized) {
-      mainWindow?.webContents.executeJavaScript(
-        `localStorage.setItem("BrowserWindowDim",'maximized');`,
-        true
-      );
-    } else {
-      mainWindow?.webContents.executeJavaScript(
-        `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-          mainWindow?.getBounds()
-        )}');`,
-        true
-      );
-    }
     // If an Update is available, install it on "close"
     if (updateAvailable) {
       if (process.platform !== 'darwin') {
@@ -654,6 +646,21 @@ const createWindow = async () => {
     // }
   });
   autoUpdater.checkForUpdates();
+
+  // Set BrowserWindow inital state
+  mainWindow?.webContents
+    .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
+    .then((result) => {
+      console.log('*** ' + result + ' ***');
+      if (
+        result === null ||
+        result === JSON.stringify({ x: 0, y: 0, width: 0, height: 0 })
+      ) {
+        mainWindow?.maximize();
+      } else {
+        mainWindow?.setBounds(JSON.parse(result));
+      }
+    });
 };
 
 // ********************** Auto-Updater *******************************
