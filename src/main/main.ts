@@ -31,7 +31,12 @@ const appName = app.getName();
 let zoomFaktor = 0.8;
 let messageBoxIsDisplayed = false;
 let updateAvailable = false;
-let BrowserWindowDim = { x: 0, y: 0, width: 1600 * 0.9, height: 900 * 0.9 };
+let BrowserWindowDim: string | Partial<Electron.Rectangle> = {
+  x: 0,
+  y: 0,
+  width: 1600 * 0.9,
+  height: 900 * 0.9,
+};
 let isVisible = true;
 const getAppPath = path.join(app.getPath('appData'), appName);
 
@@ -286,24 +291,26 @@ const createWindow = async () => {
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
   // funky workaraound (could be done via ipc communication - but might be easier like this)
-  function getBrowserWindowDim() {
+  function getBrowserWindowDim(): string | Partial<Electron.Rectangle> {
+    let rtrn;
     mainWindow?.webContents
       .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
       .then((result) => {
-        if (result === null) {
-          mainWindow?.webContents.executeJavaScript(
-            `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
-              BrowserWindowDim
-            )}');`,
-            true
-          );
-        } else {
-          BrowserWindowDim = JSON.parse(result);
+        if (result === null || result === 'maximized') {
+          rtrn = 'maximized';
         }
+        const BrowserWindowDims = JSON.parse(result);
+        rtrn = BrowserWindowDims;
       });
-    return BrowserWindowDim;
+    return rtrn;
   }
-  mainWindow?.setBounds(getBrowserWindowDim());
+
+  BrowserWindowDim = getBrowserWindowDim();
+  if (BrowserWindowDim === 'maximized') {
+    mainWindow?.maximize();
+  } else {
+    mainWindow?.setBounds(BrowserWindowDim);
+  }
 
   if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
@@ -534,7 +541,11 @@ const createWindow = async () => {
   powerMonitor.on('resume', () => {
     console.log('The system is resuming');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds(getBrowserWindowDim());
+    if (BrowserWindowDim === 'maximized') {
+      mainWindow?.maximize();
+    } else {
+      mainWindow?.setBounds(BrowserWindowDim);
+    }
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -544,7 +555,11 @@ const createWindow = async () => {
   powerMonitor.on('unlock-screen', () => {
     console.log('The system is unlocked');
     mainWindow?.webContents.send('reloadApp');
-    mainWindow?.setBounds(getBrowserWindowDim());
+    if (BrowserWindowDim === 'maximized') {
+      mainWindow?.maximize();
+    } else {
+      mainWindow?.setBounds(BrowserWindowDim);
+    }
     if (isVisible) {
       mainWindow?.showInactive();
     } else {
@@ -552,14 +567,22 @@ const createWindow = async () => {
     }
   });
 
-  mainWindow?.on('hide', (event) => {
-    mainWindow?.webContents
-      .executeJavaScript('localStorage.getItem("BrowserWindowDim");', true)
-      .then((result) => {
-        console.log(result);
-      });
-  });
   mainWindow?.on('close', (event) => {
+    // write actual BrowserWindow size (or maximized) to localStorage
+    if (mainWindow?.isMaximized) {
+      mainWindow?.webContents.executeJavaScript(
+        `localStorage.setItem("BrowserWindowDim",'maximized');`,
+        true
+      );
+    } else {
+      mainWindow?.webContents.executeJavaScript(
+        `localStorage.setItem("BrowserWindowDim",'${JSON.stringify(
+          mainWindow?.getBounds()
+        )}');`,
+        true
+      );
+    }
+    // If an Update is available, install it on "close"
     if (updateAvailable) {
       if (process.platform !== 'darwin') {
         autoUpdater.quitAndInstall();
@@ -571,11 +594,6 @@ const createWindow = async () => {
       event.preventDefault();
       mainWindow?.hide();
     }
-  });
-
-  mainWindow?.on('restore', function (event) {
-    mainWindow?.setBounds(getBrowserWindowDim());
-    mainWindow?.show();
   });
 
   mainWindow?.on('ready-to-show', () => {
