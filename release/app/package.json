@@ -1,6 +1,6 @@
 {
   "name": "bbzcloud",
-  "version": "1.7.4",
+  "version": "1.7.5",
   "description": "Die Desktop-App für die BBZ Cloud - eine All-in-One-Plattform für Unterricht und Zusammenarbeit",
   "main": "./dist/main/main.js",
   "author": {
