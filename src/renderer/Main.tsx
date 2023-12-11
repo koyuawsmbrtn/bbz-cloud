@@ -377,7 +377,6 @@ export default class Main extends React.Component {
           }
           $('#apps').append(
             `<button onClick="changeUrl('${key}', '${e.url}')" class="link-${key} app"><img src="${e.icon}" title=${key} />${key}</button>`
-            // `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -414,7 +413,7 @@ export default class Main extends React.Component {
       $('#dropdownMenu').append(`<ul id="dropdownListe">`);
       for (const [key, appLink] of Object.entries(links2)) {
         $('#dropdownMenu').append(
-          `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}"><b>${key}</b></a></li>`
+          `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
         );
       }
       $('#dropdownMenu').append(`<hr>`);
@@ -496,7 +495,7 @@ export default class Main extends React.Component {
         $('#dropdownMenu').append(`<ul id="dropdownListe">`);
         for (const [key, appLink] of Object.entries(links2)) {
           $('#dropdownMenu').append(
-            `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}"><b>${key}</b></a></li>`
+            `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
           );
         }
         $('#dropdownMenu').append(`<hr />`);
@@ -506,7 +505,7 @@ export default class Main extends React.Component {
             $('#dropdownMenu').append(
               `<li id="${entry.url}" style="display:flex; justify-content: center;">
                   <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
-                    <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
+                    <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url};" />
                     ${entry.name}
                   </a>
                   <button id="deleteButton" onClick="confirmAndDelete(${entry.url})" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
