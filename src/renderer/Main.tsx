@@ -17,7 +17,9 @@ import monkey from '../../assets/monkey.png';
 import u1 from '../../assets/uebersicht.png';
 import u2 from '../../assets/doge.png';
 import sb from '../../assets/settings.png';
-import links from '../../assets/object.json';
+import db from '../../assets/dropdown.png';
+import links from '../../assets/primary_apps.json';
+import links2 from '../../assets/secondary_apps.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
@@ -75,7 +77,7 @@ window.api.send('getPassword');
 window.api.receive('reloadApp', (result) => {
   document.querySelectorAll('webview').forEach((wv) => {
     wv.addEventListener('did-finish-load', async (event) => {
-      wv.reload();
+      wv.reloadIgnoringCache();
       // Autofill Outlook
       if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
         credsAreSet.outlook = true;
@@ -107,7 +109,7 @@ window.api.receive('reloadApp', (result) => {
         wv.reload();
       }
       // Autofill Moodle
-      if (wv.id === 'wv-Moodle-Portal' && credsAreSet.moodle === false) {
+      if (wv.id === 'wv-Moodle' && credsAreSet.moodle === false) {
         credsAreSet.moodle = true;
 
         wv.executeJavaScript(
@@ -251,6 +253,23 @@ export default class Main extends React.Component {
     $('#download_label').hide();
     $('#updateButton').hide();
     $('#settingsb').click(function () {
+      /* +++
+      <ul id="dropdownListe" class="absolute hidden bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 pt-1">
+        <li class="md:hidden"><a href="https://neilo.webuntis.com/WebUntis/?school=bbz-rd-eck#/basic/login" target="_blank"
+                class="block px-4 py-2 text-sm hover:bg-gray-100">
+                <img src="https://s2.googleusercontent.com/s2/favicons?domain_url=https://neilo.webuntis.com"
+                    class="inline-block h-4 mr-4">
+                <b>UNTIS</b>
+            </a>
+        </li>
+        </ul> */
+
+      $('#settings').show();
+      $('#content').hide();
+      $('#buttons').css('visibility', 'hidden');
+      $('body').css('overflow', 'overlay');
+    });
+    $('#settingsb').click(function () {
       $('#settings').show();
       $('#content').hide();
       $('#buttons').css('visibility', 'hidden');
@@ -339,7 +358,7 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+            `< onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -370,7 +389,8 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+            `<button onClick="changeUrl('${key}', '${e.url}')" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" title=${key}></a>`
+            // `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -397,7 +417,7 @@ export default class Main extends React.Component {
           `<span onClick="copyUrl('${key}')" class="wvbc webbc-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
         );
       }
-      if (
+      /* if (
         localStorage.getItem(`custom1_url`) !== '' &&
         localStorage.getItem(`custom1_url`) !== null
       ) {
@@ -465,7 +485,7 @@ export default class Main extends React.Component {
         $('#buttons').append(
           `<span onClick="copyUrl('custom2')" class="wvbc webbc-custom2" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
         );
-      }
+      } */
       $('#buttons').append(
         `<span onClick="changeUrl('Issues', 'https://bbz-cloud-issues.netlify.app')" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:16px;">!</span>`
       );
@@ -507,7 +527,7 @@ export default class Main extends React.Component {
             wv.reload();
           }
           // Autofill Moodle
-          if (wv.id === 'wv-Moodle-Portal' && credsAreSet.moodle === false) {
+          if (wv.id === 'wv-Moodle' && credsAreSet.moodle === false) {
             credsAreSet.moodle = true;
 
             wv.executeJavaScript(
@@ -608,6 +628,13 @@ export default class Main extends React.Component {
                 </p>
               </div>
               <div id="apps" />
+              <img
+                id="dropdownb"
+                src={db}
+                alt="Weitere Apps"
+                // className="debug"
+                height="20"
+              />
               <img
                 id="settingsb"
                 src={sb}

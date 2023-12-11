@@ -9,7 +9,7 @@ body {
 }
 
 header {
-  background: #173a64 url(../../assets/background.png) center center;
+  background: #173a64 center center;
   color: #fff;
   padding: 5px;
   height: 60px;
@@ -67,6 +67,7 @@ header {
 #apps a {
   margin: 4px;
   width: 55%;
+  vertical-align: middle;
 }
 
 #apps {
@@ -90,20 +91,20 @@ header {
   column-gap: 20px;
 }
 
-.link-WebUntis img {
-  background: #ff9900 !important;
+.link-WebUntis {
+  background-color: #ff9900 !important;
 }
 
-.link-Miro img {
-  background: #ffcf00 !important;
+.link-Moodle {
+  background-color: #ffa010e1 !important;
 }
 
-.link-SchulCloud img {
-  background: #fac229 !important;
+.link-SchulCloud {
+  background-color: #fac229 !important;
 }
 
-.link-BiBox img {
-  background-color: #e40613 !important;
+.link-Office {
+  background-color: #0078d7 !important;
 }
 
 .link-Issues,
@@ -193,9 +194,12 @@ h1 {
 }
 
 .app img {
-  background: #fff;
+  width: 20px;
+  display: inline-flex;
+  height: 20px;
   padding: 4px;
   border-radius: 4px;
+  background: #fff;
 }
 
 .wv {
@@ -207,7 +211,7 @@ h1 {
 }
 
 #settings {
-  background: url(../../assets/background2.jpg);
+  background-color: #173a64;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
@@ -215,7 +219,8 @@ h1 {
   padding: 20px;
 }
 
-#settingsb {
+#settingsb,
+#dropdownb {
   background: #fff;
   padding: 4px;
   border-radius: 4px;
