@@ -494,6 +494,22 @@ const createWindow = async () => {
     mainWindow?.webContents.openDevTools({ mode: 'detach' });
   });
 
+  ipcMain.on('openInNewWindow', (event, url) => {
+    const toolWin = new BrowserWindow({
+      width: 1280,
+      height: 728,
+      minWidth: 600,
+      minHeight: 300,
+      show: false,
+    });
+    toolWin.loadURL(url);
+    toolWin.setMenu(menu);
+    toolWin.show();
+    toolWin.addListener('close', () => {
+      toolWin.destroy();
+    });
+  });
+
   // delete all data and cache on call from debug menu
   ipcMain.on('deleteAndReload', (event) => {
     fs.rmdir(getAppPath, (error) => {

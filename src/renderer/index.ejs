@@ -45,7 +45,11 @@
               switchWindow(u);
             }
           }
-        }
+      }
+      function openInNewWindow(url) {
+          window.api.send("openInNewWindow", url);
+      }
+
       function reloadView(v) {
         if (localStorage.getItem('isClickable') === 'true') {
           wv = document.getElementById("wv-"+v);

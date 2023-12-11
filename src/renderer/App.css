@@ -41,7 +41,7 @@ header {
 #buttons {
   text-align: right;
   width: 15%;
-  margin-top: 12px;
+  margin-top: 10px;
   margin-left: 32px;
 }
 
@@ -56,7 +56,24 @@ header {
 }
 
 #headnote {
-  width: 22%;
+  width: 15%;
+}
+
+#headnote img {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#dropdownMenu {
+  display: hidden;
+  position: absolute;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 4px;
+  margin-top: 4px;
+  margin-left: 4px;
+  z-index: 100;
 }
 
 #download {
@@ -64,20 +81,23 @@ header {
   margin-left: 15%;
 }
 
-#apps a {
-  margin: 4px;
-  width: 55%;
-  vertical-align: middle;
-}
-
 #apps {
   margin-top: 16px;
   margin-left: 16px;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1400px) {
   #headnote {
     display: none;
+  }
+}
+
+@media screen and (max-width: 1150px) {
+  .app {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-indent: -9999px;
   }
 }
 
@@ -89,6 +109,38 @@ header {
   -webkit-column-gap: 20px;
   -moz-column-gap: 20px;
   column-gap: 20px;
+}
+
+.modal {
+  display: none;
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%;
+  /* Full width */
+  height: 100%;
+  /* Full height */
+  overflow: auto;
+  border-radius: 0.25rem;
+  /* Enable scroll if needed */
+  background-color: rgb(0, 0, 0);
+  /* Fallback color */
+  background-color: rgba(0, 0, 0, 0.4);
+  /* Black w/ opacity */
+}
+
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+  /* Could be more or less, depending on screen size */
 }
 
 .link-SchulCloud {
@@ -125,6 +177,10 @@ header {
 
 .link-BBZWiki {
   background-color: #577c9c !important;
+}
+
+.link-BBZHandbuch {
+  background-color: #686a6c !important;
 }
 
 .link-Issues,
@@ -224,13 +280,13 @@ h1 {
 .app {
   display: inline-flex;
   height: 30px;
-  line-height: 28px;
+  line-height: 30px;
   display: inline-flex;
   text-align: left;
   vertical-align: middle;
   border: none;
   margin-right: 4px;
-  padding-right: 5px;
+  padding-right: 10px;
   border-radius: 5px;
   cursor: pointer;
   color: #fff;

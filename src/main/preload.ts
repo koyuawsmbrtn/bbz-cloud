@@ -22,6 +22,7 @@ contextBridge.exposeInMainWorld('api', {
       'reloadApp',
       'deleteAndReload',
       'bitwarden',
+      'openInNewWindow',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
@@ -40,6 +41,7 @@ contextBridge.exposeInMainWorld('api', {
       'resize',
       'reloadApp',
       'deleteAndReload',
+      'openInNewWindow',
     ];
     if (validChannels.includes(channel)) {
       // Deliberately strip event as it includes `sender`

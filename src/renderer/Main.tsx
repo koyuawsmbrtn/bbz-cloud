@@ -58,12 +58,12 @@ if (
 window.api.send('zoom', zoomFaktor);
 
 // starting image - dependend on, which version is compiled
-var doge;
+let titleImage;
 const isTeacher = isTeacherVar.value;
 if (isTeacher) {
-  doge = u1;
+  titleImage = u1;
 } else {
-  doge = u2;
+  titleImage = u2;
 }
 
 // Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
@@ -209,17 +209,6 @@ function saveSettings() {
   } else {
     localStorage.setItem('autostart', 'false');
   }
-
-  /* Save Custom WebApps Settings
-  const custom1_url = document.getElementById('custom1_url').value;
-  const custom1_icon = document.getElementById('custom1_icon').value;
-  localStorage.setItem('custom1_url', custom1_url);
-  localStorage.setItem('custom1_icon', custom1_icon);
-  const custom2_url = document.getElementById('custom2_url').value;
-  const custom2_icon = document.getElementById('custom2_icon').value;
-  localStorage.setItem('custom2_url', custom2_url);
-  localStorage.setItem('custom2_icon', custom2_icon); */
-
   // Save credentials
   creds = {
     outlookUsername: document.getElementById('emailAdress').value,
@@ -252,22 +241,18 @@ export default class Main extends React.Component {
     $('#download').hide();
     $('#download_label').hide();
     $('#updateButton').hide();
-    $('#settingsb').click(function () {
-      /* +++
-      <ul id="dropdownListe" class="absolute hidden bg-white dark:bg-gray-900 text-gray-700 dark:text-gray-100 pt-1">
-        <li class="md:hidden"><a href="https://neilo.webuntis.com/WebUntis/?school=bbz-rd-eck#/basic/login" target="_blank"
-                class="block px-4 py-2 text-sm hover:bg-gray-100">
-                <img src="https://s2.googleusercontent.com/s2/favicons?domain_url=https://neilo.webuntis.com"
-                    class="inline-block h-4 mr-4">
-                <b>UNTIS</b>
-            </a>
-        </li>
-        </ul> */
-
-      $('#settings').show();
-      $('#content').hide();
-      $('#buttons').css('visibility', 'hidden');
-      $('body').css('overflow', 'overlay');
+    $('#dropdownb').click(function () {
+      if ($('#dropdownMenu').is(':visible')) {
+        $('#dropdownMenu').hide();
+        return;
+      }
+      const buttonRect = document
+        .getElementById('dropdownb')
+        .getBoundingClientRect();
+      $('#dropdownMenu').css('top', `${buttonRect.bottom}px`);
+      $('#dropdownMenu').css('left', `${buttonRect.left - 100}px`); // 100px is the width of the dropdown menu
+      $('#dropdownMenu').css('width', '200px');
+      $('#dropdownMenu').show();
     });
     $('#settingsb').click(function () {
       $('#settings').show();
@@ -333,8 +318,10 @@ export default class Main extends React.Component {
 
     window.setTimeout(() => {
       $('#loading').hide();
+      $('#dropdownMenu').hide();
       $('#main').show();
       $('body').css('background', `#fff`);
+
       window.setInterval(() => {
         if (!isTeacher) {
           $('.teacher').hide();
@@ -404,6 +391,8 @@ export default class Main extends React.Component {
                 allowpopups></webview>`
           );
         }
+
+        // Add Buttons for Navigation
         $('#buttons').append(
           `<span onClick="reloadView('${key}')" class="wvbr webbr-${key}" style="cursor:pointer;"><img height="20" style="vertical-align:middle;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNDg5LjUzMyA0ODkuNTMzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0ODkuNTMzIDQ4OS41MzM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMjY4LjE3NSw0ODguMTYxYzk4LjItMTEsMTc2LjktODkuNSwxODguMS0xODcuN2MxNC43LTEyOC40LTg1LjEtMjM3LjctMjEwLjItMjM5LjF2LTU3LjZjMC0zLjItNC00LjktNi43LTIuOQoJCWwtMTE4LjYsODcuMWMtMiwxLjUtMiw0LjQsMCw1LjlsMTE4LjYsODcuMWMyLjcsMiw2LjcsMC4yLDYuNy0yLjl2LTU3LjVjODcuOSwxLjQsMTU4LjMsNzYuMiwxNTIuMywxNjUuNgoJCWMtNS4xLDc2LjktNjcuOCwxMzkuMy0xNDQuNywxNDQuMmMtODEuNSw1LjItMTUwLjgtNTMtMTYzLjItMTMwYy0yLjMtMTQuMy0xNC44LTI0LjctMjkuMi0yNC43Yy0xNy45LDAtMzEuOSwxNS45LTI5LjEsMzMuNgoJCUM0OS41NzUsNDE4Ljk2MSwxNTAuODc1LDUwMS4yNjEsMjY4LjE3NSw0ODguMTYxeiIgc3R5bGU9ImZpbGw6I2ZmZjsiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"></span>`
         );
@@ -417,78 +406,150 @@ export default class Main extends React.Component {
           `<span onClick="copyUrl('${key}')" class="wvbc webbc-${key}" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
         );
       }
-      /* if (
-        localStorage.getItem(`custom1_url`) !== '' &&
-        localStorage.getItem(`custom1_url`) !== null
-      ) {
-        const custom1_url = localStorage.getItem(`custom1_url`);
-        const custom1_icon = localStorage.getItem(`custom1_icon`);
-        $('#custom1_url').attr('value', custom1_url);
-        $('#custom1_icon').attr('value', custom1_icon);
-        $('#emailAdress').attr('value', creds.outlookUsername);
-        $('#teacherID').attr('value', creds.moodleUsername);
-        $('#outlookPW').attr('value', creds.outlookPassword);
-        $('#moodlePW').attr('value', creds.moodlePassword);
-        $('#bbbPW').attr('value', creds.bbbPassword);
-        $('#apps').append(
-          `<a onClick="changeUrl('custom1', '${custom1_url}')" target="_blank" class="link-custom1 app" style="cursor:pointer;"><img src="${custom1_icon}" height="20" title="Benutzerapp1"></a>`
-        );
-        $('#views').append(
-          `<webview
-              id="wv-custom1"
-              class="wv web-custom1"
-              src="${custom1_url}"
-              style="display:inline-flex; width:100%;"
-              allowpopups></webview>`
-        );
-        $('#buttons').append(
-          `<span onClick="reloadView('custom1')" class="wvbr webbr-custom1" style="cursor:pointer;"><img height="20" style="vertical-align:middle;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNDg5LjUzMyA0ODkuNTMzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0ODkuNTMzIDQ4OS41MzM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMjY4LjE3NSw0ODguMTYxYzk4LjItMTEsMTc2LjktODkuNSwxODguMS0xODcuN2MxNC43LTEyOC40LTg1LjEtMjM3LjctMjEwLjItMjM5LjF2LTU3LjZjMC0zLjItNC00LjktNi43LTIuOQoJCWwtMTE4LjYsODcuMWMtMiwxLjUtMiw0LjQsMCw1LjlsMTE4LjYsODcuMWMyLjcsMiw2LjcsMC4yLDYuNy0yLjl2LTU3LjVjODcuOSwxLjQsMTU4LjMsNzYuMiwxNTIuMywxNjUuNgoJCWMtNS4xLDc2LjktNjcuOCwxMzkuMy0xNDQuNywxNDQuMmMtODEuNSw1LjItMTUwLjgtNTMtMTYzLjItMTMwYy0yLjMtMTQuMy0xNC44LTI0LjctMjkuMi0yNC43Yy0xNy45LDAtMzEuOSwxNS45LTI5LjEsMzMuNgoJCUM0OS41NzUsNDE4Ljk2MSwxNTAuODc1LDUwMS4yNjEsMjY4LjE3NSw0ODguMTYxeiIgc3R5bGU9ImZpbGw6I2ZmZjsiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"></span>`
-        );
-        $('#buttons').append(
-          `<span onClick="back('custom1')" class="wvbb webbb-custom1" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&larr;</span>`
-        );
-        $('#buttons').append(
-          `<span onClick="forward('custom1')" class="wvbf webbf-custom1" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&rarr;</span>`
-        );
-        $('#buttons').append(
-          `<span onClick="copyUrl('custom1')" class="wvbc webbc-custom1" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
-        );
-      }
-      if (
-        localStorage.getItem(`custom2_url`) !== '' &&
-        localStorage.getItem(`custom2_url`) != null
-      ) {
-        const custom2_url = localStorage.getItem(`custom2_url`);
-        const custom2_icon = localStorage.getItem(`custom2_icon`);
-        $('#custom2_url').attr('value', custom2_url);
-        $('#custom2_icon').attr('value', custom2_icon);
-        $('#apps').append(
-          `<a onClick="changeUrl('custom2', '${custom2_url}')" target="_blank" class="link-custom2 app" style="cursor:pointer;"><img src="${custom2_icon}" height="20" title="Benutzerapp2"></a>`
-        );
-        $('#views').append(
-          `<webview
-              id="wv-custom2"
-              class="wv web-custom2"
-              src="${custom2_url}"
-              style="display:inline-flex; width:100%;"
-              allowpopups></webview>`
-        );
-        $('#buttons').append(
-          `<span onClick="reloadView('custom2')" class="wvbr webbr-custom2" style="cursor:pointer;"><img height="20" style="vertical-align:middle;" src="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iaXNvLTg4NTktMSI/Pgo8IS0tIEdlbmVyYXRvcjogQWRvYmUgSWxsdXN0cmF0b3IgMTkuMC4wLCBTVkcgRXhwb3J0IFBsdWctSW4gLiBTVkcgVmVyc2lvbjogNi4wMCBCdWlsZCAwKSAgLS0+CjxzdmcgdmVyc2lvbj0iMS4xIiBpZD0iQ2FwYV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgNDg5LjUzMyA0ODkuNTMzIiBzdHlsZT0iZW5hYmxlLWJhY2tncm91bmQ6bmV3IDAgMCA0ODkuNTMzIDQ4OS41MzM7IiB4bWw6c3BhY2U9InByZXNlcnZlIj4KPGc+Cgk8cGF0aCBkPSJNMjY4LjE3NSw0ODguMTYxYzk4LjItMTEsMTc2LjktODkuNSwxODguMS0xODcuN2MxNC43LTEyOC40LTg1LjEtMjM3LjctMjEwLjItMjM5LjF2LTU3LjZjMC0zLjItNC00LjktNi43LTIuOQoJCWwtMTE4LjYsODcuMWMtMiwxLjUtMiw0LjQsMCw1LjlsMTE4LjYsODcuMWMyLjcsMiw2LjcsMC4yLDYuNy0yLjl2LTU3LjVjODcuOSwxLjQsMTU4LjMsNzYuMiwxNTIuMywxNjUuNgoJCWMtNS4xLDc2LjktNjcuOCwxMzkuMy0xNDQuNywxNDQuMmMtODEuNSw1LjItMTUwLjgtNTMtMTYzLjItMTMwYy0yLjMtMTQuMy0xNC44LTI0LjctMjkuMi0yNC43Yy0xNy45LDAtMzEuOSwxNS45LTI5LjEsMzMuNgoJCUM0OS41NzUsNDE4Ljk2MSwxNTAuODc1LDUwMS4yNjEsMjY4LjE3NSw0ODguMTYxeiIgc3R5bGU9ImZpbGw6I2ZmZjsiLz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8Zz4KPC9nPgo8L3N2Zz4K"></span>`
-        );
-        $('#buttons').append(
-          `<span onClick="back('custom2')" class="wvbb webbb-custom2" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&larr;</span>`
-        );
-        $('#buttons').append(
-          `<span onClick="forward('custom2')" class="wvbf webbf-custom2" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;">&rarr;</span>`
-        );
-        $('#buttons').append(
-          `<span onClick="copyUrl('custom2')" class="wvbc webbc-custom2" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:10px;"><i class="fa fa-files-o" aria-hidden="true"></i></span>`
-        );
-      } */
       $('#buttons').append(
         `<span onClick="changeUrl('Issues', 'https://bbz-cloud-issues.netlify.app')" style="cursor:pointer;vertical-align:middle;font-size:20pt;font-weight:bold;margin-left:16px;">!</span>`
       );
+
+      // Add Dropdown Menu
+      $('#dropdownMenu').append(`<ul id="dropdownListe">`);
+      for (const [key, appLink] of Object.entries(links2)) {
+        $('#dropdownMenu').append(
+          `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}"><b>${key}</b></a></li>`
+        );
+      }
+      $('#dropdownMenu').append(`<hr>`);
+      const entries = JSON.parse(localStorage.getItem('entries'));
+      if (entries && Array.isArray(entries)) {
+        entries.forEach((entry) => {
+          $('#dropdownMenu').append(
+            `<li id="${entry.url}" style="display:flex; justify-content: center;">
+                <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
+                  <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
+                  ${entry.name}
+                </a>
+                <button id="deleteButton" onClick="confirmDeleteCall('${entry.url}')" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                -
+                </button>
+              </li>`
+          );
+        });
+      }
+      $('#dropdownMenu').append(`
+      <li id="addEntryLI">
+        <button
+          id="addEntryBtn"
+          style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;"
+        >
+          +
+        </button>
+      </li>`);
+      $('#dropdownMenu').append(`</ul>`);
+
+      $('#modalAddEntry').append(`
+        <div class="modal" />
+          <h2 style="font-weight: 700;">Eintrag hinzufügen</h2>
+          <input
+              type="text"
+              id="nameInput"
+              placeholder="Name"
+            />
+          <input
+            type="text"
+            id="urlInput"
+            placeholder="URL"
+          />
+          <button
+            id="saveEntryBtn"
+          >
+            Speichern
+          </button>
+          <button
+            id="cancelBtn"
+          >
+            Abbrechen
+          </button>
+         </div> `);
+      $('#modalAddEntry').hide();
+
+      $('#addEntryBtn').click(() => {
+        $('#modalAddEntry').show();
+      });
+
+      // Save entry to localStorage when save button is clicked
+      $('#saveEntryBtn').click(() => {
+        const name = $('#nameInput').val();
+        let url = $('#urlInput').val();
+        if (name && url) {
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            url = 'https://' + url;
+          }
+          const entry = { name, url };
+          const entries = JSON.parse(localStorage.getItem('entries')) || [];
+          entries.push(entry);
+          localStorage.setItem('entries', JSON.stringify(entries));
+          $('#nameInput').val('');
+          $('#urlInput').val('');
+          $('#modalAddEntry').hide();
+        }
+        // Readd all entries to dropdown menu - standard  ones and from localStorage
+        $('#dropdownMenu').empty();
+        $('#dropdownMenu').append(`<ul id="dropdownListe">`);
+        for (const [key, appLink] of Object.entries(links2)) {
+          $('#dropdownMenu').append(
+            `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}"><b>${key}</b></a></li>`
+          );
+        }
+        $('#dropdownMenu').append(`<hr />`);
+        const entries = JSON.parse(localStorage.getItem('entries'));
+        if (entries && Array.isArray(entries)) {
+          entries.forEach((entry) => {
+            $('#dropdownMenu').append(
+              `<li id="${entry.url}" style="display:flex; justify-content: center;">
+                  <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
+                    <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
+                    ${entry.name}
+                  </a>
+                  <button id="deleteButton" onClick="confirmDeleteCall('${entry.url}')" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                  -
+                  </button>
+                </li>`
+            );
+          });
+        }
+        $('#dropdownMenu').append(`<li id="addEntryLI">
+          <button
+            id="addEntryBtn"
+            style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;"
+          >
+            +
+          </button>
+        </li>`);
+        $('#dropdownMenu').append(`</ul>`);
+      // Close modal when cancel button is clicked
+      $('#cancelBtn').click(() => {
+        $('#nameInput').val('');
+        $('#urlInput').val('');
+        $('#modalAddEntry').hide();
+      });
+
+      $('#deleteButton').click(() => {
+        const confirmDelete = confirm(
+            'Soll dieser Eintrag wirklich gelöscht werden?'
+          );
+          if (confirmDelete) {
+            document.getElementById(url).remove();
+            // Code to delete the entry from localStorage
+            const entries = JSON.parse(localStorage.getItem('entries'));
+            const updatedEntries = entries.filter(
+              (entry) => entry.name !== link.textContent
+            );
+            localStorage.setItem('entries', JSON.stringify(updatedEntries));
+            if (updatedEntries.length === 0) {
+              localStorage.removeItem('entries');
+            }
+          }
+      });
+
       if (localStorage.getItem('autostart') === 'true') {
         $('#autostart').attr('checked', 'true');
       }
@@ -580,7 +641,7 @@ export default class Main extends React.Component {
     document.addEventListener('keydown', (event) => {
       if (event.ctrlKey && event.keyCode === 32) {
         // Easter Egg ;)
-        $('#doge').html(
+        $('#titleImage').html(
           '<video src="https://f001.backblazeb2.com/file/koyuspace-media/pleroma/8f9f1c1f-6199-4a54-bf42-36252e66c353/rickroll.mp4" width="640" height="480" autoplay loop></video>'
         );
       } else if (event.ctrlKey && event.keyCode === 187) {
@@ -635,6 +696,7 @@ export default class Main extends React.Component {
                 // className="debug"
                 height="20"
               />
+              <div id="dropdownMenu" />
               <img
                 id="settingsb"
                 src={sb}
@@ -651,11 +713,11 @@ export default class Main extends React.Component {
           </header>
           <div id="content">
             <div id="views" />
-            <div id="doge">
+            <div id="titleImage">
               <img
                 style={{ marginLeft: '10px', marginTop: '15px' }}
                 height="560"
-                src={doge}
+                src={titleImage}
                 alt="Übersicht"
               />
             </div>
@@ -757,6 +819,7 @@ export default class Main extends React.Component {
             </p>
           </div>
         </div>
+        <div id="modalAddEntry" />
         <div id="loading">
           <span className="loader" />
           <p>
@@ -778,56 +841,6 @@ export default class Main extends React.Component {
           </h3>
         </div>
       </div>
-    );
-  }
+ );
 }
 
-/*
-<h2>Benutzerdefinierte Webapp hinzufügen</h2>
-                <h3>Erste benutzerdefinierte App</h3>
-                <input
-                  type="text"
-                  id="custom1_url"
-                  size="50"
-                  name="url_website"
-                  placeholder="https://example.com"
-                />
-                <label htmlFor="url_website">URL der Website</label>
-                <p />
-                <input
-                  type="text"
-                  id="custom1_icon"
-                  size="50"
-                  name="icon_website"
-                  placeholder="https://example.com/icon.png"
-                />
-                <label htmlFor="icon_website">Icon der Website</label>
-                <h3>Zweite benutzerdefinierte App</h3>
-                <input
-                  type="text"
-                  id="custom2_url"
-                  size="50"
-                  name="url_website"
-                  placeholder="https://example.com"
-                />
-                <label htmlFor="url_website">URL der Website</label>
-                <p />
-                <input
-                  type="text"
-                  id="custom2_icon"
-                  size="50"
-                  name="icon_website"
-                  placeholder="https://example.com/icon.png"
-                />
-
-
-
-
-From primary_apps.json:
-  "Issues": {
-    "icon": "",
-    "url": "https://bbz-cloud-issues.netlify.app/",
-    "teacher": false,
-    "enabled": true
-  }
-*/
