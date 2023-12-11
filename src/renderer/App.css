@@ -91,20 +91,40 @@ header {
   column-gap: 20px;
 }
 
-.link-WebUntis {
-  background-color: #ff9900 !important;
+.link-SchulCloud {
+  background-color: #fac229 !important;
 }
 
 .link-Moodle {
   background-color: #ffa010e1 !important;
 }
 
-.link-SchulCloud {
-  background-color: #fac229 !important;
+.link-BigBlueButton {
+  background-color: #1a069a !important;
+}
+
+.link-Outlook {
+  background-color: #0078d7 !important;
+}
+
+.link-WebUntis {
+  background-color: #ff9900 !important;
 }
 
 .link-Office {
-  background-color: #0078d7 !important;
+  background-color: #730bce !important;
+}
+
+.link-CryptPad {
+  background-color: #80d1d8 !important;
+}
+
+.link-TaskCards {
+  background-color: #6e2f98 !important;
+}
+
+.link-BBZWiki {
+  background-color: #577c9c !important;
 }
 
 .link-Issues,
@@ -198,8 +218,22 @@ h1 {
   display: inline-flex;
   height: 20px;
   padding: 4px;
-  border-radius: 4px;
-  background: #fff;
+  /* background: #fff; */
+}
+
+.app {
+  display: inline-flex;
+  height: 30px;
+  line-height: 28px;
+  display: inline-flex;
+  text-align: left;
+  vertical-align: middle;
+  border: none;
+  margin-right: 4px;
+  padding-right: 5px;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #fff;
 }
 
 .wv {

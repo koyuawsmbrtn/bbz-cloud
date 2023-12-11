@@ -210,7 +210,7 @@ function saveSettings() {
     localStorage.setItem('autostart', 'false');
   }
 
-  // Save Custom WebApps Settings
+  /* Save Custom WebApps Settings
   const custom1_url = document.getElementById('custom1_url').value;
   const custom1_icon = document.getElementById('custom1_icon').value;
   localStorage.setItem('custom1_url', custom1_url);
@@ -218,7 +218,7 @@ function saveSettings() {
   const custom2_url = document.getElementById('custom2_url').value;
   const custom2_icon = document.getElementById('custom2_icon').value;
   localStorage.setItem('custom2_url', custom2_url);
-  localStorage.setItem('custom2_icon', custom2_icon);
+  localStorage.setItem('custom2_icon', custom2_icon); */
 
   // Save credentials
   creds = {
@@ -358,7 +358,7 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `< onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" height="20" title=${key}></a>`
+            `<button onClick="changeUrl('${key}', '${e.url}')" class="link-${key} app"><img src="${e.icon}" title=${key} />${key}</button>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
@@ -389,7 +389,7 @@ export default class Main extends React.Component {
             $(`#check-${key}`).attr('checked', '');
           }
           $('#apps').append(
-            `<button onClick="changeUrl('${key}', '${e.url}')" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" title=${key}></a>`
+            `<button onClick="changeUrl('${key}', '${e.url}')" class="link-${key} app"><img src="${e.icon}" title=${key} />${key}</button>`
             // `<a onClick="changeUrl('${key}', '${e.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${e.icon}" title=${key}></a>`
           );
           if (localStorage.getItem(`checked-${key}`) === 'false') {
@@ -677,42 +677,6 @@ export default class Main extends React.Component {
               </div>
               <div className="clickable-modifier">
                 <div id="appchecks" className="twoColumn" />
-                <h2>Benutzerdefinierte Webapp hinzufügen</h2>
-                <h3>Erste benutzerdefinierte App</h3>
-                <input
-                  type="text"
-                  id="custom1_url"
-                  size="50"
-                  name="url_website"
-                  placeholder="https://example.com"
-                />
-                <label htmlFor="url_website">URL der Website</label>
-                <p />
-                <input
-                  type="text"
-                  id="custom1_icon"
-                  size="50"
-                  name="icon_website"
-                  placeholder="https://example.com/icon.png"
-                />
-                <label htmlFor="icon_website">Icon der Website</label>
-                <h3>Zweite benutzerdefinierte App</h3>
-                <input
-                  type="text"
-                  id="custom2_url"
-                  size="50"
-                  name="url_website"
-                  placeholder="https://example.com"
-                />
-                <label htmlFor="url_website">URL der Website</label>
-                <p />
-                <input
-                  type="text"
-                  id="custom2_icon"
-                  size="50"
-                  name="icon_website"
-                  placeholder="https://example.com/icon.png"
-                />
                 <label htmlFor="icon_website">Icon der Website</label>
                 <h2>Anmeldedaten speichern</h2>
                 <div className="teacher">
@@ -817,3 +781,53 @@ export default class Main extends React.Component {
     );
   }
 }
+
+/*
+<h2>Benutzerdefinierte Webapp hinzufügen</h2>
+                <h3>Erste benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom1_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom1_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+                <label htmlFor="icon_website">Icon der Website</label>
+                <h3>Zweite benutzerdefinierte App</h3>
+                <input
+                  type="text"
+                  id="custom2_url"
+                  size="50"
+                  name="url_website"
+                  placeholder="https://example.com"
+                />
+                <label htmlFor="url_website">URL der Website</label>
+                <p />
+                <input
+                  type="text"
+                  id="custom2_icon"
+                  size="50"
+                  name="icon_website"
+                  placeholder="https://example.com/icon.png"
+                />
+
+
+
+
+From primary_apps.json:
+  "Issues": {
+    "icon": "",
+    "url": "https://bbz-cloud-issues.netlify.app/",
+    "teacher": false,
+    "enabled": true
+  }
+*/
