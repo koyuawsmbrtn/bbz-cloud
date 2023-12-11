@@ -422,12 +422,12 @@ export default class Main extends React.Component {
       if (entries && Array.isArray(entries)) {
         entries.forEach((entry) => {
           $('#dropdownMenu').append(
-            `<li id="${entry.url}" style="display:flex; justify-content: center;">
+            `<li id="${entry.url}" class="customApp" style="display:flex; justify-content: center;">
                 <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
                   <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
                   ${entry.name}
                 </a>
-                <button id="deleteButton" onClick="confirmDeleteCall('${entry.url}')" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                <button id="deleteButton" onClick="confirmAndDelete(${entry.url})" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
                 -
                 </button>
               </li>`
@@ -509,7 +509,7 @@ export default class Main extends React.Component {
                     <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
                     ${entry.name}
                   </a>
-                  <button id="deleteButton" onClick="confirmDeleteCall('${entry.url}')" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                  <button id="deleteButton" onClick="confirmAndDelete(${entry.url})" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
                   -
                   </button>
                 </li>`
@@ -531,24 +531,6 @@ export default class Main extends React.Component {
           $('#urlInput').val('');
           $('#modalAddEntry').hide();
         });
-      });
-
-      $('#deleteButton').click(() => {
-        const confirmDelete = confirm(
-          'Soll dieser Eintrag wirklich gelöscht werden?'
-        );
-        if (confirmDelete) {
-          document.getElementById(url).remove();
-          // Code to delete the entry from localStorage
-          const entries = JSON.parse(localStorage.getItem('entries'));
-          const updatedEntries = entries.filter(
-            (entry) => entry.name !== link.textContent
-          );
-          localStorage.setItem('entries', JSON.stringify(updatedEntries));
-          if (updatedEntries.length === 0) {
-            localStorage.removeItem('entries');
-          }
-        }
       });
 
       if (localStorage.getItem('autostart') === 'true') {
