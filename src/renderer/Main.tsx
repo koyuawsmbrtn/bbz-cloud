@@ -481,7 +481,7 @@ export default class Main extends React.Component {
         let url = $('#urlInput').val();
         if (name && url) {
           if (!url.startsWith('http://') && !url.startsWith('https://')) {
-            url = 'https://' + url;
+            url = `https://${url}`;
           }
           const entry = { name, url };
           const entries = JSON.parse(localStorage.getItem('entries')) || [];
@@ -525,29 +525,30 @@ export default class Main extends React.Component {
           </button>
         </li>`);
         $('#dropdownMenu').append(`</ul>`);
-      // Close modal when cancel button is clicked
-      $('#cancelBtn').click(() => {
-        $('#nameInput').val('');
-        $('#urlInput').val('');
-        $('#modalAddEntry').hide();
+        // Close modal when cancel button is clicked
+        $('#cancelBtn').click(() => {
+          $('#nameInput').val('');
+          $('#urlInput').val('');
+          $('#modalAddEntry').hide();
+        });
       });
 
       $('#deleteButton').click(() => {
         const confirmDelete = confirm(
-            'Soll dieser Eintrag wirklich gelöscht werden?'
+          'Soll dieser Eintrag wirklich gelöscht werden?'
+        );
+        if (confirmDelete) {
+          document.getElementById(url).remove();
+          // Code to delete the entry from localStorage
+          const entries = JSON.parse(localStorage.getItem('entries'));
+          const updatedEntries = entries.filter(
+            (entry) => entry.name !== link.textContent
           );
-          if (confirmDelete) {
-            document.getElementById(url).remove();
-            // Code to delete the entry from localStorage
-            const entries = JSON.parse(localStorage.getItem('entries'));
-            const updatedEntries = entries.filter(
-              (entry) => entry.name !== link.textContent
-            );
-            localStorage.setItem('entries', JSON.stringify(updatedEntries));
-            if (updatedEntries.length === 0) {
-              localStorage.removeItem('entries');
-            }
+          localStorage.setItem('entries', JSON.stringify(updatedEntries));
+          if (updatedEntries.length === 0) {
+            localStorage.removeItem('entries');
           }
+        }
       });
 
       if (localStorage.getItem('autostart') === 'true') {
@@ -841,6 +842,6 @@ export default class Main extends React.Component {
           </h3>
         </div>
       </div>
- );
+    );
+  }
 }
-
