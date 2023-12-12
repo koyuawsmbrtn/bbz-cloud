@@ -49,7 +49,7 @@
   },
   "BibliothekskatalogSozPäd": {
     "icon": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACYAAAAmCAYAAACoPemuAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAAEnQAABJ0Ad5mH3gAAAI9SURBVFhH7ZdPSBRRHMe/M/Nm13V39p/m5kGLUOmgldoeMjZkCSIPHbp4qq7RpZPUQTwWeejgIejepVPdgj2JQtAGdkmCIqKiPCgrUkGZuv1e/mTVeekbVnp7mM8w7Pv93nszH5g383tr/fy1WkUDYvNvwxGKBSUUC4rWW/li6TeWFcN60w4itoW5yhpnaiSEhaFDLkoLq5zZyVnq81yLIz9aYudKyyiT3G6m8h5yMRujMyucqdHtCZRHMsg8XuTMTsoXsziRERz5CddYUEKxoIRiQQnFghKKBUVL7HjS4VYNKpHoSwt0Nvv7JD0pB1Ea1KHojzkWOuPqeVtoiU0OeCgejiBJRZdqM3JNNq4diyHf4qI/KzDeF0c71UyXriYLs8zdPRX/K/90OIWTVBObaaIUlUJ3+hNIR/5dwCXae/4NGrVOZ5UOiw5BEtsvvbZBY6hPZqW8lNpCzluvbt7Gtjb796Nh/4xoid148AivP37hqD6irsDV4hCuFM9wRo2WWOHWPbx8+4Gjg2F28jby3Uc58mPsc/Hw2TS31BgTW6j4d73bMSZ2eo/HKDEi1tXehrHLFzhSo7X4S6/msbjyjaP6iAqBQm8PcukkZ9RoiT1/8x6V7z84qg/XcTDYdQStyQRn1Bj5XHS0ZjE3NQEv1sQZP0bW2OelCu4/KXGkxthbWX639xMwJtaW8rilxoiYrJc3L53nSI12EZ//9JWj+pDbnusjwxgt5DmjRkusynupg8Iiuf3QEvv/AH8AnqeYe4aDIIsAAAAASUVORK5CYII=",
-    "url": "https://www.winbookweb.de/bbz-rendsburg/index.php",
+    "url": "https://bbzrdeck.librishare.de/",
     "teacher": false,
     "enabled": false
   }

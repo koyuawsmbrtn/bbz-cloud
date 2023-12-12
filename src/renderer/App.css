@@ -40,9 +40,9 @@ header {
 
 #buttons {
   text-align: right;
-  width: 15%;
-  margin-top: 10px;
-  margin-left: 32px;
+  width: 12%;
+  margin-top: 14px;
+  margin-left: 16px;
 }
 
 #apps,
@@ -56,7 +56,7 @@ header {
 }
 
 #headnote {
-  width: 15%;
+  width: 12%;
 }
 
 #headnote img {
@@ -128,18 +128,21 @@ header {
   margin-left: 16px;
 }
 
-@media screen and (max-width: 1450px) {
+@media screen and (max-width: 1520px) {
   #headnote {
     display: none;
   }
 }
 
-@media screen and (max-width: 1200px) {
+@media screen and (max-width: 1320px) {
   #apps button {
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
     text-indent: -9999px;
+  }
+  #buttons {
+    width: 25%;
   }
 }
 
@@ -312,9 +315,9 @@ h1 {
   text-align: left;
   vertical-align: middle;
   border: none;
-  margin-right: 4px;
-  padding-right: 10px;
-  border-radius: 5px;
+  margin-right: 3px;
+  padding-right: 9px;
+  border-radius: 4px;
   cursor: pointer;
   color: #fff;
 }

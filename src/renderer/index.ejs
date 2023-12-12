@@ -48,6 +48,7 @@
       }
       function openInNewWindow(url) {
           window.api.send("openInNewWindow", url);
+          $('#dropdownb').css('background', 'white');
           $('#dropdownMenu').hide();
       }
       function reloadView(v) {
