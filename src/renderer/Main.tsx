@@ -250,8 +250,8 @@ export default class Main extends React.Component {
         .getElementById('dropdownb')
         .getBoundingClientRect();
       $('#dropdownMenu').css('top', `${buttonRect.bottom}px`);
-      $('#dropdownMenu').css('left', `${buttonRect.left - 100}px`); // 100px is the width of the dropdown menu
-      $('#dropdownMenu').css('width', '200px');
+      $('#dropdownMenu').css('left', `${buttonRect.left - 200}px`); // 100px is the width of the dropdown menu
+      $('#dropdownMenu').css('width', '250px');
       $('#dropdownMenu').show();
     });
     $('#settingsb').click(function () {
@@ -413,7 +413,8 @@ export default class Main extends React.Component {
       $('#dropdownMenu').append(`<ul id="dropdownListe">`);
       for (const [key, appLink] of Object.entries(links2)) {
         $('#dropdownMenu').append(
-          `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
+          `<li id="${appLink.url}" class="dropdownApp">
+            <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
         );
       }
       $('#dropdownMenu').append(`<hr>`);
@@ -421,16 +422,34 @@ export default class Main extends React.Component {
       if (entries && Array.isArray(entries)) {
         entries.forEach((entry) => {
           $('#dropdownMenu').append(
-            `<li id="${entry.url}" class="customApp" style="display:flex; justify-content: center;">
-                <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
-                  <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}";></img>
-                  ${entry.name}
+            `<li id="${entry.name}" class="customApp" style="display:flex;">
+                <a onClick="openInNewWindow('${entry.url}');" style="color:black; cursor:pointer;" target="_blank">
+                  <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}" />
+                  <i>${entry.name}</i>
                 </a>
-                <button id="deleteButton" onClick="confirmAndDelete(${entry.url})" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                <button id="deleteButton-${entry.name}" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
                 -
                 </button>
               </li>`
           );
+          $(`#deleteButton-${entry.name}`).click(() => {
+            // eslint-disable-next-line no-alert
+            const confirmDelete = confirm(
+              `Soll der Eintrag ${entry.name} wirklich gelöscht werden?`
+            );
+            if (confirmDelete) {
+              $(`#${entry.name}`).hide();
+              // Code to delete the entry from localStorage
+              const entries = JSON.parse(localStorage.getItem('entries'));
+              const updatedEntries = entries.filter(
+                (e) => e.name !== entry.name
+              );
+              localStorage.setItem('entries', JSON.stringify(updatedEntries));
+              if (updatedEntries.length === 0) {
+                localStorage.removeItem('entries');
+              }
+            }
+          });
         });
       }
       $('#dropdownMenu').append(`
@@ -495,7 +514,12 @@ export default class Main extends React.Component {
         $('#dropdownMenu').append(`<ul id="dropdownListe">`);
         for (const [key, appLink] of Object.entries(links2)) {
           $('#dropdownMenu').append(
-            `<li><a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
+            `<li id="${appLink.url}" class="dropdownApp">
+              <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;">
+                <img src="${appLink.icon}" height="20" title="${key}" />
+                <b>${key}</b>
+              </a>
+             </li>`
           );
         }
         $('#dropdownMenu').append(`<hr />`);
@@ -503,27 +527,46 @@ export default class Main extends React.Component {
         if (entries && Array.isArray(entries)) {
           entries.forEach((entry) => {
             $('#dropdownMenu').append(
-              `<li id="${entry.url}" style="display:flex; justify-content: center;">
-                  <a onClick="openInNewWindow('${entry.url}');" style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;" target="_blank">
-                    <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url};" />
-                    ${entry.name}
+              `<li id="${entry.name}" class="customApp" style="display:flex;">
+                  <a onClick="openInNewWindow('${entry.url}');" style="color: black; cursor:pointer;" target="_blank">
+                    <img style="display: inline; height: 1rem; margin-right:4px;" src="https://s2.googleusercontent.com/s2/favicons?domain_url=${entry.url}" />
+                    <i>${entry.name}</i>
                   </a>
-                  <button id="deleteButton" onClick="confirmAndDelete(${entry.url})" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
+                  <button id="deleteButton-${entry.name}" style="margin-left:2px; color:red; font-weight:bold; background-color:transparent;">
                   -
                   </button>
                 </li>`
             );
+            $(`#deleteButton-${entry.name}`).click(() => {
+              // eslint-disable-next-line no-alert
+              const confirmDelete = confirm(
+                `Soll der Eintrag ${entry.name} wirklich gelöscht werden?`
+              );
+              if (confirmDelete) {
+                $(`#${entry.name}`).hide();
+                // Code to delete the entry from localStorage
+                const entries = JSON.parse(localStorage.getItem('entries'));
+                const updatedEntries = entries.filter(
+                  (e) => e.name !== entry.name
+                );
+                localStorage.setItem('entries', JSON.stringify(updatedEntries));
+                if (updatedEntries.length === 0) {
+                  localStorage.removeItem('entries');
+                }
+              }
+            });
           });
         }
         $('#dropdownMenu').append(`<li id="addEntryLI">
           <button
             id="addEntryBtn"
-            style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; padding-bottom:2px;"
+            style="display:block; padding-left:4px; padding-right:4px; padding-top:2px; border:none; padding-bottom:2px;"
           >
             +
           </button>
         </li>`);
         $('#dropdownMenu').append(`</ul>`);
+
         // Close modal when cancel button is clicked
         $('#cancelBtn').click(() => {
           $('#nameInput').val('');
@@ -704,6 +747,7 @@ export default class Main extends React.Component {
               />
             </div>
           </div>
+          <div id="modalAddEntry" />
           <div id="settings">
             <div id="settingsv">
               <h1>Einstellungen</h1>
@@ -801,7 +845,6 @@ export default class Main extends React.Component {
             </p>
           </div>
         </div>
-        <div id="modalAddEntry" />
         <div id="loading">
           <span className="loader" />
           <p>

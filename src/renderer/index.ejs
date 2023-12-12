@@ -48,26 +48,8 @@
       }
       function openInNewWindow(url) {
           window.api.send("openInNewWindow", url);
+          $('#dropdownMenu').hide();
       }
-      function confirmAndDelete(url) {
-        // eslint-disable-next-line no-alert
-        const confirmDelete = confirm(
-          'Soll dieser Eintrag wirklich gelöscht werden?'
-        );
-        if (confirmDelete) {
-          document.getElementById(url).remove();
-          // Code to delete the entry from localStorage
-          const entries = JSON.parse(localStorage.getItem('entries'));
-          const updatedEntries = entries.filter(
-            (entry) => entry.name !== link.textContent
-          );
-          localStorage.setItem('entries', JSON.stringify(updatedEntries));
-          if (updatedEntries.length === 0) {
-            localStorage.removeItem('entries');
-          }
-        }
-      }
-
       function reloadView(v) {
         if (localStorage.getItem('isClickable') === 'true') {
           wv = document.getElementById("wv-"+v);
