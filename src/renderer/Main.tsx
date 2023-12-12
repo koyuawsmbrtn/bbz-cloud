@@ -243,9 +243,11 @@ export default class Main extends React.Component {
     $('#updateButton').hide();
     $('#dropdownb').click(function () {
       if ($('#dropdownMenu').is(':visible')) {
+        $('#dropdownb').css('background', 'white');
         $('#dropdownMenu').hide();
         return;
       }
+      $('#dropdownb').css('background', 'orange');
       const buttonRect = document
         .getElementById('dropdownb')
         .getBoundingClientRect();
