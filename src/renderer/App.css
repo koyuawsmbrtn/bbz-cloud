@@ -76,12 +76,27 @@ header {
   z-index: 100;
 }
 
-.customApp a
-{
+.dropdownMenu a {
   display: flex;
   color: black;
   font-weight: 700;
   font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
+}
+
+.customApp a
+{
+  display: flex;
+  color: black;
+  font-weight: 500;
+  font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
 }
 
 .customApp li {
@@ -93,6 +108,10 @@ header {
   color: black;
   font-weight: 700;
   font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
 }
 
 #dropdownMenu li {
@@ -109,13 +128,13 @@ header {
   margin-left: 16px;
 }
 
-@media screen and (max-width: 1400px) {
+@media screen and (max-width: 1450px) {
   #headnote {
     display: none;
   }
 }
 
-@media screen and (max-width: 1150px) {
+@media screen and (max-width: 1200px) {
   .app {
     text-align: left;
     white-space: nowrap;
@@ -140,19 +159,13 @@ header {
   /* Stay in place */
   z-index: 1;
   /* Sit on top */
-  left: calc(100vh - 400px);
-  top: 400px;
-  width: 25%;
-  /* Full width */
-  height: 25%;
-  /* Full height */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
   overflow: auto;
   border-radius: 0.25rem;
-  /* Enable scroll if needed */
   background-color: rgb(0, 0, 0);
-  /* Fallback color */
-  background-color: rgba(0, 0, 0, 0.6);
-  /* Black w/ opacity */
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 .link-SchulCloud {

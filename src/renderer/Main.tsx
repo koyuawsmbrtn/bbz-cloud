@@ -413,8 +413,12 @@ export default class Main extends React.Component {
       $('#dropdownMenu').append(`<ul id="dropdownListe">`);
       for (const [key, appLink] of Object.entries(links2)) {
         $('#dropdownMenu').append(
-          `<li id="${appLink.url}" class="dropdownApp">
-            <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;"><img src="${appLink.icon}" height="20" title="${key}" /><b>${key}</b></a></li>`
+          `<li id="${appLink.url}" class="dropdownApp" style="display:flex;">
+              <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="color: black; cursor:pointer;">
+                <img src="${appLink.icon}" height="20" title="${key}" />
+                <b>${key}</b>
+              </a>
+             </li>`
         );
       }
       $('#dropdownMenu').append(`<hr>`);
@@ -492,6 +496,11 @@ export default class Main extends React.Component {
       $('#addEntryBtn').click(() => {
         $('#modalAddEntry').show();
       });
+      $('#cancelBtn').click(() => {
+        $('#nameInput').val('');
+        $('#urlInput').val('');
+        $('#modalAddEntry').hide();
+      });
 
       // Save entry to localStorage when save button is clicked
       $('#saveEntryBtn').click(() => {
@@ -514,8 +523,8 @@ export default class Main extends React.Component {
         $('#dropdownMenu').append(`<ul id="dropdownListe">`);
         for (const [key, appLink] of Object.entries(links2)) {
           $('#dropdownMenu').append(
-            `<li id="${appLink.url}" class="dropdownApp">
-              <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="cursor:pointer;">
+            `<li id="${appLink.url}" class="dropdownApp" style="display:flex;">
+              <a onClick="openInNewWindow('${appLink.url}')" target="_blank" class="link-${key} app" style="color: black; cursor:pointer;">
                 <img src="${appLink.icon}" height="20" title="${key}" />
                 <b>${key}</b>
               </a>
@@ -566,6 +575,9 @@ export default class Main extends React.Component {
           </button>
         </li>`);
         $('#dropdownMenu').append(`</ul>`);
+        $('#addEntryBtn').click(() => {
+          $('#modalAddEntry').show();
+        });
 
         // Close modal when cancel button is clicked
         $('#cancelBtn').click(() => {
