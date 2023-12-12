@@ -135,7 +135,7 @@ header {
 }
 
 @media screen and (max-width: 1200px) {
-  .app {
+  #apps {
     text-align: left;
     white-space: nowrap;
     overflow: hidden;
