@@ -87,12 +87,7 @@ window.api.send('getPassword');
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
-  if (currentWebView === '') {
-    reloadPage();
-  } else {
-    reloadPage();
-    changeUrl(u);
-  }
+  reloadPage();
 });
 
 // window.location.reload();
@@ -550,6 +545,8 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.querySelector('#submitButton').click();`
             );
+            document.getElementById('emailAdress').value =
+              creds.outlookUsername;
           }
           // Autofill Handbuch
           if (wv.id === 'wv-BBZHandbuch' && credsAreSet.handbuch === false) {
@@ -581,6 +578,8 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.querySelector('#loginbtn').click();`
             );
+            document.getElementById('teacherID').value = creds.moodleUsername;
+            document.getElementById('moodlePW').value = creds.moodlePassword;
           }
           // Autofill BigBlueButton
           if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
@@ -595,6 +594,7 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.getElementsByClassName('signin-button')[0].click();`
             );
+            document.getElementById('bbbPW').value = creds.bbbPassword;
           }
         });
       });

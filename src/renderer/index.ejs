@@ -13,7 +13,6 @@
   <body>
     <div id="root"></div>
     <script>
-      let currentWebView = '';
       function switchWindow(u) {
         $('.wv').hide();
         $('.wvbr').hide();
@@ -31,7 +30,6 @@
         $('#content').show();
         $('#buttons').css('visibility', 'visible');
         $('body').css('overflow', 'hidden');
-        currentWebView = u;
       }
 
       function changeUrl(u, url) {
