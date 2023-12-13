@@ -547,6 +547,7 @@ export default class Main extends React.Component {
             );
             document.getElementById('emailAdress').value =
               creds.outlookUsername;
+            document.getElementById('outlookPW').value = creds.outlookPassword;
           }
           // Autofill Handbuch
           if (wv.id === 'wv-BBZHandbuch' && credsAreSet.handbuch === false) {
