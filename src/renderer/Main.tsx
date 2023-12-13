@@ -66,6 +66,18 @@ if (isTeacher) {
   titleImage = u2;
 }
 
+function resetCredsAreSet() {
+  credsAreSet.bbb = false;
+  credsAreSet.moodle = false;
+  credsAreSet.outlook = false;
+  credsAreSet.handbuch = false;
+}
+
+function reloadPage() {
+  resetCredsAreSet();
+  window.location.reload();
+}
+
 // Hierin werden die Credentials des Users aus dem Keyring des jeweiligen System geholt
 // Ein Sammelobjekt wird übertragen statt einzelner ipc-Anfragen
 window.api.receive('getPassword', (result) => {
@@ -75,7 +87,12 @@ window.api.send('getPassword');
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
-  window.location.reload();
+  if (currentWebView === '') {
+    reloadPage();
+  } else {
+    reloadPage();
+    changeUrl(u);
+  }
 });
 
 // window.location.reload();
@@ -122,18 +139,6 @@ window.api.receive('changeUrl', (result) => {
   }
 });
 
-function resetCredsAreSet() {
-  credsAreSet.bbb = false;
-  credsAreSet.moodle = false;
-  credsAreSet.outlook = false;
-  credsAreSet.handbuch = false;
-}
-
-function reloadPage() {
-  resetCredsAreSet();
-  window.location.reload();
-}
-
 function saveSettings() {
   // Save Autostart Settings
   const autostart = document.querySelector('input');
@@ -161,8 +166,7 @@ function saveSettings() {
   window.api.send('savePassword', creds);
 
   // reload App
-  resetCredsAreSet();
-  window.location.reload();
+  reloadPage();
 }
 
 function clickable(b: boolean) {
@@ -727,7 +731,7 @@ export default class Main extends React.Component {
                       size="50"
                       name="emailAdress"
                       placeholder="vorname.nachname@bbz-rd-eck.de"
-                      defaultValue=""
+                      defaultValue={creds.outlookUsername}
                     />
                     <label htmlFor="emailAdress">E-Mail-Adresse</label>
                     <p />
@@ -739,7 +743,7 @@ export default class Main extends React.Component {
                   id="teacherID"
                   size="50"
                   name="teacherID"
-                  defaultValue=""
+                  defaultValue={creds.moodleUsername}
                 />
                 <label htmlFor="teacherID">
                   {isTeacher ? 'Lehrerkürzel' : 'Benutzername'}
@@ -752,7 +756,7 @@ export default class Main extends React.Component {
                     id="outlookPW"
                     size="30"
                     name="outlookPW"
-                    defaultValue=""
+                    defaultValue={creds.outlookPassword}
                   />
                   <label htmlFor="outlookPW">Outlook</label>
                   <p />
@@ -762,7 +766,7 @@ export default class Main extends React.Component {
                     size="30"
                     name="bbbPW"
                     placeholder=""
-                    defaultValue=""
+                    defaultValue={creds.bbbPassword}
                   />
                   <label htmlFor="bbbPW">BigBlueButton</label>
                   <p />
@@ -774,7 +778,7 @@ export default class Main extends React.Component {
                 size="30"
                 name="moodlePW"
                 placeholder=""
-                defaultValue=""
+                defaultValue={creds.moodlePassword}
               />
               <label htmlFor="moodlePW">Moodle-Passwort</label>
               <p />
