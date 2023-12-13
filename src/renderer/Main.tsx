@@ -75,70 +75,7 @@ window.api.send('getPassword');
 
 // Relaod selected apps on command from the main process
 window.api.receive('reloadApp', (result) => {
-  document.querySelectorAll('webview').forEach((wv) => {
-    wv.addEventListener('did-finish-load', async (event) => {
-      wv.reloadIgnoringCache();
-      // Autofill Outlook
-      if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
-        credsAreSet.outlook = true;
-        wv.executeJavaScript(
-          `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
-        );
-        wv.executeJavaScript(
-          `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
-        );
-        wv.executeJavaScript(
-          // Hier wird der Button geklickt
-          `document.querySelector('#submitButton').click();`
-        );
-      }
-      // Autofill Handbuch
-      if (wv.id === 'wv-BBZHandbuch' && credsAreSet.handbuch === false) {
-        credsAreSet.handbuch = true;
-        wv.executeJavaScript(
-          `document.querySelector('#userNameInput').value = "${creds.outlookUsername}"; void(0);`
-        );
-        wv.executeJavaScript(
-          `document.querySelector('#passwordInput').value = "${creds.outlookPassword}"; void(0);`
-        );
-        wv.executeJavaScript(
-          // Hier wird der Button geklickt
-          `document.querySelector('#submitButton').click();`
-        );
-        await sleep(5000);
-        wv.reload();
-      }
-      // Autofill Moodle
-      if (wv.id === 'wv-Moodle' && credsAreSet.moodle === false) {
-        credsAreSet.moodle = true;
-
-        wv.executeJavaScript(
-          `document.querySelector('#username').value = "${creds.moodleUsername}"; void(0);`
-        );
-        wv.executeJavaScript(
-          `document.querySelector('#password').value = "${creds.moodlePassword}"; void(0);`
-        );
-        wv.executeJavaScript(
-          // Hier wird der Button geklickt
-          `document.querySelector('#loginbtn').click();`
-        );
-      }
-      // Autofill BigBlueButton
-      if (wv.id === 'wv-BigBlueButton' && credsAreSet.bbb === false) {
-        credsAreSet.bbb = true;
-        wv.executeJavaScript(
-          `document.querySelector('#session_email').value = "${creds.bbbUsername}"; void(0);`
-        );
-        wv.executeJavaScript(
-          `document.querySelector('#session_password').value = "${creds.bbbPassword}"; void(0);`
-        );
-        wv.executeJavaScript(
-          // Hier wird der Button geklickt
-          `document.getElementsByClassName('signin-button')[0].click();`
-        );
-      }
-    });
-  });
+  window.location.reload();
 });
 
 // window.location.reload();
