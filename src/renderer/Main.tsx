@@ -545,6 +545,8 @@ export default class Main extends React.Component {
               // Hier wird der Button geklickt
               `document.querySelector('#submitButton').click();`
             );
+            await sleep(5000);
+            wv.reload();
             document.getElementById('emailAdress').value =
               creds.outlookUsername;
             document.getElementById('outlookPW').value = creds.outlookPassword;
