@@ -201,6 +201,12 @@ export default class Main extends React.Component {
     $('.clickable-modifier input').click(function () {
       clickable(false);
     });
+    // Setze Autostart-Haken in Settings, wenn Autostart aktiviert ist
+    if (localStorage.getItem('autostart')) {
+      document.querySelector('input')?.setAttribute('checked', 'true');
+    } else {
+      document.querySelector('input')?.setAttribute('checked', 'false');
+    }
     $('body').css('background', '#173a64');
     // let isOnline = true;
     // eslint-disable-next-line promise/catch-or-return
@@ -533,6 +539,24 @@ export default class Main extends React.Component {
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
           // Autofill Outlook
+          if (
+            wv.id === 'wv-SchulCloud' ||
+            wv.id === 'wv-Moodle' ||
+            wv.id === 'wv-BigBlueButton' ||
+            wv.id === 'wv-BBZHandbuch' ||
+            wv.id === 'wv-BBZWiki' ||
+            wv.id === 'wv-WebUntis'
+          ) {
+            wv.addEventListener('context-menu', (e) => {
+              e.preventDefault();
+              window.api.send('contextMenu', {
+                x: e.x,
+                y: e.y,
+                selectionText: e.selectionText,
+              });
+              console.log(e);
+            });
+          }
           if (wv.id === 'wv-Outlook' && credsAreSet.outlook === false) {
             credsAreSet.outlook = true;
             wv.executeJavaScript(
@@ -723,68 +747,69 @@ export default class Main extends React.Component {
               </div>
               <div className="clickable-modifier">
                 <div id="appchecks" className="twoColumn" />
-                <label htmlFor="icon_website">Icon der Website</label>
                 <h2>Anmeldedaten speichern</h2>
-                <div className="teacher">
-                  <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
-                  <div id="views" className="twoColumn">
+                <div className="twoColumn">
+                  <div className="teacher">
+                    <h3>E-Mail-Adresse (für Outlook und BigBlueButton)</h3>
+                    <div id="views" className="twoColumn">
+                      <input
+                        type="text"
+                        id="emailAdress"
+                        size="29"
+                        name="emailAdress"
+                        placeholder="vorname.nachname@bbz-rd-eck.de"
+                        defaultValue={creds.outlookUsername}
+                      />
+                      <label htmlFor="emailAdress">E-Mail</label>
+                      <p />
+                    </div>
+                  </div>
+                  <h3>Moodle-Nutzername</h3>
+                  <input
+                    type="text"
+                    id="teacherID"
+                    size="29"
+                    name="teacherID"
+                    defaultValue={creds.moodleUsername}
+                  />
+                  <label htmlFor="teacherID">
+                    {isTeacher ? 'Lehrerkürzel' : 'Benutzername'}
+                  </label>
+                  <p />
+                  <h3>Passworte</h3>
+                  <div className="teacher">
                     <input
-                      type="text"
-                      id="emailAdress"
-                      size="50"
-                      name="emailAdress"
-                      placeholder="vorname.nachname@bbz-rd-eck.de"
-                      defaultValue={creds.outlookUsername}
+                      type="password"
+                      id="outlookPW"
+                      size="29"
+                      name="outlookPW"
+                      defaultValue={creds.outlookPassword}
                     />
-                    <label htmlFor="emailAdress">E-Mail-Adresse</label>
+                    <label htmlFor="outlookPW">Outlook</label>
+                    <p />
+                    <input
+                      type="password"
+                      id="bbbPW"
+                      size="29"
+                      name="bbbPW"
+                      placeholder=""
+                      defaultValue={creds.bbbPassword}
+                    />
+                    <label htmlFor="bbbPW">BigBlueButton</label>
                     <p />
                   </div>
                 </div>
-                <h3>Moodle-Nutzername</h3>
                 <input
-                  type="text"
-                  id="teacherID"
-                  size="50"
-                  name="teacherID"
-                  defaultValue={creds.moodleUsername}
+                  type="password"
+                  id="moodlePW"
+                  size="29"
+                  name="moodlePW"
+                  placeholder=""
+                  defaultValue={creds.moodlePassword}
                 />
-                <label htmlFor="teacherID">
-                  {isTeacher ? 'Lehrerkürzel' : 'Benutzername'}
-                </label>
+                <label htmlFor="moodlePW">Moodle-Passwort</label>
                 <p />
-                <h3>Passworte</h3>
-                <div className="teacher">
-                  <input
-                    type="password"
-                    id="outlookPW"
-                    size="30"
-                    name="outlookPW"
-                    defaultValue={creds.outlookPassword}
-                  />
-                  <label htmlFor="outlookPW">Outlook</label>
-                  <p />
-                  <input
-                    type="password"
-                    id="bbbPW"
-                    size="30"
-                    name="bbbPW"
-                    placeholder=""
-                    defaultValue={creds.bbbPassword}
-                  />
-                  <label htmlFor="bbbPW">BigBlueButton</label>
-                  <p />
-                </div>
               </div>
-              <input
-                type="password"
-                id="moodlePW"
-                size="30"
-                name="moodlePW"
-                placeholder=""
-                defaultValue={creds.moodlePassword}
-              />
-              <label htmlFor="moodlePW">Moodle-Passwort</label>
-              <p />
               <button onClick={saveSettings} id="sbb">
                 Speichern
               </button>

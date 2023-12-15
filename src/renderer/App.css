@@ -9,7 +9,7 @@ body {
 }
 
 header {
-  background: #173a64 center center;
+  background: #12325a center center;
   color: #fff;
   padding: 5px;
   height: 60px;
@@ -87,8 +87,7 @@ header {
   text-indent: none;
 }
 
-.customApp a
-{
+.customApp a {
   display: flex;
   color: black;
   font-weight: 500;
@@ -141,6 +140,7 @@ header {
     overflow: hidden;
     text-indent: -9999px;
   }
+
   #buttons {
     width: 25%;
   }
@@ -172,7 +172,7 @@ header {
 }
 
 .link-SchulCloud {
-  background-color: #fac229 !important;
+  background-color: #ffc012 !important;
 }
 
 .link-Moodle {
@@ -180,7 +180,7 @@ header {
 }
 
 .link-BigBlueButton {
-  background-color: #1a069a !important;
+  background-color: #1f1370 !important;
 }
 
 .link-Outlook {
@@ -192,23 +192,23 @@ header {
 }
 
 .link-Office {
-  background-color: #730bce !important;
+  background-color: #8047b1 !important;
 }
 
 .link-CryptPad {
-  background-color: #80d1d8 !important;
+  background-color: #059ba994 !important;
 }
 
 .link-TaskCards {
-  background-color: #6e2f98 !important;
+  background-color: #46798e !important;
 }
 
 .link-BBZWiki {
-  background-color: #577c9c !important;
+  background-color: #4171d9 !important;
 }
 
 .link-BBZHandbuch {
-  background-color: #686a6c !important;
+  background-color: #156b49ed !important;
 }
 
 .link-Issues,
@@ -331,11 +331,13 @@ h1 {
 }
 
 #settings {
-  background-color: #173a64;
+  background-color: #12325a;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+  height: 100vh;
   margin: 0 -20px;
+  margin-top: -20px;
   padding: 20px;
 }
 
@@ -344,8 +346,8 @@ h1 {
   background: #fff;
   padding: 4px;
   border-radius: 4px;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   margin-top: 16px;
   margin-left: 4px;
   cursor: pointer;

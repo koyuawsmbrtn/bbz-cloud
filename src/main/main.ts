@@ -291,6 +291,36 @@ const createWindow = async () => {
 
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
+  ipcMain.on('contextMenu', (e, props) => {
+    /* mainWindow.webContents.on('context-menu', (e, props) => { */
+    Menu.buildFromTemplate([
+      {
+        label: 'Alles auswählen',
+        click: () => {
+          mainWindow?.webContents.selectAll();
+        },
+      },
+      {
+        label: 'Ausschneiden',
+        click: () => {
+          mainWindow?.webContents.cut();
+        },
+      },
+      {
+        label: 'Kopieren',
+        click: () => {
+          mainWindow?.webContents.copy();
+        },
+      },
+      {
+        label: 'Einfügen',
+        click: () => {
+          mainWindow?.webContents.paste();
+        },
+      },
+    ]).popup({ window: mainWindow, x: props.x, y: props.y });
+  });
+
   if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
       {

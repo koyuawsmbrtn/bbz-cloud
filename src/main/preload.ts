@@ -23,6 +23,7 @@ contextBridge.exposeInMainWorld('api', {
       'deleteAndReload',
       'bitwarden',
       'openInNewWindow',
+      'contextMenu',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
