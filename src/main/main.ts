@@ -294,8 +294,18 @@ const createWindow = async () => {
   ipcMain.on('update-badge', (event, isBadge) => {
     if (isBadge) {
       mainWindow?.setIcon(getAssetPath('icon_badge.png'));
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        tray?.setImage(getAssetPath('tray-lowres_badge.png'));
+      } else {
+        tray?.setImage(getAssetPath('tray_badge.png'));
+      }
     } else {
       mainWindow?.setIcon(getAssetPath('icon.png'));
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        tray?.setImage(getAssetPath('tray-lowres.png'));
+      } else {
+        tray?.setImage(getAssetPath('tray.png'));
+      }
     }
   });
 
@@ -324,6 +334,15 @@ const createWindow = async () => {
         label: 'Einfügen',
         click: () => {
           mainWindow?.webContents.paste();
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Neu laden',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          const focusedWindow = BrowserWindow.getFocusedWindow();
+          if (focusedWindow) focusedWindow.reload();
         },
       },
     ]).popup({ window: mainWindow, x: props.x, y: props.y });
