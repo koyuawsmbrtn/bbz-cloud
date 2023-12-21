@@ -20,10 +20,10 @@ import {
   Menu,
   Tray,
   powerMonitor,
+  clipboard,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
-import { clipboard } from 'electron';
 import { resolveHtmlPath } from './util';
 
 const appName = app.getName();
@@ -290,6 +290,14 @@ const createWindow = async () => {
   });
 
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
+
+  ipcMain.on('update-badge', (event, isBadge) => {
+    if (isBadge) {
+      mainWindow?.setIcon(getAssetPath('icon_badge.png'));
+    } else {
+      mainWindow?.setIcon(getAssetPath('icon.png'));
+    }
+  });
 
   ipcMain.on('contextMenu', (e, props) => {
     /* mainWindow.webContents.on('context-menu', (e, props) => { */

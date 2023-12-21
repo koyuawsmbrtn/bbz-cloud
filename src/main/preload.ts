@@ -24,6 +24,7 @@ contextBridge.exposeInMainWorld('api', {
       'bitwarden',
       'openInNewWindow',
       'contextMenu',
+      'update-badge',
     ];
     if (validChannels.includes(channel)) {
       ipcRenderer.send(channel, data);
