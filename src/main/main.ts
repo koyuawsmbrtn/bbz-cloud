@@ -21,6 +21,7 @@ import {
   Tray,
   powerMonitor,
   clipboard,
+  nativeImage,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
@@ -293,13 +294,18 @@ const createWindow = async () => {
 
   ipcMain.on('update-badge', (event, isBadge) => {
     if (isBadge) {
-      mainWindow?.setIcon(getAssetPath('icon_badge.png'));
+      mainWindow?.setOverlayIcon(
+        nativeImage.createFromPath(getAssetPath('icon_badge.png')),
+        'NeueNachrichten'
+      );
+      mainWindow?.setIcon(getAssetPath('icon_badge_combined.png'));
       if (process.platform === 'win32' || process.platform === 'darwin') {
         tray?.setImage(getAssetPath('tray-lowres_badge.png'));
       } else {
         tray?.setImage(getAssetPath('tray_badge.png'));
       }
     } else {
+      mainWindow?.setOverlayIcon(null, 'Keine Nachrichten');
       mainWindow?.setIcon(getAssetPath('icon.png'));
       if (process.platform === 'win32' || process.platform === 'darwin') {
         tray?.setImage(getAssetPath('tray-lowres.png'));
