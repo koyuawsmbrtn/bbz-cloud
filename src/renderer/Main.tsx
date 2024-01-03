@@ -1,3 +1,4 @@
+/* eslint-disable no-plusplus */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable promise/always-return */
 /* eslint-disable promise/catch-or-return */
@@ -23,7 +24,6 @@ import links2 from '../../assets/secondary_apps.json';
 import logo from '../../assets/logo.png';
 import version from '../../package.json';
 import isTeacherVar from '../../assets/isTeacher.json';
-import notificationBadge from '../../assets/notificationBadgeStashcat.json';
 
 // global (to renderer) variables
 const versionApp = version.version;
@@ -536,21 +536,80 @@ export default class Main extends React.Component {
         $('#autostart').attr('checked', 'true');
       }
 
-      // Get data from Webview wv-SchulCloud every 5 seconds and generate a notification if there is a new message
+      // Function to check, if lower right quadrant of an Base64-coded Image is mostly red
+      const isRedDominant = (base64Image, threshold = 0.5) => {
+        const img = new Image();
+        img.src = base64Image;
+
+        return new Promise((resolve, reject) => {
+          img.onload = function () {
+            const canvas = document.createElement('canvas');
+            canvas.width = img.width;
+            canvas.height = img.height;
+
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+
+            const imageData = ctx.getImageData(
+              img.width / 2,
+              img.height / 2,
+              img.width / 2,
+              img.height / 2
+            ).data;
+
+            let redPixelCount = 0;
+
+            // Überprüfen Sie jeden vierten Wert, der dem roten Kanal entspricht
+            for (let i = 0; i < imageData.length; i += 4) {
+              if (
+                // wenn exakte Farbwerte des Badges vorliegen
+                imageData[i] === 234 &&
+                imageData[i + 1] === 109 &&
+                imageData[i + 2] === 132
+              ) {
+                // dann zähle redPixel hoch
+                redPixelCount++;
+              }
+            }
+            console.log(`Red Pixel: ${redPixelCount}`);
+            // Berechnen Sie den prozentualen Anteil der roten Pixel
+            const redPercentage = redPixelCount / (imageData.length / 4);
+
+            // Überprüfen Sie, ob der prozentuale Anteil über dem Schwellenwert liegt
+            const isDominant = redPercentage > threshold;
+
+            resolve(isDominant);
+          };
+
+          img.onerror = function () {
+            // eslint-disable-next-line prefer-promise-reject-errors
+            reject('Fehler beim Laden des Bildes.');
+          };
+        });
+      };
+
+      // Get data from Webview wv-SchulCloud every 8 seconds and generate a notification if there is a new message
       window.setInterval(() => {
         const wv = document.getElementById('wv-SchulCloud');
         if (wv) {
           wv.executeJavaScript(
             `document.getElementsByTagName("link")[0].href;`
           ).then((favicon) => {
-            if (
-              favicon !==
-              'data:image/png;base64,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'
-            ) {
-              window.api.send('update-badge', true);
-            } else {
-              window.api.send('update-badge', false);
-            }
+            isRedDominant(favicon)
+              .then((result) => {
+                if (result) {
+                  // Farbe im rechten unteren Quadranten dominant
+                  console.log('Rot ist dominant');
+                  window.api.send('update-badge', true);
+                } else {
+                  // oder nicht
+                  console.log('Rot ist nicht dominant');
+                  window.api.send('update-badge', false);
+                }
+              })
+              .catch((error) => {
+                console.error(error);
+              });
           });
         }
       }, 8000);
