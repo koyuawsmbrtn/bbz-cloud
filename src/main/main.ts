@@ -699,7 +699,7 @@ const createWindow = async () => {
       }
     } else {
       event.preventDefault();
-      if (process.platform !== 'win32') {
+      if (process.platform === 'win32') {
         mainWindow?.minimize();
       } else {
         mainWindow?.hide();
