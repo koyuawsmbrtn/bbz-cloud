@@ -699,7 +699,11 @@ const createWindow = async () => {
       }
     } else {
       event.preventDefault();
-      mainWindow?.hide();
+      if (process.platform !== 'win32') {
+        mainWindow?.minimize();
+      } else {
+        mainWindow?.hide();
+      }
     }
   });
 
