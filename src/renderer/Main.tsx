@@ -540,25 +540,20 @@ export default class Main extends React.Component {
       const isRedDominant = (base64Image, threshold = 0.5) => {
         const img = new Image();
         img.src = base64Image;
-
         return new Promise((resolve, reject) => {
           img.onload = function () {
             const canvas = document.createElement('canvas');
             canvas.width = img.width;
             canvas.height = img.height;
-
             const ctx = canvas.getContext('2d');
             ctx.drawImage(img, 0, 0, img.width, img.height);
-
             const imageData = ctx.getImageData(
               img.width / 2,
               img.height / 2,
               img.width / 2,
               img.height / 2
             ).data;
-
             let redPixelCount = 0;
-
             // Überprüfen Sie jeden vierten Wert, der dem roten Kanal entspricht
             for (let i = 0; i < imageData.length; i += 4) {
               if (
@@ -571,16 +566,12 @@ export default class Main extends React.Component {
                 redPixelCount++;
               }
             }
-            console.log(`Red Pixel: ${redPixelCount}`);
             // Berechnen Sie den prozentualen Anteil der roten Pixel
             const redPercentage = redPixelCount / (imageData.length / 4);
-
             // Überprüfen Sie, ob der prozentuale Anteil über dem Schwellenwert liegt
             const isDominant = redPercentage > threshold;
-
             resolve(isDominant);
           };
-
           img.onerror = function () {
             // eslint-disable-next-line prefer-promise-reject-errors
             reject('Fehler beim Laden des Bildes.');
@@ -592,6 +583,7 @@ export default class Main extends React.Component {
       window.setInterval(() => {
         const wv = document.getElementById('wv-SchulCloud');
         if (wv) {
+          // Get favicon, check for red color and send notification if red is dominant = Badge is displayed
           wv.executeJavaScript(
             `document.getElementsByTagName("link")[0].href;`
           ).then((favicon) => {
@@ -599,11 +591,9 @@ export default class Main extends React.Component {
               .then((result) => {
                 if (result) {
                   // Farbe im rechten unteren Quadranten dominant
-                  console.log('Rot ist dominant');
                   window.api.send('update-badge', true);
                 } else {
                   // oder nicht
-                  console.log('Rot ist nicht dominant');
                   window.api.send('update-badge', false);
                 }
               })
@@ -617,7 +607,7 @@ export default class Main extends React.Component {
       // Credentials in die einzelnen WebViews einfügen
       document.querySelectorAll('webview').forEach((wv) => {
         wv.addEventListener('did-finish-load', async (event) => {
-          // Autofill Outlook
+          // Add ContextMenu to selected WebViews
           if (
             wv.id === 'wv-SchulCloud' ||
             wv.id === 'wv-Moodle' ||
@@ -709,7 +699,7 @@ export default class Main extends React.Component {
       $('.wvbb').hide();
       $('.wvbf').hide();
       $('.wvbc').hide();
-    }, 2000);
+    }, 5000);
 
     $('#updateButton').click(() => {
       $('#updateButton').html('Installiere...');
