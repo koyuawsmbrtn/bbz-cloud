@@ -295,14 +295,16 @@ export default class Main extends React.Component {
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
           }
-          $('#views').append(
-            `<webview
-                id="wv-${key}"
-                class="wv web-${key}"
-                src="${e.url}"
-                style="display:inline-flex; width:100%;"
-                allowpopups></webview>`
-          );
+          if (key !== 'Issues') {
+            $('#views').append(
+              `<webview
+                  id="wv-${key}"
+                  class="wv web-${key}"
+                  src="${e.url}"
+                  style="display:inline-flex; width:100%;"
+                  allowpopups></webview>`
+            );
+          }
         }
         if (e.teacher === false) {
           if (key !== 'Issues') {
@@ -326,14 +328,16 @@ export default class Main extends React.Component {
           if (localStorage.getItem(`checked-${key}`) === 'false') {
             $(`.link-${key}`).hide();
           }
-          $('#views').append(
-            `<webview
-                id="wv-${key}"
-                class="wv web-${key}"
-                src="${e.url}"
-                style="display:inline-flex; width:100%;"
-                allowpopups></webview>`
-          );
+          if (key !== 'Issues') {
+            $('#views').append(
+              `<webview
+                  id="wv-${key}"
+                  class="wv web-${key}"
+                  src="${e.url}"
+                  style="display:inline-flex; width:100%;"
+                  allowpopups></webview>`
+            );
+          }
         }
 
         // Add Buttons for Navigation
@@ -351,7 +355,7 @@ export default class Main extends React.Component {
         );
       }
       $('#buttons').append(
-        `<span onClick="changeUrl('Issues', 'https://bbz-cloud-issues.netlify.app')" style="cursor:pointer;vertical-align:middle;font-size:16pt;font-weight:bold;margin-left:16px;">!</span>`
+        `<span onClick="openInNewWindow('https://bbz-cloud-issues.netlify.app')" style="cursor:pointer;vertical-align:middle;font-size:16pt;font-weight:bold;margin-left:16px;">!</span>`
       );
 
       // Add Dropdown Menu
