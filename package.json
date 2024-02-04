@@ -204,10 +204,7 @@
     "linux": {
       "target": [
         "snap",
-        "AppImage",
-        "pacman",
-        "deb",
-        "rpm"
+        "AppImage"
       ],
       "category": "Education",
       "desktop": {
