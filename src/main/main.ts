@@ -20,10 +20,11 @@ import {
   Menu,
   Tray,
   powerMonitor,
+  clipboard,
+  nativeImage,
 } from 'electron';
 import { autoUpdater } from 'electron-updater';
 import keytar from 'keytar';
-import { clipboard } from 'electron';
 import { resolveHtmlPath } from './util';
 
 const appName = app.getName();
@@ -291,6 +292,68 @@ const createWindow = async () => {
 
   mainWindow?.loadURL(resolveHtmlPath('index.html'));
 
+  ipcMain.on('update-badge', (event, isBadge) => {
+    if (isBadge) {
+      mainWindow?.setOverlayIcon(
+        nativeImage.createFromPath(getAssetPath('icon_badge.png')),
+        'NeueNachrichten'
+      );
+      mainWindow?.setIcon(getAssetPath('icon_badge_combined.png'));
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        tray?.setImage(getAssetPath('tray-lowres_badge.png'));
+      } else {
+        tray?.setImage(getAssetPath('tray_badge.png'));
+      }
+    } else {
+      mainWindow?.setOverlayIcon(null, 'Keine Nachrichten');
+      mainWindow?.setIcon(getAssetPath('icon.png'));
+      if (process.platform === 'win32' || process.platform === 'darwin') {
+        tray?.setImage(getAssetPath('tray-lowres.png'));
+      } else {
+        tray?.setImage(getAssetPath('tray.png'));
+      }
+    }
+  });
+
+  ipcMain.on('contextMenu', (e, props) => {
+    /* mainWindow.webContents.on('context-menu', (e, props) => { */
+    Menu.buildFromTemplate([
+      {
+        label: 'Alles auswählen',
+        click: () => {
+          mainWindow?.webContents.selectAll();
+        },
+      },
+      {
+        label: 'Ausschneiden',
+        click: () => {
+          mainWindow?.webContents.cut();
+        },
+      },
+      {
+        label: 'Kopieren',
+        click: () => {
+          mainWindow?.webContents.copy();
+        },
+      },
+      {
+        label: 'Einfügen',
+        click: () => {
+          mainWindow?.webContents.paste();
+        },
+      },
+      { type: 'separator' },
+      {
+        label: 'Neu laden',
+        accelerator: 'CmdOrCtrl+R',
+        click: () => {
+          const focusedWindow = BrowserWindow.getFocusedWindow();
+          if (focusedWindow) focusedWindow.reload();
+        },
+      },
+    ]).popup({ window: mainWindow, x: props.x, y: props.y });
+  });
+
   if (process.platform === 'darwin') {
     var mainWindowMenuTemplate = Menu.buildFromTemplate([
       {
@@ -494,6 +557,22 @@ const createWindow = async () => {
     mainWindow?.webContents.openDevTools({ mode: 'detach' });
   });
 
+  ipcMain.on('openInNewWindow', (event, url) => {
+    const toolWin = new BrowserWindow({
+      width: 1280,
+      height: 728,
+      minWidth: 600,
+      minHeight: 300,
+      show: false,
+    });
+    toolWin.loadURL(url);
+    toolWin.setMenu(menu);
+    toolWin.show();
+    toolWin.addListener('close', () => {
+      toolWin.destroy();
+    });
+  });
+
   // delete all data and cache on call from debug menu
   ipcMain.on('deleteAndReload', (event) => {
     fs.rmdir(getAppPath, (error) => {
@@ -620,7 +699,11 @@ const createWindow = async () => {
       }
     } else {
       event.preventDefault();
-      mainWindow?.hide();
+      if (process.platform === 'win32') {
+        mainWindow?.minimize();
+      } else {
+        mainWindow?.hide();
+      }
     }
   });
 

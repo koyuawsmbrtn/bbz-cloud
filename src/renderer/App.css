@@ -9,7 +9,7 @@ body {
 }
 
 header {
-  background: #173a64 url(../../assets/background.png) center center;
+  background: #12325a center center;
   color: #fff;
   padding: 5px;
   height: 60px;
@@ -40,9 +40,9 @@ header {
 
 #buttons {
   text-align: right;
-  width: 15%;
-  margin-top: 12px;
-  margin-left: 32px;
+  width: 12%;
+  margin-top: 14px;
+  margin-left: 16px;
 }
 
 #apps,
@@ -56,7 +56,65 @@ header {
 }
 
 #headnote {
-  width: 22%;
+  width: 12%;
+}
+
+#headnote img {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+#dropdownMenu {
+  /* display: none; */
+  position: absolute;
+  background: #fff;
+  border: 1px solid #aaa;
+  border-radius: 4px;
+  padding: 4px;
+  margin-top: 4px;
+  margin-left: 4px;
+  z-index: 100;
+}
+
+.dropdownMenu a {
+  display: flex;
+  color: black;
+  font-weight: 700;
+  font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
+}
+
+.customApp a {
+  display: flex;
+  color: black;
+  font-weight: 500;
+  font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
+}
+
+.customApp li {
+  justify-content: space-between;
+}
+
+#dropdownMenu a {
+  display: flex;
+  color: black;
+  font-weight: 700;
+  font-size: 12pt;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-indent: none;
+}
+
+#dropdownMenu li {
+  justify-content: space-between;
 }
 
 #download {
@@ -64,19 +122,27 @@ header {
   margin-left: 15%;
 }
 
-#apps a {
-  margin: 4px;
-  width: 55%;
-}
-
 #apps {
   margin-top: 16px;
   margin-left: 16px;
 }
 
-@media screen and (max-width: 900px) {
+@media screen and (max-width: 1520px) {
   #headnote {
     display: none;
+  }
+}
+
+@media screen and (max-width: 1320px) {
+  #apps button {
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-indent: -9999px;
+  }
+
+  #buttons {
+    width: 25%;
   }
 }
 
@@ -90,20 +156,59 @@ header {
   column-gap: 20px;
 }
 
-.link-WebUntis img {
-  background: #ff9900 !important;
+.modal {
+  /* Hidden by default */
+  position: fixed;
+  /* Stay in place */
+  z-index: 1;
+  /* Sit on top */
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+  border-radius: 0.25rem;
+  background-color: rgb(0, 0, 0);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
-.link-Miro img {
-  background: #ffcf00 !important;
+.link-SchulCloud {
+  background-color: #ffc012 !important;
 }
 
-.link-SchulCloud img {
-  background: #fac229 !important;
+.link-Moodle {
+  background-color: #ffa010e1 !important;
 }
 
-.link-BiBox img {
-  background-color: #e40613 !important;
+.link-BigBlueButton {
+  background-color: #1f1370 !important;
+}
+
+.link-Outlook {
+  background-color: #0078d7 !important;
+}
+
+.link-WebUntis {
+  background-color: #ff9900 !important;
+}
+
+.link-Office {
+  background-color: #8047b1 !important;
+}
+
+.link-CryptPad {
+  background-color: #059ba994 !important;
+}
+
+.link-TaskCards {
+  background-color: #46798e !important;
+}
+
+.link-BBZWiki {
+  background-color: #4171d9 !important;
+}
+
+.link-BBZHandbuch {
+  background-color: #156b49ed !important;
 }
 
 .link-Issues,
@@ -165,10 +270,12 @@ h1 {
     box-shadow: 2px 0px rgba(255, 255, 255, 0),
       12px 0px rgba(255, 255, 255, 0.3), 20px 0px rgba(255, 255, 255, 0);
   }
+
   50% {
     box-shadow: 2px -5px rgba(255, 255, 255, 0.5),
       12px -3px rgba(255, 255, 255, 0.5), 20px -2px rgba(255, 255, 255, 0.6);
   }
+
   100% {
     box-shadow: 2px -8px rgba(255, 255, 255, 0),
       12px -5px rgba(255, 255, 255, 0), 20px -5px rgba(255, 255, 255, 0);
@@ -193,9 +300,26 @@ h1 {
 }
 
 .app img {
-  background: #fff;
+  width: 20px;
+  display: inline-flex;
+  height: 20px;
   padding: 4px;
+  /* background: #fff; */
+}
+
+.app {
+  display: inline-flex;
+  height: 30px;
+  line-height: 30px;
+  display: inline-flex;
+  text-align: left;
+  vertical-align: middle;
+  border: none;
+  margin-right: 3px;
+  padding-right: 9px;
   border-radius: 4px;
+  cursor: pointer;
+  color: #fff;
 }
 
 .wv {
@@ -207,20 +331,23 @@ h1 {
 }
 
 #settings {
-  background: url(../../assets/background2.jpg);
+  background-color: #12325a;
   background-size: cover;
   background-repeat: no-repeat;
   background-position: center center;
+  height: 100vh;
   margin: 0 -20px;
+  margin-top: -20px;
   padding: 20px;
 }
 
-#settingsb {
+#settingsb,
+#dropdownb {
   background: #fff;
   padding: 4px;
   border-radius: 4px;
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   margin-top: 16px;
   margin-left: 4px;
   cursor: pointer;
