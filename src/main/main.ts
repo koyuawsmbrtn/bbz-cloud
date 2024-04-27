@@ -522,6 +522,12 @@ const createWindow = async () => {
         },
       },
       {
+        label: 'Fenster maximieren',
+        click() {
+          mainWindow?.maximize();
+        },
+      },
+      {
         label: 'Einstellungen',
         click() {
           mainWindow?.show();
@@ -666,6 +672,8 @@ const createWindow = async () => {
   // Set BrowserWindow inital state
   const bwdim = keytar.getPassword('bbzcloud', 'BrowserWindowDim');
   // eslint-disable-next-line promise/always-return
+  // eslint-disable-next-line no-restricted-globals
+
   bwdim.then((result) => {
     if (
       result === null ||
