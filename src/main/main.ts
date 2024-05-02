@@ -121,6 +121,32 @@ ipcMain.on('autostart', (event, args) => {
   });
 });
 
+/* Autostart is not working - possible solution:
+
+Change SduMeeting to bbzcloud
+
+		ipc.on('autostart', (evt, openAtLogin) => {
+			if (app.isPackaged) {
+				if (openAtLogin) {
+					cp.exec(
+						`REG ADD HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run /v SduMeeting /t REG_SZ /d "${process.execPath}" /f`,
+						(err) => {
+							console.log(err);
+						}
+					);
+				} else {
+					cp.exec(
+						`REG DELETE HKLM\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Run /v SduMeeting /f`,
+						(err) => {
+							console.log(err);
+						}
+					);
+				}
+			}
+		});
+
+*/
+
 // Communication with renderer for Zooming the App
 ipcMain.on('zoom', (event, args) => {
   zoomFaktor = args;
