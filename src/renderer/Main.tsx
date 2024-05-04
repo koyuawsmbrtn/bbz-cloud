@@ -137,7 +137,7 @@ window.api.receive('changeUrl', (result) => {
 
 function saveSettings() {
   // Save Autostart Settings
-  const autostart = document.querySelector('input');
+  const autostart = document.getElementById('autostart');
   autostart.addEventListener(
     'click',
     window.api.send('autostart', autostart?.checked)
@@ -202,11 +202,13 @@ export default class Main extends React.Component {
     $('.clickable-modifier input').click(function () {
       clickable(false);
     });
-    // Setze Autostart-Haken in Settings, wenn Autostart aktiviert ist
-    if (localStorage.getItem('autostart')) {
-      document.querySelector('input')?.setAttribute('checked', 'true');
+    // Setze Autostart-Haken in Settings, wenn Autostart aktiviert ist - und sende Signal an main, Autostart zu setzen
+    if (localStorage.getItem('autostart') === 'true') {
+      document.getElementById('autostart')?.setAttribute('checked', 'true');
+      window.api.send('autostart', true);
     } else {
-      document.querySelector('input')?.setAttribute('checked', 'false');
+      document.getElementById('autostart')?.setAttribute('checked', 'false');
+      window.api.send('autostart', false);
     }
     $('body').css('background', '#173a64');
     // let isOnline = true;
