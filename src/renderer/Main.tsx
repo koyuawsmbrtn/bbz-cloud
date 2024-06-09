@@ -759,7 +759,7 @@ export default class Main extends React.Component {
               <div id="headnote">
                 <p>
                   <img src={logo} alt="BBZ Logo" height="28" id="logo" />
-                  <h1>BBZ Cloud</h1>
+                  <h1 id="logo_text">BBZ Cloud</h1>
                 </p>
                 <label htmlFor="download" id="download_label">
                   Download:{' '}
