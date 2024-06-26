@@ -333,7 +333,7 @@ h1 {
 
 .wv {
   display: inline-flex;
-  width: calc(100vw + 2px);
+  width: calc(100% + 8px);
   height: calc(100vh - 60px);
   margin-left: -4px;
   margin-top: -4px;
