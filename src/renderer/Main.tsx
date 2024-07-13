@@ -303,7 +303,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  style="display:inline-flex; width:100%;"
                   allowpopups></webview>`
             );
           }
@@ -336,7 +335,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  style="display:inline-flex; width:100%;"
                   allowpopups></webview>`
             );
           }
