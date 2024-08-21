@@ -12,14 +12,14 @@ yarn
 mkdir $BASEDIR
 rm -rf release/build
 echo "Baue Lehrerversion..."
-yarn dist
+yarn dist -lw
 mkdir $BASEDIR/teacher
 mv release/build $BASEDIR/teacher
 echo "Baue Schülerversion..."
 echo "{ \"value\": false }" > assets/isTeacher.json
 sed -i -e 's/bbz-cloud/bbz-cloud-sus/g' package.json
 sed -i -e 's/koyuawsmbrtn/dclausen01/g' package.json
-yarn dist
+yarn dist -lw
 mkdir $BASEDIR/sus
 mv release/build $BASEDIR/sus
 git checkout -- .
