@@ -303,7 +303,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.2"
                   allowpopups></webview>`
             );
           }
@@ -336,7 +335,6 @@ export default class Main extends React.Component {
                   id="wv-${key}"
                   class="wv web-${key}"
                   src="${e.url}"
-                  useragent="Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:129.0) Gecko/20100101 Firefox/129.2"
                   allowpopups></webview>`
             );
           }
