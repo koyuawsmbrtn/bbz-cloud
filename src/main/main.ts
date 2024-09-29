@@ -218,11 +218,11 @@ ipcMain.on('getPassword', (event) => {
 
 // Run update IPC
 ipcMain.on('runUpdate', () => {
-  if (process.platform !== 'darwin') {
+  if (process.platform === 'win32') {
     autoUpdater.quitAndInstall();
   } else {
-    const pathMacUpdate = autoUpdater.getFeedURL();
-    shell.openExternal(pathMacUpdate);
+    const pathMacLinuxUpdate = autoUpdater.getFeedURL();
+    shell.openExternal(pathMacLinuxUpdate);
   }
 });
 
