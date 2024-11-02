@@ -28,7 +28,7 @@ const configuration: webpack.Configuration = {
   entry: [path.join(webpackPaths.srcRendererPath, 'index.tsx')],
 
   output: {
-    path: webpackPaths.distRendererPath,
+    path: path.join(webpackPaths.distPath, 'renderer'),
     publicPath: './',
     filename: 'renderer.js',
     library: {
@@ -122,6 +122,7 @@ const configuration: webpack.Configuration = {
 
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
+      analyzerPort: 8889,
     }),
 
     new HtmlWebpackPlugin({
@@ -133,7 +134,7 @@ const configuration: webpack.Configuration = {
         removeComments: true,
       },
       isBrowser: false,
-      isDevelopment: process.env.NODE_ENV !== 'production',
+      isDevelopment: false,
     }),
 
     new webpack.DefinePlugin({

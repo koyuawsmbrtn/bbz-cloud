@@ -23,12 +23,12 @@ const configuration: webpack.Configuration = {
   target: 'electron-main',
 
   entry: {
-    main: path.join(webpackPaths.srcMainPath, 'main.ts'),
-    preload: path.join(webpackPaths.srcMainPath, 'preload.ts'),
+    main: path.join(webpackPaths.srcPath, 'main', 'main.ts'),
+    preload: path.join(webpackPaths.srcPath, 'main', 'preload.ts'),
   },
 
   output: {
-    path: webpackPaths.distMainPath,
+    path: path.join(webpackPaths.distPath, 'main'),
     filename: '[name].js',
   },
 
@@ -43,6 +43,7 @@ const configuration: webpack.Configuration = {
   plugins: [
     new BundleAnalyzerPlugin({
       analyzerMode: process.env.ANALYZE === 'true' ? 'server' : 'disabled',
+      analyzerPort: 8888,
     }),
 
     /**
@@ -73,6 +74,11 @@ const configuration: webpack.Configuration = {
   node: {
     __dirname: false,
     __filename: false,
+  },
+
+  externals: {
+    'electron-debug': 'electron-debug',
+    keytar: 'keytar',
   },
 };
 

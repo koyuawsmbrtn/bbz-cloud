@@ -2,19 +2,19 @@
   "name": "bbzcloud",
   "version": "1.8.6",
   "description": "Die Desktop-App für die BBZ Cloud - eine All-in-One-Plattform für Unterricht und Zusammenarbeit",
-  "main": "./dist/main/main.js",
+  "license": "MIT",
   "author": {
-    "name": "koyu",
-    "email": "me@koyu.space",
-    "url": "https://github.com/koyuawsmbrtn"
+    "name": "koyu.space",
+    "email": "support@koyu.space",
+    "url": "https://koyu.space"
   },
+  "main": "./dist/main/main.js",
   "scripts": {
-    "electron-rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
-    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts",
-    "postinstall": "npm run electron-rebuild && npm run link-modules"
+    "rebuild": "node -r ts-node/register ../../.erb/scripts/electron-rebuild.js",
+    "postinstall": "npm run rebuild && npm run link-modules",
+    "link-modules": "node -r ts-node/register ../../.erb/scripts/link-modules.ts"
   },
   "dependencies": {
     "keytar": "^7.9.0"
-  },
-  "license": "MIT"
+  }
 }
