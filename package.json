@@ -205,7 +205,6 @@
         "snap",
         "AppImage",
         "deb",
-        "rpm",
         "pacman"
       ],
       "category": "Education",
@@ -236,10 +235,6 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/koyuawsmbrtn/bbz-cloud.git"
-  },
-  "devEngines": {
-    "node": ">=14.x",
-    "npm": ">=7.x"
   },
   "electronmon": {
     "patterns": [
