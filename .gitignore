@@ -30,3 +30,7 @@ npm-debug.log.*
 
 # Modification history from sed under Windows
 sed*
+
+# package-lock and stuff
+package-lock.*
+yarn.lock
